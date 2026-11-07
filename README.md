@@ -4,6 +4,9 @@
 
 ### ▶ Live: https://cbroker1.github.io/heart-ct-explorer/
 
+<p align="center"><img src="docs/img/overview.jpg" width="49%" alt="Overview page with a 3D heart"> <img src="docs/img/anatomy.jpg" width="49%" alt="3D anatomy viewer"></p>
+<p align="center"><img src="docs/img/slices.jpg" width="49%" alt="Slice explorer"> <img src="docs/img/read.jpg" width="49%" alt="AI second read report"></p>
+
 A real, low-dose, ECG-gated "calcium score" CT (37-year-old male, Siemens SOMATOM X.ceed, Nov 2026),
 de-identified and rebuilt as:
 
