@@ -1,0 +1,3270 @@
+{
+  "method": {
+    "series": "CALCIUM SCORE (Siemens Sa36d, 120 kV-equivalent, 3 mm slices every 1.5 mm, 0.31 mm pixels)",
+    "thresholdHU": 130.0,
+    "minAreaMM2": 1.0,
+    "sliceThickness": 3.0,
+    "sliceIncrement": 1.5,
+    "overlapCorrection": 0.5,
+    "densityWeights": "130-199 HU: 1, 200-299: 2, 300-399: 3, >=400: 4",
+    "massCalibration_mgPerHUcm3": 0.743,
+    "searchRegion": "pericardial sac + whole heart (TotalSegmentator), 5 mm margin, excluding bone (+2 mm)"
+  },
+  "noise": {
+    "heartInteriorMeanHU": 50.4,
+    "heartInteriorSD_HU": 17.9,
+    "thresholdInSigmasAboveBlood": 4.45
+  },
+  "candidates": [
+    {
+      "id": 1,
+      "slices": [
+        10
+      ],
+      "nSlices": 1,
+      "peakHU": 159.0,
+      "peakSlice": 10,
+      "meanHU": 144.5,
+      "areaSum_mm2": 1.04,
+      "maxArea_mm2": 1.04,
+      "volume_mm3": 1.56,
+      "centerLPS": [
+        29.31,
+        -248.67,
+        1698.25
+      ],
+      "centerVoxel": [
+        335.8,
+        74.9,
+        10.0
+      ],
+      "depthInHeart_mm": {
+        "min": 0.3,
+        "mean": 0.7
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 81.9,
+      "blobs": [
+        {
+          "z": 10,
+          "area": 1.04,
+          "peak": 159.0
+        }
+      ],
+      "chamber": "heart_ventricle_right",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium s10 only (z 1698.25), 159 HU, 1.04 mm2, LPS (29.3,-248.7,1698.3). In the RV-apex blood/myocardium inside the lower noisy band (bottom edge of the scan; liver SD ~32 HU here). Isolated speck among identical speckle, absent on the overlapping s9/s11, nothing at W200/600."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Calcium k10, LPS (29.3,-248.7,1698.2), 159 HU, 1.04 mm2. Single-slice speck inside the apical tissue (not in the pericardial fat) in the noisy inferior slices (SD 26-32 HU). Checked zoomed. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Slice 10, peak 159 HU, 1.04 mm2, RV region; in the z1698-1707 apex/diaphragm noise band; no vessel; reproduced by the calibrated noise model."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "slices": [
+        11
+      ],
+      "nSlices": 1,
+      "peakHU": 149.0,
+      "peakSlice": 11,
+      "meanHU": 139.3,
+      "areaSum_mm2": 1.52,
+      "maxArea_mm2": 1.52,
+      "volume_mm3": 2.27,
+      "centerLPS": [
+        -17.51,
+        -230.25,
+        1699.75
+      ],
+      "centerVoxel": [
+        183.7,
+        134.8,
+        11.0
+      ],
+      "depthInHeart_mm": {
+        "min": 0.0,
+        "mean": 0.0
+      },
+      "fracInHeart": 0.0,
+      "fracInPericardium": 0.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 57.5,
+      "blobs": [
+        {
+          "z": 11,
+          "area": 1.52,
+          "peak": 149.0
+        }
+      ],
+      "chamber": "outside",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "s11, 149 HU, 1.52 mm2, LPS (-17.5,-230.3,1699.8). In the left hepatic lobe below the pericardium, outside the heart. Single slice; liver noise in this band makes 172 blobs, peaking at 202 HU."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k11, LPS (-17.5,-230.2,1699.8), 149 HU, 1.5 mm2. Inferior high-noise slice, liver/diaphragm side, single slice, not in epicardial fat. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Slice 11, peak 149 HU, 1.52 mm2, outside heart mask; z1698-1707 noise band; reproduced by noise model."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "slices": [
+        11
+      ],
+      "nSlices": 1,
+      "peakHU": 147.0,
+      "peakSlice": 11,
+      "meanHU": 138.1,
+      "areaSum_mm2": 1.33,
+      "maxArea_mm2": 1.33,
+      "volume_mm3": 1.99,
+      "centerLPS": [
+        6.86,
+        -226.66,
+        1699.75
+      ],
+      "centerVoxel": [
+        262.9,
+        146.4,
+        11.0
+      ],
+      "depthInHeart_mm": {
+        "min": 0.0,
+        "mean": 0.0
+      },
+      "fracInHeart": 0.0,
+      "fracInPericardium": 0.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 60.8,
+      "blobs": [
+        {
+          "z": 11,
+          "area": 1.33,
+          "peak": 147.0
+        }
+      ],
+      "chamber": "heart_ventricle_right",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "s11, 147 HU, 1.33 mm2, LPS (6.9,-226.7,1699.8). Below the diaphragm in the left hepatic lobe, single slice. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k11, LPS (6.9,-226.7,1699.8), 147 HU. Inferior high-noise slice, inside tissue (14 mm from fat). Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Slice 11, peak 147 HU, 1.33 mm2; z1698-1707 noise band; noise model."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "slices": [
+        12
+      ],
+      "nSlices": 1,
+      "peakHU": 159.0,
+      "peakSlice": 12,
+      "meanHU": 143.1,
+      "areaSum_mm2": 1.89,
+      "maxArea_mm2": 1.89,
+      "volume_mm3": 2.84,
+      "centerLPS": [
+        -0.38,
+        -237.21,
+        1701.25
+      ],
+      "centerVoxel": [
+        239.3,
+        112.2,
+        12.0
+      ],
+      "depthInHeart_mm": {
+        "min": 0.0,
+        "mean": 0.0
+      },
+      "fracInHeart": 0.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 62.0,
+      "blobs": [
+        {
+          "z": 12,
+          "area": 1.89,
+          "peak": 159.0
+        }
+      ],
+      "chamber": "heart_ventricle_right",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "s12, 159 HU, 1.89 mm2, LPS (-0.4,-237.2,1701.3). At the inferior RV-apex edge in the lower band. Single slice, no fat or vessel, absent on s11/s13."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k12, LPS (-0.4,-237.2,1701.2), 159 HU. Inferior high-noise slice, inside tissue. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Slice 12, peak 159 HU, 1.89 mm2; z1698-1707 noise band; noise model."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "slices": [
+        12
+      ],
+      "nSlices": 1,
+      "peakHU": 149.0,
+      "peakSlice": 12,
+      "meanHU": 138.3,
+      "areaSum_mm2": 1.14,
+      "maxArea_mm2": 1.14,
+      "volume_mm3": 1.7,
+      "centerLPS": [
+        -10.77,
+        -232.0,
+        1701.25
+      ],
+      "centerVoxel": [
+        205.6,
+        129.1,
+        12.0
+      ],
+      "depthInHeart_mm": {
+        "min": 0.0,
+        "mean": 0.0
+      },
+      "fracInHeart": 0.0,
+      "fracInPericardium": 0.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 57.9,
+      "blobs": [
+        {
+          "z": 12,
+          "area": 1.14,
+          "peak": 149.0
+        }
+      ],
+      "chamber": "outside",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "s12, 149 HU, 1.14 mm2, LPS (-10.8,-232.0,1701.3). Left hepatic lobe, single slice."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k12, LPS (-10.8,-232.0,1701.2), 149 HU. Liver/diaphragm side, inferior high-noise slice. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Slice 12, peak 149 HU, 1.14 mm2; z1698-1707 noise band; noise model."
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "slices": [
+        12
+      ],
+      "nSlices": 1,
+      "peakHU": 172.0,
+      "peakSlice": 12,
+      "meanHU": 150.3,
+      "areaSum_mm2": 1.42,
+      "maxArea_mm2": 1.42,
+      "volume_mm3": 2.13,
+      "centerLPS": [
+        -1.43,
+        -227.28,
+        1701.25
+      ],
+      "centerVoxel": [
+        235.9,
+        144.4,
+        12.0
+      ],
+      "depthInHeart_mm": {
+        "min": 0.0,
+        "mean": 0.0
+      },
+      "fracInHeart": 0.0,
+      "fracInPericardium": 0.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 57.2,
+      "blobs": [
+        {
+          "z": 12,
+          "area": 1.42,
+          "peak": 172.0
+        }
+      ],
+      "chamber": "heart_ventricle_right",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "s12, 172 HU, 1.42 mm2, LPS (-1.4,-227.3,1701.3). Left hepatic lobe just below the heart, single slice."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k12, LPS (-1.4,-227.3,1701.2), 172 HU. 21 mm from fat, inferior high-noise slice. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Slice 12, peak 172 HU, 1.42 mm2; z1698-1707 noise band (SD 27-40 HU near diaphragm/liver dome); noise model."
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "slices": [
+        12
+      ],
+      "nSlices": 1,
+      "peakHU": 174.0,
+      "peakSlice": 12,
+      "meanHU": 150.9,
+      "areaSum_mm2": 1.33,
+      "maxArea_mm2": 1.33,
+      "volume_mm3": 1.99,
+      "centerLPS": [
+        -3.72,
+        -225.78,
+        1701.25
+      ],
+      "centerVoxel": [
+        228.5,
+        149.3,
+        12.0
+      ],
+      "depthInHeart_mm": {
+        "min": 0.0,
+        "mean": 0.0
+      },
+      "fracInHeart": 0.0,
+      "fracInPericardium": 0.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.36,
+      "distToAorta_mm": 56.1,
+      "blobs": [
+        {
+          "z": 12,
+          "area": 1.33,
+          "peak": 174.0
+        }
+      ],
+      "chamber": "outside",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "s12, 174 HU, 1.33 mm2, LPS (-3.7,-225.8,1701.3). Left hepatic lobe, single slice."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k12, LPS (-3.7,-225.8,1701.2), 174 HU. Liver/inferior heart, 20 mm from fat. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Slice 12, peak 174 HU, 1.33 mm2; z1698-1707 noise band; noise model."
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "slices": [
+        12
+      ],
+      "nSlices": 1,
+      "peakHU": 177.0,
+      "peakSlice": 12,
+      "meanHU": 150.9,
+      "areaSum_mm2": 1.42,
+      "maxArea_mm2": 1.42,
+      "volume_mm3": 2.13,
+      "centerLPS": [
+        6.2,
+        -220.61,
+        1701.25
+      ],
+      "centerVoxel": [
+        260.7,
+        166.1,
+        12.0
+      ],
+      "depthInHeart_mm": {
+        "min": 0.0,
+        "mean": 0.0
+      },
+      "fracInHeart": 0.0,
+      "fracInPericardium": 0.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.87,
+      "distToAorta_mm": 56.9,
+      "blobs": [
+        {
+          "z": 12,
+          "area": 1.42,
+          "peak": 177.0
+        }
+      ],
+      "chamber": "outside",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<180 HU) and present on a single 3 mm slice only",
+        "inside the liver"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "s12, 177 HU, 1.42 mm2, LPS (6.2,-220.6,1701.3). Liver, single slice. This is the highest peak in the whole search ROI, and it sits in the liver."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k12, LPS (6.2,-220.6,1701.2), 177 HU (highest peak on the calcium series). Liver/inferior heart, 13 mm from fat, single slice. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Slice 12, peak 177 HU (scan maximum, below the 5th percentile of simulated noise maxima, 182-210), 1.42 mm2; z1698-1707 noise band."
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "slices": [
+        13
+      ],
+      "nSlices": 1,
+      "peakHU": 145.0,
+      "peakSlice": 13,
+      "meanHU": 136.8,
+      "areaSum_mm2": 1.14,
+      "maxArea_mm2": 1.14,
+      "volume_mm3": 1.7,
+      "centerLPS": [
+        1.77,
+        -216.4,
+        1702.75
+      ],
+      "centerVoxel": [
+        246.3,
+        179.8,
+        13.0
+      ],
+      "depthInHeart_mm": {
+        "min": 0.0,
+        "mean": 0.0
+      },
+      "fracInHeart": 0.0,
+      "fracInPericardium": 0.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 1.0,
+      "distToAorta_mm": 52.8,
+      "blobs": [
+        {
+          "z": 13,
+          "area": 1.14,
+          "peak": 145.0
+        }
+      ],
+      "chamber": "outside",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<180 HU) and present on a single 3 mm slice only",
+        "inside the liver"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "s13, 145 HU, 1.14 mm2, LPS (1.8,-216.4,1702.8). Liver, single slice."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k13, LPS (1.8,-216.4,1702.8), 145 HU. Inferior high-noise slice, not fat-adjacent. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Slice 13, peak 145 HU, 1.14 mm2; z1698-1707 noise band."
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "slices": [
+        14
+      ],
+      "nSlices": 1,
+      "peakHU": 163.0,
+      "peakSlice": 14,
+      "meanHU": 148.1,
+      "areaSum_mm2": 1.04,
+      "maxArea_mm2": 1.04,
+      "volume_mm3": 1.56,
+      "centerLPS": [
+        14.06,
+        -244.92,
+        1704.25
+      ],
+      "centerVoxel": [
+        286.3,
+        87.1,
+        14.0
+      ],
+      "depthInHeart_mm": {
+        "min": 7.5,
+        "mean": 7.5
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 68.4,
+      "blobs": [
+        {
+          "z": 14,
+          "area": 1.04,
+          "peak": 163.0
+        }
+      ],
+      "chamber": "heart_ventricle_right",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs",
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "s14, 163 HU, 1.04 mm2, LPS (14.1,-244.9,1704.3). 7.5 mm deep in the RV-apex blood pool/myocardium, single slice, lower band."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k14, LPS (14.1,-244.9,1704.2), 163 HU. 7.5 mm deep in the inferior RV/apex tissue. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slice 14, peak 163 HU, 1.04 mm2, 7.5 mm deep in RV blood pool; z1698-1707 noise band."
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "slices": [
+        14
+      ],
+      "nSlices": 1,
+      "peakHU": 155.0,
+      "peakSlice": 14,
+      "meanHU": 141.3,
+      "areaSum_mm2": 1.33,
+      "maxArea_mm2": 1.33,
+      "volume_mm3": 1.99,
+      "centerLPS": [
+        4.59,
+        -241.43,
+        1704.25
+      ],
+      "centerVoxel": [
+        255.5,
+        98.4,
+        14.0
+      ],
+      "depthInHeart_mm": {
+        "min": 4.1,
+        "mean": 4.4
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 63.0,
+      "blobs": [
+        {
+          "z": 14,
+          "area": 1.33,
+          "peak": 155.0
+        }
+      ],
+      "chamber": "heart_ventricle_right",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs",
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "s14, 155 HU, 1.33 mm2, LPS (4.6,-241.4,1704.3). 4 mm deep in the apex, single slice."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k14, LPS (4.6,-241.4,1704.2), 155 HU. 4 mm deep in tissue, single slice. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slice 14, peak 155 HU, 1.33 mm2, 4.1 mm deep; z1698-1707 noise band."
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "slices": [
+        14
+      ],
+      "nSlices": 1,
+      "peakHU": 152.0,
+      "peakSlice": 14,
+      "meanHU": 140.2,
+      "areaSum_mm2": 1.04,
+      "maxArea_mm2": 1.04,
+      "volume_mm3": 1.56,
+      "centerLPS": [
+        32.83,
+        -231.38,
+        1704.25
+      ],
+      "centerVoxel": [
+        347.3,
+        131.1,
+        14.0
+      ],
+      "depthInHeart_mm": {
+        "min": 4.7,
+        "mean": 4.8
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 71.5,
+      "blobs": [
+        {
+          "z": 14,
+          "area": 1.04,
+          "peak": 152.0
+        }
+      ],
+      "chamber": "heart_myocardium",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs",
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "s14, 152 HU, 1.04 mm2, LPS (32.8,-231.4,1704.3). 4.7 mm deep in the LV-apex myocardium, single slice."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k14, LPS (32.8,-231.4,1704.2), 152 HU. Inside myocardium, 14 mm from fat. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slice 14, peak 152 HU, 1.04 mm2, 4.7 mm deep in myocardium; noise band."
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "slices": [
+        16
+      ],
+      "nSlices": 1,
+      "peakHU": 152.0,
+      "peakSlice": 16,
+      "meanHU": 140.3,
+      "areaSum_mm2": 1.04,
+      "maxArea_mm2": 1.04,
+      "volume_mm3": 1.56,
+      "centerLPS": [
+        41.79,
+        -212.1,
+        1707.25
+      ],
+      "centerVoxel": [
+        376.4,
+        193.7,
+        16.0
+      ],
+      "depthInHeart_mm": {
+        "min": 0.0,
+        "mean": 0.4
+      },
+      "fracInHeart": 0.73,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 69.9,
+      "blobs": [
+        {
+          "z": 16,
+          "area": 1.04,
+          "peak": 152.0
+        }
+      ],
+      "chamber": "heart_myocardium",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.9,
+          "note": "s16, 152 HU, 1.04 mm2, peak at LPS (41.7,-212.0,1707.25). There are sub-1 mm2 specks at the same spot on s15/s17. It sits on the inferior LV-apex surface just above the diaphragm, a place where the distal LAD or PDA could run. Only 3.6 SD above the local mean (local SD ~29 HU in this band). It is a compact grain identical to the surrounding mottled noise. Invisible at W200/600. The axial_st s8 counterpart is a 157 HU speck. Liver/spleen noise blobs at the same z reach 192-234 HU. Files: cand13_zoom_axial_5slices_3windows_cor_sag.png, cand13_context_wide.png."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Calcium k16, LPS (41.8,-212.1,1707.2), 152 HU. Single-slice speck inside the inferolateral apex tissue. Checked zoomed. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Slice 16, peak 152 HU, 1.04 mm2; noise band."
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "slices": [
+        24,
+        25
+      ],
+      "nSlices": 2,
+      "peakHU": 150.0,
+      "peakSlice": 24,
+      "meanHU": 138.2,
+      "areaSum_mm2": 2.75,
+      "maxArea_mm2": 1.61,
+      "volume_mm3": 4.12,
+      "centerLPS": [
+        6.11,
+        -172.5,
+        1719.87
+      ],
+      "centerVoxel": [
+        260.4,
+        322.4,
+        24.4
+      ],
+      "depthInHeart_mm": {
+        "min": 3.8,
+        "mean": 4.6
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 22.9,
+      "blobs": [
+        {
+          "z": 24,
+          "area": 1.61,
+          "peak": 150.0
+        },
+        {
+          "z": 25,
+          "area": 1.14,
+          "peak": 146.0
+        }
+      ],
+      "chamber": "heart_myocardium",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.95,
+          "note": "s24-25, 150 HU, 2.75 mm2, 3.8 mm deep in the inferior septum/LV wall at the start of the upper (step-boundary) band."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Calcium k24-25, LPS (6.1,-172.5,1719.9), 150 HU. Band artifact (posterior LV local mean about 80-100 HU, SD 20-24), streak-aligned, inside myocardium. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slices 24-25, peak 150 HU, 2.75 mm2, 3.8 mm deep; z1719-1729 step-boundary shading band."
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "slices": [
+        25
+      ],
+      "nSlices": 1,
+      "peakHU": 149.0,
+      "peakSlice": 25,
+      "meanHU": 138.5,
+      "areaSum_mm2": 1.04,
+      "maxArea_mm2": 1.04,
+      "volume_mm3": 1.56,
+      "centerLPS": [
+        18.79,
+        -189.22,
+        1720.75
+      ],
+      "centerVoxel": [
+        301.6,
+        268.1,
+        25.0
+      ],
+      "depthInHeart_mm": {
+        "min": 10.9,
+        "mean": 11.1
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 42.6,
+      "blobs": [
+        {
+          "z": 25,
+          "area": 1.04,
+          "peak": 149.0
+        }
+      ],
+      "chamber": "heart_ventricle_left",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs",
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "s25, 149 HU, 1.04 mm2, 10.9 mm deep in the LV, single slice."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k25, LPS (18.8,-189.2,1720.8), 149 HU. Inside the LV blood pool, 16 mm from fat, in the band. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slice 25, peak 149 HU, 1.04 mm2, 11 mm deep in LV cavity; shading band."
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "slices": [
+        25
+      ],
+      "nSlices": 1,
+      "peakHU": 148.0,
+      "peakSlice": 25,
+      "meanHU": 139.7,
+      "areaSum_mm2": 1.04,
+      "maxArea_mm2": 1.04,
+      "volume_mm3": 1.56,
+      "centerLPS": [
+        16.38,
+        -187.26,
+        1720.75
+      ],
+      "centerVoxel": [
+        293.8,
+        274.5,
+        25.0
+      ],
+      "depthInHeart_mm": {
+        "min": 10.9,
+        "mean": 11.1
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 39.9,
+      "blobs": [
+        {
+          "z": 25,
+          "area": 1.04,
+          "peak": 148.0
+        }
+      ],
+      "chamber": "heart_ventricle_left",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs",
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "s25, 148 HU, 1.04 mm2, 10.9 mm deep in the LV, single slice."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k25, LPS (16.4,-187.3,1720.8), 148 HU. LV blood pool, in the band. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slice 25, peak 148 HU, 1.04 mm2, 11 mm deep in LV cavity; shading band."
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "slices": [
+        25,
+        26
+      ],
+      "nSlices": 2,
+      "peakHU": 162.0,
+      "peakSlice": 25,
+      "meanHU": 142.8,
+      "areaSum_mm2": 4.17,
+      "maxArea_mm2": 2.94,
+      "volume_mm3": 6.25,
+      "centerLPS": [
+        22.71,
+        -182.28,
+        1721.19
+      ],
+      "centerVoxel": [
+        314.4,
+        290.6,
+        25.3
+      ],
+      "depthInHeart_mm": {
+        "min": 6.4,
+        "mean": 7.7
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 36.6,
+      "blobs": [
+        {
+          "z": 25,
+          "area": 2.94,
+          "peak": 162.0
+        },
+        {
+          "z": 26,
+          "area": 1.23,
+          "peak": 154.0
+        }
+      ],
+      "chamber": "heart_myocardium",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.95,
+          "note": "s25-26, 162 HU, 4.17 mm2, 6.4 mm deep in the inferior LV wall. Elongated parallel to the streaks; 3.2-3.4 SD above a local mean of ~87 HU."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Calcium k25-26, LPS (22.7,-182.3,1721.2), 162 HU. Band artifact, 6-8 mm deep. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slices 25-26, peak 162 HU, 4.17 mm2, 6.4-7.7 mm deep in myocardium; shading band."
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "slices": [
+        25
+      ],
+      "nSlices": 1,
+      "peakHU": 145.0,
+      "peakSlice": 25,
+      "meanHU": 136.9,
+      "areaSum_mm2": 1.23,
+      "maxArea_mm2": 1.23,
+      "volume_mm3": 1.85,
+      "centerLPS": [
+        2.35,
+        -180.98,
+        1720.75
+      ],
+      "centerVoxel": [
+        248.2,
+        294.8,
+        25.0
+      ],
+      "depthInHeart_mm": {
+        "min": 5.3,
+        "mean": 5.7
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 31.4,
+      "blobs": [
+        {
+          "z": 25,
+          "area": 1.23,
+          "peak": 145.0
+        }
+      ],
+      "chamber": "heart_myocardium",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs",
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "s25, 145 HU, 1.23 mm2, 5.3 mm deep, single slice."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Calcium k25, LPS (2.4,-181.0,1720.8), 145 HU. Band artifact. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slice 25, peak 145 HU, 1.23 mm2, 5.3 mm deep; shading band."
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "slices": [
+        25,
+        26,
+        27
+      ],
+      "nSlices": 3,
+      "peakHU": 157.0,
+      "peakSlice": 26,
+      "meanHU": 141.8,
+      "areaSum_mm2": 5.87,
+      "maxArea_mm2": 3.22,
+      "volume_mm3": 8.81,
+      "centerLPS": [
+        17.34,
+        -176.45,
+        1722.25
+      ],
+      "centerVoxel": [
+        296.9,
+        309.6,
+        26.0
+      ],
+      "depthInHeart_mm": {
+        "min": 5.5,
+        "mean": 7.2
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 29.8,
+      "blobs": [
+        {
+          "z": 25,
+          "area": 1.33,
+          "peak": 152.0
+        },
+        {
+          "z": 26,
+          "area": 3.22,
+          "peak": 157.0
+        },
+        {
+          "z": 27,
+          "area": 1.33,
+          "peak": 156.0
+        }
+      ],
+      "chamber": "heart_myocardium",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.95,
+          "note": "s25-27, 157 HU, 5.87 mm2, 5.5 mm deep in the inferior LV wall. 2.7-2.9 SD above a local mean of ~88 HU."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Calcium k25-27, LPS (17.3,-176.4,1722.2), 157 HU. Band artifact, 5-7 mm deep. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slices 25-27, peak 157 HU, 5.87 mm2, 5.5-7.2 mm deep; shading band."
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "slices": [
+        25,
+        26,
+        27
+      ],
+      "nSlices": 3,
+      "peakHU": 159.0,
+      "peakSlice": 27,
+      "meanHU": 139.5,
+      "areaSum_mm2": 12.6,
+      "maxArea_mm2": 2.65,
+      "volume_mm3": 18.89,
+      "centerLPS": [
+        2.85,
+        -172.89,
+        1722.33
+      ],
+      "centerVoxel": [
+        249.8,
+        321.2,
+        26.1
+      ],
+      "depthInHeart_mm": {
+        "min": 3.2,
+        "mean": 5.3
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 21.4,
+      "blobs": [
+        {
+          "z": 25,
+          "area": 1.7,
+          "peak": 153.0
+        },
+        {
+          "z": 25,
+          "area": 1.8,
+          "peak": 142.0
+        },
+        {
+          "z": 26,
+          "area": 2.65,
+          "peak": 154.0
+        },
+        {
+          "z": 26,
+          "area": 2.27,
+          "peak": 154.0
+        },
+        {
+          "z": 27,
+          "area": 1.89,
+          "peak": 159.0
+        },
+        {
+          "z": 27,
+          "area": 2.27,
+          "peak": 151.0
+        }
+      ],
+      "chamber": "heart_myocardium",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.93,
+          "note": "s25-27, peak 159 HU at LPS (3.2,-173.9,1723.75), 12.6 mm2 summed. 3.2 mm deep in the inferior septum/LV. The local mean is ~89 HU because of the regional artifact, so the peak is only ~2.1 SD above it. Three-slice persistence is common for pure noise here (47 liver noise groups span 3 slices). File: cand20_zoom_axial_5slices_3windows_cor_sag.png."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.95,
+          "note": "Calcium k25-27, LPS (2.9,-172.9,1722.3), 159 HU, 12.6 mm2 summed from several small specks. Band artifact, 3-5 mm deep in myocardium. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slices 25-27, peak 159 HU, 12.6 mm2, 3.2-5.3 mm deep in myocardium; shading band; multi-slice persistence is expected from 0.76 inter-slice noise correlation."
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "slices": [
+        25
+      ],
+      "nSlices": 1,
+      "peakHU": 142.0,
+      "peakSlice": 25,
+      "meanHU": 137.5,
+      "areaSum_mm2": 1.04,
+      "maxArea_mm2": 1.04,
+      "volume_mm3": 1.56,
+      "centerLPS": [
+        10.87,
+        -174.28,
+        1720.75
+      ],
+      "centerVoxel": [
+        275.9,
+        316.6,
+        25.0
+      ],
+      "depthInHeart_mm": {
+        "min": 6.2,
+        "mean": 6.6
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 25.9,
+      "blobs": [
+        {
+          "z": 25,
+          "area": 1.04,
+          "peak": 142.0
+        }
+      ],
+      "chamber": "heart_myocardium",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs",
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "s25, 142 HU, 1.04 mm2, 6.2 mm deep, single slice."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k25, LPS (10.9,-174.3,1720.8), 142 HU. Band artifact. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slice 25, peak 142 HU, 1.04 mm2, 6.2 mm deep; shading band."
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "slices": [
+        25,
+        26,
+        27
+      ],
+      "nSlices": 3,
+      "peakHU": 174.0,
+      "peakSlice": 26,
+      "meanHU": 142.0,
+      "areaSum_mm2": 21.5,
+      "maxArea_mm2": 8.52,
+      "volume_mm3": 32.25,
+      "centerLPS": [
+        6.65,
+        -165.72,
+        1722.63
+      ],
+      "centerVoxel": [
+        262.2,
+        344.4,
+        26.3
+      ],
+      "depthInHeart_mm": {
+        "min": 0.0,
+        "mean": 2.2
+      },
+      "fracInHeart": 0.86,
+      "fracInPericardium": 0.96,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 13.6,
+      "blobs": [
+        {
+          "z": 25,
+          "area": 2.18,
+          "peak": 143.0
+        },
+        {
+          "z": 25,
+          "area": 1.61,
+          "peak": 146.0
+        },
+        {
+          "z": 26,
+          "area": 8.52,
+          "peak": 174.0
+        },
+        {
+          "z": 27,
+          "area": 3.6,
+          "peak": 158.0
+        },
+        {
+          "z": 27,
+          "area": 5.59,
+          "peak": 161.0
+        }
+      ],
+      "chamber": "heart_myocardium",
+      "ruleClass": "review",
+      "ruleReasons": [],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.85,
+          "note": "Calcium s25-27 (z 1720.75-1723.75), peak 174 HU at LPS (4.75,-163.09,1722.25) on s26, 21.5 mm2 summed (8.5 and 9.2 mm2 on s26/s27). Same structure as the AXIAL ST 203 HU blob. It is a thin linear band, about 8-10 x 1 mm, lying 0.5-1.5 mm inside the posterior-inferior LV myocardium where the heart touches lung. It is at the posterior end of the posterior interventricular groove (crux/PDA territory), but it is not in the groove fat. It runs roughly perpendicular to the groove, so it does not follow a PDA course. Its long axis (123-131 deg; elongation 5-10) parallels the band's streak orientation (105-114 deg) and several pure-streak outlines right next to it. It lies in the table-step artifact band, where the inferior LV wall's regional mean is 96-99 HU (vs 52-55 HU at s32-35) and the local SD is 22-36 HU. Against that background the peak is only ~1.7-2.5 SD above its local surroundings. No discrete focus at W200/600, and it never reaches 200 HU on the scoring series. Coronal/sagittal reformats show it as one of several red specks in a horizontal band at the heart-lung edge. Residual doubt: it is the top outlier in all three reconstructions (174 calcium / 203 axial_st / 165 smoothed thin), so a tiny distal PDA or posterolateral plaque cannot be fully excluded. If counted it would add about 10.8 Agatston (calcium series, weight 1 x 21.5 x 0.5). Files: cand22_zoom_axial_5slices_3windows_cor_sag.png, cand22_calcium_s24-28_crop40.png, cand22_calcium_cor_sag_wide60.png, cand22_thinlung_smoothed_zstack.png, s8blob_axialst_s13_203HU_eq_cand22.png."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.9,
+          "note": "Calcium k25-27 (peak 174 HU at k26), LPS (6.7,-165.7,1722.6), 21.5 mm2 summed. This is the same structure as the 203 HU blob on AXIAL ST WO (S8). It sits at the posterior-inferior LV surface where the myocardium meets the lung, about 8 mm left of the crux fat line, with no epicardial fat or vessel at that point. It lies inside a z-band artifact (calcium k24-30, z 1719-1728) in which the posterior LV reads about 80-100 HU instead of about 50, with a dark band just below at k19-22. About 50 other specks of 130 HU or more occur in the same band. Its shape is a thin streak about 7 x 1 mm, oriented radially and parallel to the band's oblique streaks, not a compact focus in fat or along a vessel. The peak is only about 2.5 local SD above its surroundings (83 +/- 36 HU). Other series at the same spot: axial_st k12/k14 max 147/149 HU, cor_st native #69-73 max 151-163 HU, sag_st #83-87 max 141-161 HU. The sag_st reformat shows the bright horizontal band running across the whole heart at this level. Verdict: step/streak artifact, not coronary calcium. Worst case, counting it would add only about 11 Agatston units."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.93,
+          "note": "Same physical object as the unexplained axial_st 203 HU blob (0.4 mm apart, identical 3 mm slab). A thin line of 9.5 x 1.4 mm (elongation about 7) on the myocardium-lung border at the posterior tip of the inferior LV wall. It is about 9 mm left of the inferior interventricular groove fat, with no epicardial fat or vessel visible around it in axial, coronal or sagittal views. Local maxima: calcium 174, axial_st 203, noise-matched thin_lung slab 186, cor_st 163, sag_st 174 HU. It sits at the tip of a table-step shading wedge: local mean 85 HU and SD 22.6 on calcium, so 130 HU is only 2.0 sigma above the local background, and the peak is 3.9 sigma. Its long axis (124 deg) matches the slice-wide noise-streak orientation (119-126 deg), and parallel sibling streaks appear on calcium slice 27. The axial_st excess (+32 HU over the cross-kernel prediction) is typical for a point 3.3 mm from lung (+24 +/- 14 HU). It appears on 1 of the non-overlapping axial_st slices only. Its 21.5 mm2 summed area is matched or exceeded in 13% of simulated noise-only scans. Residual probability of a real faint PDA or posterolateral plaque is about 0.06. Severity 0, category artifact. If a reader counted it anyway: 21.5 mm2 x weight 1 x 0.5 = about 11."
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "slices": [
+        25
+      ],
+      "nSlices": 1,
+      "peakHU": 149.0,
+      "peakSlice": 25,
+      "meanHU": 138.1,
+      "areaSum_mm2": 1.42,
+      "maxArea_mm2": 1.42,
+      "volume_mm3": 2.13,
+      "centerLPS": [
+        2.55,
+        -165.77,
+        1720.75
+      ],
+      "centerVoxel": [
+        248.9,
+        344.3,
+        25.0
+      ],
+      "depthInHeart_mm": {
+        "min": 0.0,
+        "mean": 0.6
+      },
+      "fracInHeart": 0.8,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 16.1,
+      "blobs": [
+        {
+          "z": 25,
+          "area": 1.42,
+          "peak": 149.0
+        }
+      ],
+      "chamber": "heart_myocardium",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.95,
+          "note": "s25, 149 HU, 1.42 mm2, LPS (2.6,-165.9,1720.75). At the posterior heart tip on the lung interface, 3 mm from #22, and part of the same streak family. Single slice. File: cand23_zoom_axial_5slices_3windows_cor_sag.png."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.95,
+          "note": "Calcium k25, LPS (2.5,-165.8,1720.8), 149 HU. Next to #22 at the LV/lung-crux edge, same streak pattern. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Slice 25, peak 149 HU, 1.42 mm2, posterior LV tip near #22; shading band."
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "slices": [
+        26
+      ],
+      "nSlices": 1,
+      "peakHU": 152.0,
+      "peakSlice": 26,
+      "meanHU": 139.5,
+      "areaSum_mm2": 1.61,
+      "maxArea_mm2": 1.61,
+      "volume_mm3": 2.42,
+      "centerLPS": [
+        19.03,
+        -179.67,
+        1722.25
+      ],
+      "centerVoxel": [
+        302.4,
+        299.1,
+        26.0
+      ],
+      "depthInHeart_mm": {
+        "min": 8.1,
+        "mean": 8.4
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 33.7,
+      "blobs": [
+        {
+          "z": 26,
+          "area": 1.61,
+          "peak": 152.0
+        }
+      ],
+      "chamber": "heart_ventricle_left",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs",
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "s26, 152 HU, 1.61 mm2, 8.1 mm deep in the LV, single slice."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k26, LPS (19.0,-179.7,1722.2), 152 HU. Band artifact, LV cavity. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slice 26, peak 152 HU, 1.61 mm2, 8 mm deep in LV; shading band."
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "slices": [
+        26
+      ],
+      "nSlices": 1,
+      "peakHU": 141.0,
+      "peakSlice": 26,
+      "meanHU": 136.0,
+      "areaSum_mm2": 1.04,
+      "maxArea_mm2": 1.04,
+      "volume_mm3": 1.56,
+      "centerLPS": [
+        11.1,
+        -179.34,
+        1722.25
+      ],
+      "centerVoxel": [
+        276.6,
+        300.2,
+        26.0
+      ],
+      "depthInHeart_mm": {
+        "min": 9.9,
+        "mean": 10.1
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 31.1,
+      "blobs": [
+        {
+          "z": 26,
+          "area": 1.04,
+          "peak": 141.0
+        }
+      ],
+      "chamber": "heart_ventricle_left",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs",
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "s26, 141 HU, 1.04 mm2, 9.9 mm deep in the LV, single slice."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k26, LPS (11.1,-179.3,1722.2), 141 HU. Band artifact. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slice 26, peak 141 HU, 1.04 mm2, 10 mm deep in LV; shading band."
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "slices": [
+        26,
+        27,
+        28,
+        29
+      ],
+      "nSlices": 4,
+      "peakHU": 167.0,
+      "peakSlice": 27,
+      "meanHU": 143.9,
+      "areaSum_mm2": 7.77,
+      "maxArea_mm2": 2.37,
+      "volume_mm3": 11.65,
+      "centerLPS": [
+        0.95,
+        -178.52,
+        1724.12
+      ],
+      "centerVoxel": [
+        243.7,
+        302.9,
+        27.2
+      ],
+      "depthInHeart_mm": {
+        "min": 5.0,
+        "mean": 5.9
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 28.8,
+      "blobs": [
+        {
+          "z": 26,
+          "area": 2.37,
+          "peak": 159.0
+        },
+        {
+          "z": 27,
+          "area": 2.37,
+          "peak": 167.0
+        },
+        {
+          "z": 28,
+          "area": 1.8,
+          "peak": 157.0
+        },
+        {
+          "z": 29,
+          "area": 1.23,
+          "peak": 147.0
+        }
+      ],
+      "chamber": "heart_ventricle_left",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.9,
+          "note": "s26-29, peak 167 HU at LPS (1.05,-178.8,1723.75), 7.77 mm2 summed. A compact speck 5-6 mm deep in the mid-myocardium of the inferior LV wall/septum, where no coronary runs. If it were real it would be papillary or myocardial, which is not coronary anyway. Local mean is ~78-83 HU and the peak is only 2.4-2.7 SD above it. The 4-slice persistence matches pure noise in this exam: 31 liver noise groups span 4-8 slices and 2 spleen groups span 4. The smoothed thin series shows no distinct focus (132 HU vs a regional 98 HU). axial_st s13 shows only a 169 HU, 2.2 mm2 speck. In the native COR/SAG ST it is one of many specks inside a horizontal bright stripe at the step boundary. File: cand26_zoom_axial_5slices_3windows_cor_sag.png."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Calcium k26-29, LPS (0.9,-178.5,1724.1), 167 HU. Band artifact, 5-6 mm deep. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slices 26-29, peak 167 HU, 7.77 mm2, 5-6 mm deep in LV; shading band."
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "slices": [
+        26,
+        27,
+        28
+      ],
+      "nSlices": 3,
+      "peakHU": 149.0,
+      "peakSlice": 26,
+      "meanHU": 137.4,
+      "areaSum_mm2": 6.16,
+      "maxArea_mm2": 3.6,
+      "volume_mm3": 9.23,
+      "centerLPS": [
+        7.26,
+        -177.35,
+        1723.17
+      ],
+      "centerVoxel": [
+        264.2,
+        306.7,
+        26.6
+      ],
+      "depthInHeart_mm": {
+        "min": 7.9,
+        "mean": 9.2
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 27.8,
+      "blobs": [
+        {
+          "z": 26,
+          "area": 3.6,
+          "peak": 149.0
+        },
+        {
+          "z": 27,
+          "area": 1.33,
+          "peak": 146.0
+        },
+        {
+          "z": 28,
+          "area": 1.23,
+          "peak": 148.0
+        }
+      ],
+      "chamber": "heart_ventricle_left",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "s26-28, 149 HU, 6.16 mm2, 7.9 mm deep in the LV. 2.1-2.5 SD above a local mean of ~93 HU."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Calcium k26-28, LPS (7.3,-177.3,1723.2), 149 HU. Band artifact, 8-9 mm deep. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slices 26-28, peak 149 HU, 6.16 mm2, 8-9 mm deep in LV; shading band."
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "slices": [
+        26,
+        27,
+        28
+      ],
+      "nSlices": 3,
+      "peakHU": 151.0,
+      "peakSlice": 28,
+      "meanHU": 137.5,
+      "areaSum_mm2": 5.3,
+      "maxArea_mm2": 2.56,
+      "volume_mm3": 7.96,
+      "centerLPS": [
+        13.79,
+        -177.81,
+        1724.1
+      ],
+      "centerVoxel": [
+        285.4,
+        305.1,
+        27.2
+      ],
+      "depthInHeart_mm": {
+        "min": 8.2,
+        "mean": 10.3
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 29.3,
+      "blobs": [
+        {
+          "z": 26,
+          "area": 1.33,
+          "peak": 147.0
+        },
+        {
+          "z": 27,
+          "area": 1.42,
+          "peak": 136.0
+        },
+        {
+          "z": 28,
+          "area": 2.56,
+          "peak": 151.0
+        }
+      ],
+      "chamber": "heart_ventricle_left",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "s26-28, 151 HU, 5.3 mm2, 8.2 mm deep in the LV. Below 2.8 SD of local noise."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Calcium k26-28, LPS (13.8,-177.8,1724.1), 151 HU. Band artifact, about 10 mm deep. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slices 26-28, peak 151 HU, 5.3 mm2, 8-10 mm deep in LV; shading band."
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "slices": [
+        26
+      ],
+      "nSlices": 1,
+      "peakHU": 162.0,
+      "peakSlice": 26,
+      "meanHU": 144.5,
+      "areaSum_mm2": 1.42,
+      "maxArea_mm2": 1.42,
+      "volume_mm3": 2.13,
+      "centerLPS": [
+        15.76,
+        -172.05,
+        1722.25
+      ],
+      "centerVoxel": [
+        291.8,
+        323.9,
+        26.0
+      ],
+      "depthInHeart_mm": {
+        "min": 4.3,
+        "mean": 4.8
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 25.5,
+      "blobs": [
+        {
+          "z": 26,
+          "area": 1.42,
+          "peak": 162.0
+        }
+      ],
+      "chamber": "heart_myocardium",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs",
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "s26, 162 HU, 1.42 mm2, 4.3 mm deep, single slice."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Calcium k26, LPS (15.8,-172.1,1722.2), 162 HU. Band artifact. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slice 26, peak 162 HU, 1.42 mm2, 4.3 mm deep; shading band."
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "slices": [
+        26,
+        27
+      ],
+      "nSlices": 2,
+      "peakHU": 150.0,
+      "peakSlice": 27,
+      "meanHU": 138.6,
+      "areaSum_mm2": 2.18,
+      "maxArea_mm2": 1.14,
+      "volume_mm3": 3.27,
+      "centerLPS": [
+        -2.12,
+        -167.9,
+        1723.03
+      ],
+      "centerVoxel": [
+        233.7,
+        337.3,
+        26.5
+      ],
+      "depthInHeart_mm": {
+        "min": 0.0,
+        "mean": 0.2
+      },
+      "fracInHeart": 0.61,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 18.6,
+      "blobs": [
+        {
+          "z": 26,
+          "area": 1.04,
+          "peak": 143.0
+        },
+        {
+          "z": 27,
+          "area": 1.14,
+          "peak": 150.0
+        }
+      ],
+      "chamber": "heart_myocardium",
+      "ruleClass": "review",
+      "ruleReasons": [],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.94,
+          "note": "s26-27, peak 150 HU at LPS (-2.33,-168.0,1723.75), 2.18 mm2 summed (1.0-1.1 mm2 per slice). At the myocardial edge of the posterior interventricular-groove fat line (PDA territory). It is a tiny speck identical to dozens around it, invisible at W200/600, and only 1.6-1.8 SD above the local mean. Absent on s25/s28. The native COR/SAG ST show nothing distinct. Files: cand30_zoom_axial_5slices_3windows_cor_sag.png, cands_22_26_30_32_native_corst_sagst_crop40.png."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.92,
+          "note": "Calcium k26-27, LPS (-2.1,-167.9,1723.0), peak 150 HU, 1.0-1.1 mm2 per slice (just at the 1 mm2 minimum), 2.2 mm2 summed. It sits on the myocardial edge of the crux fat line (1.8-2.1 mm from fat), not inside the fat where the distal RCA/PDA run. Its size and brightness match the surrounding band noise, and the local z-score is about 1.5-1.7. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.95,
+          "note": "Tiny: 1.04 + 1.14 mm2 on 2 overlapping slices, peak 150 HU, LPS peak (-2.33,-168.01,1723.75), calcium slice 27. It sits at the edge of the inferior interventricular groove fat, a plausible PDA course. However it is identical to the dozens of 130 HU specks in the same shading band: local mean 69 HU, SD 22, threshold 2.7 sigma, peak 3.6 sigma. Local maxima on axial_st, thin-matched, cor_st and sag_st are 157, 152, 141 and 111 HU, falling below 130 on the sagittal reformat. P(coronary) about 0.03. Severity 0, artifact. Would contribute about 1 if counted."
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "slices": [
+        27
+      ],
+      "nSlices": 1,
+      "peakHU": 144.0,
+      "peakSlice": 27,
+      "meanHU": 137.1,
+      "areaSum_mm2": 1.23,
+      "maxArea_mm2": 1.23,
+      "volume_mm3": 1.85,
+      "centerLPS": [
+        29.06,
+        -184.32,
+        1723.75
+      ],
+      "centerVoxel": [
+        335.0,
+        284.0,
+        27.0
+      ],
+      "depthInHeart_mm": {
+        "min": 7.8,
+        "mean": 8.3
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 42.8,
+      "blobs": [
+        {
+          "z": 27,
+          "area": 1.23,
+          "peak": 144.0
+        }
+      ],
+      "chamber": "heart_ventricle_left",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs",
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "s27, 144 HU, 1.23 mm2, 7.8 mm deep in the LV, single slice."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k27, LPS (29.1,-184.3,1723.8), 144 HU. Band artifact. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slice 27, peak 144 HU, 1.23 mm2, 8 mm deep in LV; shading band."
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "slices": [
+        27,
+        28
+      ],
+      "nSlices": 2,
+      "peakHU": 155.0,
+      "peakSlice": 27,
+      "meanHU": 139.5,
+      "areaSum_mm2": 5.21,
+      "maxArea_mm2": 3.69,
+      "volume_mm3": 7.81,
+      "centerLPS": [
+        -2.39,
+        -176.59,
+        1724.19
+      ],
+      "centerVoxel": [
+        232.8,
+        309.1,
+        27.3
+      ],
+      "depthInHeart_mm": {
+        "min": 1.9,
+        "mean": 2.7
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 26.2,
+      "blobs": [
+        {
+          "z": 27,
+          "area": 3.69,
+          "peak": 155.0
+        },
+        {
+          "z": 28,
+          "area": 1.52,
+          "peak": 145.0
+        }
+      ],
+      "chamber": "heart_myocardium",
+      "ruleClass": "review",
+      "ruleReasons": [],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.93,
+          "note": "s27-28, peak 155 HU at LPS (-2.33,-177.6,1723.75), 5.21 mm2. Lies 1.9-2.7 mm inside the inferior septal myocardium beside the groove fat, not in fat and with no vessel around it. An elongated vertical speck (~4:1) that matches the streak texture. 2.0-2.2 SD above a local mean of ~76 HU. Nothing at W200/600. The native COR/SAG ST show only a band of similar specks. File: cand32_zoom_axial_5slices_3windows_cor_sag.png."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.94,
+          "note": "Calcium k27-28, LPS (-2.4,-176.6,1724.2), peak 155 HU, 5.2 mm2 summed. A vertical streak 2-8 mm deep inside the myocardium on the LV side of the crux fat (inferior septum/inferior wall), within the band artifact. Being intramyocardial, it is not in an epicardial coronary. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "1.9-2.7 mm deep inside the inferior septal myocardium, which is not an epicardial coronary course. Peak 155 HU on 2 overlapping slices (27-28), LPS peak (-2.33,-177.55,1723.75). Local mean 89 HU (peak z 2.7). Axial_st, thin-matched, cor_st and sag_st give 147, 144, 163 and 122 HU, below threshold on the sagittal. P(coronary) about 0.01. Severity 0, artifact."
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "slices": [
+        27,
+        28
+      ],
+      "nSlices": 2,
+      "peakHU": 156.0,
+      "peakSlice": 28,
+      "meanHU": 140.0,
+      "areaSum_mm2": 3.5,
+      "maxArea_mm2": 1.8,
+      "volume_mm3": 5.26,
+      "centerLPS": [
+        6.6,
+        -172.58,
+        1724.52
+      ],
+      "centerVoxel": [
+        262.0,
+        322.1,
+        27.5
+      ],
+      "depthInHeart_mm": {
+        "min": 7.4,
+        "mean": 8.5
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 23.6,
+      "blobs": [
+        {
+          "z": 27,
+          "area": 1.7,
+          "peak": 148.0
+        },
+        {
+          "z": 28,
+          "area": 1.8,
+          "peak": 156.0
+        }
+      ],
+      "chamber": "heart_ventricle_left",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "s27-28, 156 HU, 3.5 mm2, 7.4 mm deep in the LV. 2.1-2.8 SD above local."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Calcium k27-28, LPS (6.6,-172.6,1724.5), 156 HU. Band artifact, 7-8 mm deep. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slices 27-28, peak 156 HU, 3.5 mm2, 7-8.5 mm deep in LV; shading band."
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "slices": [
+        27
+      ],
+      "nSlices": 1,
+      "peakHU": 165.0,
+      "peakSlice": 27,
+      "meanHU": 146.7,
+      "areaSum_mm2": 1.7,
+      "maxArea_mm2": 1.7,
+      "volume_mm3": 2.56,
+      "centerLPS": [
+        4.03,
+        -167.86,
+        1723.75
+      ],
+      "centerVoxel": [
+        253.7,
+        337.5,
+        27.0
+      ],
+      "depthInHeart_mm": {
+        "min": 3.5,
+        "mean": 4.0
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 18.7,
+      "blobs": [
+        {
+          "z": 27,
+          "area": 1.7,
+          "peak": 165.0
+        }
+      ],
+      "chamber": "heart_myocardium",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs",
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.95,
+          "note": "s27, 165 HU, 1.7 mm2, 3.5 mm deep, linear along the streaks, single slice."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Calcium k27, LPS (4.0,-167.9,1723.8), 165 HU. Band artifact, about 4 mm deep. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slice 27, peak 165 HU, 1.7 mm2, 3.5 mm deep; shading band."
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "slices": [
+        27
+      ],
+      "nSlices": 1,
+      "peakHU": 156.0,
+      "peakSlice": 27,
+      "meanHU": 141.4,
+      "areaSum_mm2": 1.61,
+      "maxArea_mm2": 1.61,
+      "volume_mm3": 2.42,
+      "centerLPS": [
+        2.5,
+        -164.46,
+        1723.75
+      ],
+      "centerVoxel": [
+        248.7,
+        348.5,
+        27.0
+      ],
+      "depthInHeart_mm": {
+        "min": 0.0,
+        "mean": 0.9
+      },
+      "fracInHeart": 0.82,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 15.1,
+      "blobs": [
+        {
+          "z": 27,
+          "area": 1.61,
+          "peak": 156.0
+        }
+      ],
+      "chamber": "heart_myocardium",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.94,
+          "note": "s27, 156 HU, 1.61 mm2, LPS (2.6,-164.6,1723.75). At the posterior tip, 2.6 mm from #22, at the end of a long streak outline. Single slice. File: cand35_zoom_axial_5slices_3windows_cor_sag.png."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.95,
+          "note": "Calcium k27, LPS (2.5,-164.5,1723.8), 156 HU. Next to #22 at the LV/lung-crux edge. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Slice 27, peak 156 HU, 1.61 mm2, posterior LV tip near #22; shading band."
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "slices": [
+        28
+      ],
+      "nSlices": 1,
+      "peakHU": 144.0,
+      "peakSlice": 28,
+      "meanHU": 135.6,
+      "areaSum_mm2": 1.14,
+      "maxArea_mm2": 1.14,
+      "volume_mm3": 1.7,
+      "centerLPS": [
+        23.88,
+        -183.22,
+        1725.25
+      ],
+      "centerVoxel": [
+        318.2,
+        287.6,
+        28.0
+      ],
+      "depthInHeart_mm": {
+        "min": 10.5,
+        "mean": 11.0
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 39.3,
+      "blobs": [
+        {
+          "z": 28,
+          "area": 1.14,
+          "peak": 144.0
+        }
+      ],
+      "chamber": "heart_ventricle_left",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs",
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "s28, 144 HU, 1.14 mm2, 10.5 mm deep in the LV, single slice."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k28, LPS (23.9,-183.2,1725.2), 144 HU. LV cavity, in the band. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slice 28, peak 144 HU, 1.14 mm2, 10.5 mm deep in LV; shading band."
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "slices": [
+        28
+      ],
+      "nSlices": 1,
+      "peakHU": 149.0,
+      "peakSlice": 28,
+      "meanHU": 137.5,
+      "areaSum_mm2": 1.89,
+      "maxArea_mm2": 1.89,
+      "volume_mm3": 2.84,
+      "centerLPS": [
+        19.23,
+        -178.18,
+        1725.25
+      ],
+      "centerVoxel": [
+        303.1,
+        303.9,
+        28.0
+      ],
+      "depthInHeart_mm": {
+        "min": 8.8,
+        "mean": 9.7
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 31.6,
+      "blobs": [
+        {
+          "z": 28,
+          "area": 1.89,
+          "peak": 149.0
+        }
+      ],
+      "chamber": "heart_ventricle_left",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs",
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "s28, 149 HU, 1.89 mm2, 8.8 mm deep in the LV, linear streak."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k28, LPS (19.2,-178.2,1725.2), 149 HU. In the band. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slice 28, peak 149 HU, 1.89 mm2, 9 mm deep in LV; shading band."
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "slices": [
+        28,
+        29
+      ],
+      "nSlices": 2,
+      "peakHU": 151.0,
+      "peakSlice": 28,
+      "meanHU": 138.3,
+      "areaSum_mm2": 3.13,
+      "maxArea_mm2": 1.89,
+      "volume_mm3": 4.69,
+      "centerLPS": [
+        12.71,
+        -175.54,
+        1725.84
+      ],
+      "centerVoxel": [
+        281.9,
+        312.5,
+        28.4
+      ],
+      "depthInHeart_mm": {
+        "min": 9.5,
+        "mean": 10.3
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 27.8,
+      "blobs": [
+        {
+          "z": 28,
+          "area": 1.89,
+          "peak": 151.0
+        },
+        {
+          "z": 29,
+          "area": 1.23,
+          "peak": 149.0
+        }
+      ],
+      "chamber": "heart_ventricle_left",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "s28-29, 151 HU, 3.13 mm2, 9.5 mm deep in the LV."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Calcium k28-29, LPS (12.7,-175.5,1725.8), 151 HU. In the band. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slices 28-29, peak 151 HU, 3.13 mm2, 9.5-10 mm deep in LV; shading band."
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "slices": [
+        28
+      ],
+      "nSlices": 1,
+      "peakHU": 141.0,
+      "peakSlice": 28,
+      "meanHU": 133.3,
+      "areaSum_mm2": 1.42,
+      "maxArea_mm2": 1.42,
+      "volume_mm3": 2.13,
+      "centerLPS": [
+        13.47,
+        -171.15,
+        1725.25
+      ],
+      "centerVoxel": [
+        284.3,
+        326.8,
+        28.0
+      ],
+      "depthInHeart_mm": {
+        "min": 5.7,
+        "mean": 6.4
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 23.4,
+      "blobs": [
+        {
+          "z": 28,
+          "area": 1.42,
+          "peak": 141.0
+        }
+      ],
+      "chamber": "heart_myocardium",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<200 HU) and >=3 mm deep inside heart muscle/blood pool, where no coronary artery runs",
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "s28, 141 HU, 1.42 mm2, 5.7 mm deep, linear, single slice."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.97,
+          "note": "Calcium k28, LPS (13.5,-171.2,1725.2), 141 HU. In the band. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.98,
+          "note": "Slice 28, peak 141 HU, 1.42 mm2, 5.7 mm deep; shading band."
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "slices": [
+        29
+      ],
+      "nSlices": 1,
+      "peakHU": 149.0,
+      "peakSlice": 29,
+      "meanHU": 139.1,
+      "areaSum_mm2": 1.33,
+      "maxArea_mm2": 1.33,
+      "volume_mm3": 1.99,
+      "centerLPS": [
+        -9.67,
+        -170.96,
+        1726.75
+      ],
+      "centerVoxel": [
+        209.1,
+        327.4,
+        29.0
+      ],
+      "depthInHeart_mm": {
+        "min": 0.0,
+        "mean": 0.0
+      },
+      "fracInHeart": 0.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 23.2,
+      "blobs": [
+        {
+          "z": 29,
+          "area": 1.33,
+          "peak": 149.0
+        }
+      ],
+      "chamber": "outside",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.94,
+          "note": "s29, 149 HU, 1.33 mm2, LPS (-9.7,-170.8,1726.75). On the RV inferior-wall edge beside the posterior IV groove fat. Single slice, absent on the overlapping s28/s30 even though those share half of its data. File: cand40_zoom_axial_5slices_3windows_cor_sag.png."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.95,
+          "note": "Calcium k29, LPS (-9.7,-171.0,1726.8), 149 HU, 1.3 mm2. On the RA/IVC side of the crux fat line (2.5 mm from fat), single slice, local z-score about 2.3. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Slice 29, peak 149 HU, 1.33 mm2, outside heart mask; shading band."
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "slices": [
+        29
+      ],
+      "nSlices": 1,
+      "peakHU": 140.0,
+      "peakSlice": 29,
+      "meanHU": 134.8,
+      "areaSum_mm2": 1.61,
+      "maxArea_mm2": 1.61,
+      "volume_mm3": 2.42,
+      "centerLPS": [
+        5.47,
+        -164.3,
+        1726.75
+      ],
+      "centerVoxel": [
+        258.4,
+        349.1,
+        29.0
+      ],
+      "depthInHeart_mm": {
+        "min": 1.7,
+        "mean": 2.6
+      },
+      "fracInHeart": 1.0,
+      "fracInPericardium": 1.0,
+      "fracInAorta": 0.0,
+      "fracInLiver": 0.0,
+      "distToAorta_mm": 16.1,
+      "blobs": [
+        {
+          "z": 29,
+          "area": 1.61,
+          "peak": 140.0
+        }
+      ],
+      "chamber": "heart_myocardium",
+      "ruleClass": "noise",
+      "ruleReasons": [
+        "faint (<180 HU) and present on a single 3 mm slice only"
+      ],
+      "finalClass": "noise",
+      "artery": null,
+      "reviewNote": "3/3 reviewers: noise-artifact",
+      "reviewVotes": [
+        {
+          "reviewer": "AI second read - candidate adjudicator lens (calcium_cal_candidates)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.95,
+          "note": "s29, 140 HU, 1.61 mm2, LPS (5.4,-163.7,1726.75). Posterior heart tip near the lung, single slice. File: cand41_zoom_axial_5slices_3windows_cor_sag.png."
+        },
+        {
+          "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.95,
+          "note": "Calcium k29, LPS (5.5,-164.3,1726.8), 140 HU. Top edge of the band, near the #22 spot. Noise."
+        },
+        {
+          "reviewer": "calcium_cal_cross: cross-reconstruction and physics checker (Claude Opus 5.5)",
+          "verdict": "noise-artifact",
+          "artery": "",
+          "confidence": 0.96,
+          "note": "Slice 29, peak 140 HU, 1.61 mm2, 1.7-2.6 mm deep; shading band."
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "agatston": 0.0,
+    "agatstonEven": 0.0,
+    "agatstonOdd": 0.0,
+    "volume_mm3": 0.0,
+    "mass_mg": 0.0
+  },
+  "perArtery": {},
+  "thresholdSweep": [
+    {
+      "thresholdHU": 90,
+      "blobs": 2116,
+      "naiveScoreIfAllCounted": 1330.8
+    },
+    {
+      "thresholdHU": 100,
+      "blobs": 943,
+      "naiveScoreIfAllCounted": 759.7
+    },
+    {
+      "thresholdHU": 110,
+      "blobs": 410,
+      "naiveScoreIfAllCounted": 405.0
+    },
+    {
+      "thresholdHU": 120,
+      "blobs": 181,
+      "naiveScoreIfAllCounted": 183.7
+    },
+    {
+      "thresholdHU": 130,
+      "blobs": 65,
+      "naiveScoreIfAllCounted": 59.3
+    },
+    {
+      "thresholdHU": 140,
+      "blobs": 20,
+      "naiveScoreIfAllCounted": 14.2
+    },
+    {
+      "thresholdHU": 150,
+      "blobs": 2,
+      "naiveScoreIfAllCounted": 1.3
+    },
+    {
+      "thresholdHU": 160,
+      "blobs": 0,
+      "naiveScoreIfAllCounted": 0.0
+    },
+    {
+      "thresholdHU": 180,
+      "blobs": 0,
+      "naiveScoreIfAllCounted": 0.0
+    },
+    {
+      "thresholdHU": 200,
+      "blobs": 0,
+      "naiveScoreIfAllCounted": 0.0
+    },
+    {
+      "thresholdHU": 250,
+      "blobs": 0,
+      "naiveScoreIfAllCounted": 0.0
+    },
+    {
+      "thresholdHU": 300,
+      "blobs": 0,
+      "naiveScoreIfAllCounted": 0.0
+    }
+  ],
+  "reviewed": true,
+  "adjudication": {
+    "reviewers": [
+      {
+        "key": "cal_candidates",
+        "lens": "candidate adjudicator",
+        "agatstonEstimate": 0,
+        "confidenceZero": 0.87,
+        "summary": "Coronary calcium score: 0, with about 87% confidence. I looked at all 41 automated candidates on their review sheets and on my own zoomed views: 5 slices x 3 windows (200/600, 40/400, 100/300), >=130 HU outlines, and coronal/sagittal reformats. Every one is noise or artifact. The never-inspected AXIAL ST 203 HU blob turns out to be the same structure as candidate #22, also artifact.\n\nWhy I call them noise:\n- All 41 sit in two noisy z-bands: the bottom scan edge (s10-16, z 1698-1707; candidates #1-13, in the apex or the left hepatic lobe) and a table-step boundary (s24-29, z 1719-1727; candidates #14-41, in the inferior LV wall/septum).\n- In the step band the inferior wall reads 96-99 HU instead of 52-55 HU (a ~40-45 HU shift) and the noise is streaky. The scanner's own coronal/sagittal reformats show this as a horizontal bright stripe.\n- The deep heart, where no coronary runs, produces blobs at the same rate as the coronary search area. Liver and spleen noise in this exam reaches 202-234 HU.\n- No candidate reaches 200 HU on the scoring series. Each is at most ~3.6 SD above its local background, and none stands out at the calcium window.\n- Slice-to-slice persistence matches pure-noise controls, so it does not argue for calcium here.\n\nThe upper coronary tree (LM, LAD, LCX, proximal/mid RCA, slices 30-87) has zero blobs >= 130 HU and >= 1 mm2. The brightest tiny speck there is 148 HU, and it sits in a blood pool.\n\n#22 is the only candidate with real doubt. It sits at the epicardial edge near the crux (PDA territory), and it is the top outlier in all three reconstructions. But it is a thin streak running along the streak direction and perpendicular to the groove, not in fat, and only ~2.5 SD above its local background. I call it artifact with 0.85 confidence. If it were real it would add about 11 Agatston.\n\nMissed-calcification sweep (>= 250 HU outside the bone mask, plus an aortic-wall shell check):\n- No aortic-wall, aortic-valve, mitral-annulus, pericardial or internal-mammary calcification.\n- Every bright cluster turned out to be bone (rib heads, costovertebral or costotransverse junctions, xiphoid, sternal or vertebral cortex), noise at the bottom edge of the scan, or normal costal-cartilage calcification (right sternocostal and left costochondral, severity 0).\n\nTechnical limitation: low dose (CTDIvol 2.1), a heart rate of 85 bpm and step-boundary artifacts reduce sensitivity to very small, faint lesions in the inferior wall (PDA/posterolateral) and the apex.\n\nFor the patient: severity 0. A score of 0 at age 37 is the expected normal result. It cannot rule out non-calcified plaque, which this test does not show. I did not assess the ascending aorta or the lungs; that is outside this lens."
+      },
+      {
+        "key": "cal_blind",
+        "lens": "blind sweeper",
+        "agatstonEstimate": 0,
+        "confidenceZero": 0.94,
+        "summary": "Blind sweep result: no coronary artery calcium; Agatston 0 (probability about 0.94 that the true score is 0).\n\nI swept all 91 calcium slices without looking at the candidate list. Specks of 130 HU or more and at least 1 mm2 appear only in two places:\n- The noisiest inferior slices (k10-18, liver/diaphragm/apex, slice SD 26-32 HU).\n- A horizontal band at z about 1719-1728 (k24-29) in the posterior-inferior LV.\n\nFrom k30 to k90 there is not one such speck anywhere in the pericardium. That range covers the LM, proximal-mid LAD and diagonals, the whole LCX/OM groove, proximal-mid RCA, aortic root and valve, mitral annulus, and ascending aorta. The highest value anywhere in the heart on the calcium series is 177 HU, and nothing reaches 200.\n\nCoronary territory checks:\n- I identified the RCA as a soft-tissue dot in the right AV-groove fat at about LPS (-46,-219), k32-49. Its raw maximum is 88 HU or less.\n- The anterior IV groove (LAD), the left AV groove (LCX), the LM region behind the root, the crux/PDA region and the apex are all free of bright foci on zoomed views and on 9-10 mm bone-removed slab MIPs.\n- A fat-adjacent check at 110 HU or more, and at 100 HU or more inside the dark band, found only sub-threshold noise specks.\n\nThe band is a step-and-shoot (table-step) boundary artifact. The scan has 4 steps of 38.4 mm, and the boundary is near z 1718. The posterior LV reads +40-50 HU in a 9 mm z-band, with a dark band just below at k19-22. The sagittal/coronal reformats show a horizontal stripe across the heart that ignores anatomy. A sign-flip test shows the bright specks lie within the noise distribution: mirrored negative excursions reach 185 HU, versus 167 HU for positive ones, in the same tissue.\n\nCandidates:\n- #22, #30 and #32 are noise/artifact. #22 is a radial streak at the LV-lung edge, #30 sits on the myocardial edge of the crux fat, and #32 is intramyocardial. None of them lies within a vessel in fat.\n- The open 203 HU blob on axial_st (S8 k13) is #22 seen on that series. Only 1 pixel reaches 200 HU.\n- Even if all three were wrongly counted, the score would be about 14, which is minimal.\n\nOther findings in my lens:\n- No aortic-valve or mitral-annular calcification, and no calcification of the ascending or descending aortic wall.\n- The ascending aorta measures about 34-36 mm, consistent with the radiologist's 36.1 mm caliper. This is upper-normal for a 37-year-old man, with no action at standard thresholds (severity 0-1).\n- The heart lies fully inside the 158 mm calcium FOV.\n- Image noise is adequate for calcium scoring: mid-heart SD is about 16 HU.\n\nFor the patient: a calcium score of 0 at 37 is the expected, reassuring result. It means no detectable calcified plaque. It does not rule out soft (non-calcified) plaque, so standard risk-factor care still applies."
+      },
+      {
+        "key": "cal_cross",
+        "lens": "cross-reconstruction & physics checker",
+        "agatstonEstimate": 0,
+        "confidenceZero": 0.9,
+        "summary": "Agatston estimate 0; probability that the true score is 0 is about 0.90.\n\nThe axial_st 203 HU open item is not a new finding. It is candidate #22 seen through a sharper kernel. Br40d reads about 24 HU higher than Sa36d at points 3 mm from lung, which explains the 203 versus 174.\n\nAll 65 blobs and all 41 candidates, #22, #30 and #32 included, are explained by noise sitting on top of a table-step shading artifact. On axial_st, blood in the LV swings from 25 HU at z=1716 to 70 HU at z=1725 (calcium series about 28 to 68 HU). A wedge about 40 mm long in the posteroinferior LV reads 80-100 HU at z=1722. The calibrated noise model predicts 61 +/- 4 chance blobs at 130 HU (65 observed), 21 at 140 HU (20 observed) and 5.8 at 150 HU (2 observed); a naive stationary model predicts about 0. A 3D simulation with the measured inter-slice correlation (0.76 at 1.5 mm) reproduces the candidate count, the slice spans and #22's size (13% of noise-only scans have a candidate this large). Agreement between reconstructions does not help here, because noise peaks in all of them come from the same photons and track each other within about 8 HU.\n\nThe residual risk is a faint real plaque at #22, near the PDA or posterolateral territory (about 6%), or at #30 (about 3%). If #22 were counted, the score would be about 11; with all three, about 14.\n\nThe upper heart, the aortic root and coronary origins, and the valves are clean. The only real calcification found was normal costal cartilage. The main caveat is that the artifact band lowers calcium sensitivity in the posteroinferior heart at z 1719-1729."
+      }
+    ],
+    "consensus": "3 independent AI reviewers adjudicated the 41 candidates; coronary lesions after majority vote: 0. Additional lesions proposed by reviewers outside the candidate list: 4 (called coronary: 0).",
+    "missedLesions": [
+      {
+        "description": "Small calcification in the right costal cartilage at the sternocostal junction, just to the right of the sternal body (anterior chest wall, outside the heart, not vascular)",
+        "verdict": "normal-variant (costal cartilage calcification, very common, severity 0)",
+        "series": "axial_st",
+        "sliceIndex": 35,
+        "lps": [
+          -30.6,
+          -257.7,
+          1788.2
+        ],
+        "peakHU": 368,
+        "areaMM2": 1.6,
+        "artery": "",
+        "evidence": [
+          "/home/cbroker/Documents/2026/heart-exam/medicom_exams_2026-11-06_121707/heart-ct-explorer/data/derived/read/calcium_cal_candidates/parasternal_foci_costal_vs_IMA.png",
+          "Also on calcium s69-71 at peak 339 HU. It lies inside the cartilage plane, not deep to it where the internal mammary vessels run (parasternal_IMA_trace_axialst.png)."
+        ]
+      },
+      {
+        "description": "Marginal calcification of a left costal cartilage near the costochondral junction (anterior left chest wall)",
+        "verdict": "normal-variant (costal cartilage calcification; typical male marginal pattern; severity 0)",
+        "series": "calcium",
+        "sliceIndex": 78,
+        "lps": [
+          46.9,
+          -243.1,
+          1800.2
+        ],
+        "peakHU": 340,
+        "areaMM2": 5.1,
+        "artery": "",
+        "evidence": [
+          "/home/cbroker/Documents/2026/heart-exam/medicom_exams_2026-11-06_121707/heart-ct-explorer/data/derived/read/calcium_cal_candidates/parasternal_foci_costal_vs_IMA.png",
+          "Seen on axial_st s37-39 (peak ~391 HU) along the inner margin of the cartilage, continuous with the rib end. It is not a separate round vessel dot."
+        ]
+      },
+      {
+        "description": "Costal cartilage and sternal edge calcification/ossification in the anterior chest wall, outside the pericardium. Examples: left costal cartilage on calcium k69-75 at about LPS (51 to 56, -246 to -252, 1786-1796), peaks 235-380 HU; right costal cartilage at about (-31,-258,1787-1790), peaks 295-339 HU; sternal cortex edges at (5,-268,1767) and (-28,-230,1817). These are non-cardiac and correctly excluded from scoring. No other real calcification was found in the 158 mm calcium FOV: no coronary, aortic-valve, mitral-annular, ascending/descending aortic wall, pericardial, nodal or hepatic calcification.",
+        "verdict": "normal-variant (non-cardiac, not scored; severity 0)",
+        "artery": "",
+        "series": "calcium",
+        "sliceIndex": 70,
+        "lps": [
+          51,
+          -251.9,
+          1788.25
+        ],
+        "peakHU": 380,
+        "areaMM2": 3.3,
+        "evidence": [
+          "/home/cbroker/Documents/2026/heart-exam/medicom_exams_2026-11-06_121707/heart-ct-explorer/data/derived/read/calcium_cal_blind/mip_sagittal_10mm_slabs_boneremoved.png",
+          "/home/cbroker/Documents/2026/heart-exam/medicom_exams_2026-11-06_121707/heart-ct-explorer/data/derived/read/calcium_cal_blind/sweep_calcium_axial_k60-71_thr130red_200yellow.png"
+        ]
+      },
+      {
+        "description": "Calcified or ossified right 2nd costosternal cartilage at the right sternal margin (anterior chest wall), not covered by the AI bone mask. Picked up only by a wider search; outside the heart and pericardium.",
+        "verdict": "bone/cartilage, normal variant, not coronary (severity 0, normal-variant)",
+        "lps": [
+          -28.5,
+          -230.5,
+          1816.75
+        ],
+        "series": "calcium (also axial_st slice 44, cor_st, sag_st)",
+        "sliceIndex": 89,
+        "peakHU": 524,
+        "areaMM2": 7.77,
+        "artery": "",
+        "evidence": [
+          "calcium slices 88-90: peaks 292/524/459 HU, areas 1.8/3.2/7.8 mm2; axial_st slice 44 peak 306 HU",
+          "cor_st and sag_st reformats: dense oval contiguous with the sternum and anterior chest wall at the top of the coverage (z 1815-1818)",
+          "images: /home/cbroker/Documents/2026/heart-exam/medicom_exams_2026-11-06_121707/heart-ct-explorer/data/derived/read/calcium_cal_cross/missedA_ca86-90_crop40.png, missedA_axst43-45_crop60.png, missedA_sag_crop60.png, missedA_cor_crop60.png"
+        ]
+      }
+    ],
+    "s8Blob": [
+      {
+        "lps": [
+          4.8,
+          -162.65,
+          1722.25
+        ],
+        "peakHU": 203,
+        "verdict": "noise-artifact: same structure as calcium candidate #22, not calcium",
+        "note": "I repeated the search on AXIAL ST (pericardium + heart masks on the axial_st grid, 5 mm margin, bone + 2 mm excluded). It finds 78 blobs >= 130 HU and >= 1 mm2; the top peaks are 203, 179, 172, 172, 171. The 203 HU blob is on slice 13 (z 1722.25, 3 mm non-overlapping Br40d): 14.9 mm2, mean 150 HU, centroid LPS (6.84,-165.27,1722.25). That is exactly calcium #22. It is elongated along the posterior-inferior heart-lung interface and along the streak direction, running ~10 mm from the LV tip, with parallel streak outlines beside it. The adjacent non-overlapping slices s12/s14 reach only 132/149 HU at that spot. It is brighter than on the calcium series because Br40d is a sharper kernel (blood SD 20.3 vs 17.9 HU). In this exam's axial_st, pure-noise blobs in control tissue reach 207 HU (spleen), 225-243 HU (paraspinal muscle) and 332 HU (liver at the scan edge), so 203 HU is within the noise range. It lies in the table-step band, where the inferior LV wall reads ~40 HU too bright. If someone scored it on axial_st it would be about 30 (weight 2 x 14.9 mm2), but axial_st is not the calcium-scoring series. Figure: /home/cbroker/Documents/2026/heart-exam/medicom_exams_2026-11-06_121707/heart-ct-explorer/data/derived/read/calcium_cal_candidates/s8blob_axialst_s13_203HU_eq_cand22.png"
+      },
+      {
+        "lps": [
+          6.8,
+          -165.3,
+          1722.25
+        ],
+        "peakHU": 203,
+        "verdict": "noise-artifact (artifact category, severity 0). It is candidate #22 seen on AXIAL ST WO (S8).",
+        "note": "I repeated the search on axial_st: pericardium+heart masks resampled with nearest-neighbour, 5 mm margin, bone+2 mm excluded. It gives 75 blobs (8-connected) or 73 (4-connected), versus 78 in the earlier cross-check. The only blob with a peak of 200 HU or more is at axial_st k13 (z 1722.25), LPS (6.8,-165.3), within 0.5 mm of candidate #22's centre. It measures 14.9 mm2 at 130 HU or more, but only 1 pixel (0.32 mm2) reaches 200 HU. The local background is 92 +/- 37 HU, and the adjacent slices k12/k14 peak at only 147/149 HU, which is typical of the band. Its pixel matrix is an oblique streak running into the LV/lung edge. On the plain image it is a faint smudge among about 30 similar blobs on k13 and 104 voxels of 130 HU or more on k14. It is not a discrete calcification and not in a coronary artery. The axial_st heart interior shows the same band (mean 61-65 HU at k13-14 versus about 28-31 at k10-11)."
+      },
+      {
+        "lps": [
+          4.8,
+          -162.65,
+          1722.25
+        ],
+        "peakHU": 203,
+        "verdict": "noise-artifact. It is candidate #22 seen through the Br40d kernel, not a separate lesion.",
+        "note": "Found by repeating the search: heart + pericardium resampled to axial_st, 5 mm margin, bone +2 mm excluded. This reproduced the 78 blobs exactly. The 203 HU blob is on axial_st slice 13 (z=1722.25), with 14.87 mm2 at or above 130 HU. Calcium-series slice 26 covers exactly the same 3 mm slab, and #22's peak there is at (4.75,-163.09,1722.25), 0.4 mm away. The same spot reads 100-132 HU on axial_st slice 12 and 105-149 HU on slice 14, so it is present on only one non-overlapping slice. Why it reads 203 instead of 174: across 1,088 co-located maxima in the heart, axial_st = 18 + 0.88 x calcium (residual SD 7.8 HU). The residual grows near lung: +39 +/- 19 HU at 1.5-2.5 mm from air, +24 +/- 14 HU at 2.5-3.5 mm, and -4 +/- 10 HU beyond 15 mm (13,301 maxima). #22 is 3.3 mm from lung with a +32 HU residual, which is typical. A soft-tissue nub at the right mediastinal border shows the same effect: 190 HU on axial_st versus 131-139 HU on the calcium kernel. Morphology is a 9 mm oblique streak, in the step-boundary shading wedge (local mean about 96-112 HU on axial_st), parallel to the noise texture, with no vessel. In the calibrated axial_st noise model, a scan maximum of 203 HU or more occurs about 5% of the time even before this near-lung effect is applied. Agatston scoring must use the calcium series. Scoring it on axial_st (14.87 x weight 2) would wrongly give about 30."
+      }
+    ]
+  },
+  "percentileContext": {
+    "source": "Javaid A, Dardari ZA, Mitchell JD, et al. Distribution of Coronary Artery Calcium by Age, Sex, and Race Among Patients 30-45 Years Old. J Am Coll Cardiol. 2022;79(19):1873-1886 (Table 3).",
+    "url": "https://doi.org/10.1016/j.jacc.2022.02.051",
+    "age": 37,
+    "rows": [
+      {
+        "group": "White men, age 37",
+        "p75": 0,
+        "p90": 8,
+        "p95": 35,
+        "p97_5": 80
+      },
+      {
+        "group": "Black men, age 37",
+        "p75": 0,
+        "p90": 1,
+        "p95": 10,
+        "p97_5": 35
+      }
+    ],
+    "prevalenceNonzero": {
+      "White men aged 30-45": 0.26,
+      "Black men aged 30-45": 0.16
+    },
+    "note": "Pooled CARDIA + CAC Consortium + Walter Reed cohorts (19,725 asymptomatic adults aged 30-45). Percentiles for other groups were not estimable in that study; MESA percentiles start at age 45."
+  }
+}
