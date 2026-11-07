@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated": "2026-11-07T02:25:55",
+  "generated": "2026-11-07T03:29:15",
   "source": "pipeline/07_lab_assets.py",
   "exam": {
     "studyDate": "20261105",
@@ -198,7 +198,7 @@
       "value": 87,
       "unit": "mL",
       "caption": "About 87 mL of fat sits inside the heart's sac, packed around the coronary arteries: roughly 6 tablespoons.",
-      "context": "Studies of middle-aged adults typically find roughly 50-150 mL, rising with age and weight. More epicardial fat goes with more coronary plaque; there is no single agreed cut-off and definitions differ between studies.",
+      "context": "Studies of middle-aged adults typically find roughly 50-150 mL, rising with age and weight. More epicardial fat goes with more coronary plaque; there is no single agreed cut-off and definitions differ between studies. The AI second read got about 76 mL (74-79 mL across three series) with a stricter mask that removes the heart, aorta and pulmonary vessels completely; the methods differ, and both numbers are in the typical range.",
       "method": "Calcium-score series (3 mm slices every 1.5 mm, 0.31 mm pixels, soft Sa36d kernel): the reconstruction epicardial-fat studies use on calcium scans. Its noise is low (SD 20 HU in blood) and its 158 mm field of view contains the whole pericardium; the sharp thin series (SD 236 HU) would scatter muscle and air into the fat window. Fat = voxels from -190 to -30 HU inside the AI pericardium mask (TotalSegmentator trunk_cavities), excluding the heart's interior (chamber/heart masks eroded by 3 mm, so fat in the grooves on the heart's surface still counts). Subtracting the full heart masks instead gives 70 mL (they swallow some groove fat); counting every fat voxel in the sac gives 89 mL. Mean fat density -86 HU.",
       "confidence": "AI estimate",
       "series": "calcium",
@@ -259,7 +259,7 @@
       "label": "Liver density",
       "value": 64,
       "unit": "HU",
-      "caption": "Fat makes the liver look darker on CT. A healthy liver is brighter than 40 HU.",
+      "caption": "Fat makes the liver look darker on CT. Below about 40 HU usually means at least moderate fatty liver; healthy livers read about 50-70 HU.",
       "context": "Non-contrast CT: liver under 40 HU suggests at least moderate fatty liver; healthy livers usually sit around 50-70 HU.",
       "method": "Chest soft-tissue series (3 mm, Br40d kernel, 120 kV: the energy the published cut-offs assume). AI masks (TotalSegmentator) shrunk 5 mm in-plane and one slice up/down so no edge, rib or lung pixels leak in; mean HU of all remaining voxels. Only the top of the liver and spleen are inside this heart scan. Liver: 363,208 voxels (345 mL), SD 33 HU, median 64 HU.",
       "confidence": "measured",
@@ -533,7 +533,7 @@
       "value": 3.49,
       "unit": "L",
       "display": "3.5",
-      "caption": "Right 1.8 L + left 1.7 L of lung inside the 14 cm slab the scan covered. The scan targets the heart, so the lung tops are cut off.",
+      "caption": "Right 1.8 L + left 1.7 L of lung inside the 13.8 cm slab the scan covered. The scan targets the heart, so the lung tops are cut off.",
       "context": "The hospital's ClearRead CT software reported 1.9 L right and 1.8 L left: close to these AI numbers, and also limited to the scanned part. Whole lungs hold roughly 6 L in a deep breath, so this is not a lung-function test.",
       "method": "TotalSegmentator v2 lobe masks on the 1.5 mm thin series; voxel counts. Breath-hold inspiration, partial coverage (heart scan range only).",
       "confidence": "AI estimate",
@@ -589,7 +589,7 @@
           "rightL": 1.9,
           "leftL": 1.8
         },
-        "coverageMM": 137.2
+        "coverageMM": 138.0
       },
       "image": "lung_lobes",
       "link": {
@@ -610,8 +610,8 @@
       "value": 2.5,
       "unit": "%",
       "display": "2.5",
-      "caption": "Share of lung so dark (below -950 HU) that it could be emphysema, the air-trapping damage from smoking. Here it is mostly image noise.",
-      "context": "Under about 5% is generally read as normal on standard-dose, smooth-kernel scans. This scan is low-dose and only covers part of the lungs, both of which push the number up. The same calculation on the sharp lung-kernel series gives a meaningless 37% because its noise (SD 145 HU in blood vs 22 HU on the smooth series) pushes normal lung below -950 HU.",
+      "caption": "Share of lung so dark (below -950 HU) that it could be emphysema, the lung damage typically caused by smoking. At 2.5% it is in the normal range; most of these dark pixels are image noise.",
+      "context": "Under about 5% is generally read as normal on standard-dose, smooth-kernel scans. Low dose adds image noise, which pushes the number up. The same calculation on the sharp lung-kernel series gives a meaningless 37% because its noise (SD 145 HU in blood vs 22 HU on the smooth series) pushes normal lung below -950 HU.",
       "method": "Lung = the five AI lobe masks minus airways (dilated 1 voxel), shrunk 2 voxels in-plane (drops the dark undershoot rim the image filter leaves along the pleura; same approach as the AI second read); the scanner's blank padding slice at the top is skipped; percentage of voxels below -950 HU. Reported on the 3 mm smooth Br40d series (emphysema scoring calls for a smooth kernel); mean lung density -851 HU, 15th percentile -921 HU. Sharp Bl64d lung series for comparison: 37% (15th percentile clipped at -1024 HU).",
       "confidence": "rough",
       "series": "axial_st",
@@ -712,13 +712,13 @@
       "label": "Ascending aorta",
       "value": 36.1,
       "unit": "mm",
-      "caption": "The main artery leaving the heart, measured across by the radiologist.",
-      "context": "In adult men the ascending aorta is usually under about 40 mm (it grows slowly with age and body size); radiologists start calling it dilated from around 40-45 mm.",
+      "caption": "The main artery leaving the heart, measured across by the radiologist. The AI second read measured 37-38 mm at its widest point, a little higher up.",
+      "context": "In adult men the ascending aorta is usually under about 40 mm (it grows slowly with age and body size); doctors call it dilated from 40 mm and aneurysmal from about 45 mm. 37-38 mm is the upper end of normal for a 37-year-old man: no follow-up needed, but a good baseline number for your doctor.",
       "method": "Radiologist's caliper on the chest soft-tissue series (instance 13), recovered from the DICOM presentation state. AI cross-check on the same slice: area-equivalent diameter 36.5 mm (narrowest-widest 36.6-39.8 mm).",
       "confidence": "measured",
       "series": "axial_st",
       "status": "typical",
-      "statusLabel": "normal size",
+      "statusLabel": "upper end of normal",
       "gauge": {
         "min": 20,
         "max": 50,
@@ -733,13 +733,13 @@
             "from": 40,
             "to": 45,
             "tone": "neutral",
-            "label": "borderline"
+            "label": "dilated"
           },
           {
             "from": 45,
             "to": 50,
             "tone": "warn",
-            "label": "dilated"
+            "label": "aneurysm range"
           }
         ],
         "ticks": [
@@ -884,10 +884,10 @@
       "label": "Pulmonary artery : aorta ratio",
       "value": 0.75,
       "unit": "",
-      "display": "0.75",
+      "display": "0.7-0.75",
       "caption": "The pulmonary artery should be narrower than the aorta beside it.",
       "context": "Framingham: ratios under 0.9 are normal; above 1.0 suggests raised lung blood pressure.",
-      "method": "Main pulmonary artery (27.0 mm, above) divided by the radiologist's ascending aorta (36.1 mm) at the same level.",
+      "method": "Main pulmonary artery (27.0 mm, above) divided by the radiologist's ascending-aorta caliper (36.1 mm, drawn about 1.3 cm lower). Using the AI second read's 37-38 mm aortic maximum instead gives about 0.7.",
       "confidence": "measured",
       "series": "calcium",
       "status": "typical",
@@ -940,7 +940,7 @@
       "unit": "mGy\u00b7cm",
       "display": "31.39",
       "caption": "The scanner's own tally of radiation delivered along the scanned length.",
-      "context": "CTDIvol 2.12 mGy, size-specific dose 2.87 mGy for a 27.4 cm-wide body. A typical full chest CT is several times higher.",
+      "context": "CTDIvol 2.12 mGy, size-specific dose 2.87 mGy for a body with a 27.4 cm water-equivalent diameter. A typical full chest CT is several times higher.",
       "method": "Siemens dose report (DICOM structured report): Prospectively ECG-triggered sequential (step-and-shoot), 4 steps, 120 kV, 0.25 s rotation.",
       "confidence": "measured",
       "series": "dose report",
@@ -958,7 +958,7 @@
             "k": "Size-specific dose",
             "v": 2.87,
             "unit": "mGy",
-            "hint": "adjusted to my 27.4 cm water-equivalent body width"
+            "hint": "adjusted for my body size (27.4 cm water-equivalent diameter)"
           },
           {
             "k": "Tube voltage",
@@ -989,7 +989,7 @@
       "unit": "mSv",
       "display": "0.44",
       "viz": "radiation",
-      "caption": "About 52 days of the natural radiation everyone absorbs anyway.",
+      "caption": "About 52 days of the natural radiation everyone absorbs anyway (0.82 mSv, about 96 days, with the heart-specific factor).",
       "context": "Effective dose converts the scan into whole-body risk terms. The everyday comparisons use rounded reference values.",
       "method": "DLP 31.39 mGy\u00b7cm x k = 0.014 mSv/(mGy\u00b7cm), the standard adult chest conversion factor. Some cardiac-imaging groups use a heart-specific k = 0.026, which would give 0.8 mSv; still a low dose.",
       "confidence": "rough",
@@ -1129,13 +1129,13 @@
   },
   "arModel": {
     "file": "mesh/heart_ar.glb",
-    "bytes": 2772428,
+    "bytes": 2772368,
     "triangles": 114994,
     "units": "metres",
     "up": "+Y (head)",
     "front": "+Z (out of the chest)",
     "sizeMM": [
-      129.1,
+      123.7,
       136.6,
       140.3
     ],
@@ -1211,7 +1211,7 @@
         "color": "#ff7759",
         "group": "vessels",
         "triangles": 8000,
-        "volumeML": 19.6
+        "volumeML": 19.5
       },
       {
         "name": "superior_vena_cava",
@@ -1235,7 +1235,7 @@
         "name": "heart_myocardium",
         "label": "Left ventricle",
         "position": [
-          0.06262,
+          0.0599,
           -0.03915,
           0.05073
         ],
@@ -1249,7 +1249,7 @@
         "name": "heart_ventricle_right",
         "label": "Right ventricle",
         "position": [
-          0.02823,
+          0.02551,
           -0.02658,
           0.05733
         ],
@@ -1263,7 +1263,7 @@
         "name": "heart_atrium_left",
         "label": "Left atrium",
         "position": [
-          -0.00494,
+          -0.00766,
           0.01209,
           -0.03712
         ],
@@ -1277,7 +1277,7 @@
         "name": "heart_atrium_right",
         "label": "Right atrium",
         "position": [
-          -0.05227,
+          -0.05499,
           -0.00625,
           0.02065
         ],
@@ -1291,7 +1291,7 @@
         "name": "atrial_appendage_left",
         "label": "Left atrial appendage",
         "position": [
-          0.02455,
+          0.02183,
           0.02881,
           -0.0039
         ],
@@ -1305,7 +1305,7 @@
         "name": "aorta",
         "label": "Aorta",
         "position": [
-          -0.01974,
+          -0.02246,
           0.06732,
           0.01739
         ],
@@ -1319,7 +1319,7 @@
         "name": "pulmonary_artery",
         "label": "Pulmonary artery",
         "position": [
-          0.00953,
+          0.00681,
           0.05542,
           0.00125
         ],
@@ -1333,7 +1333,7 @@
         "name": "superior_vena_cava",
         "label": "Superior vena cava",
         "position": [
-          -0.04041,
+          -0.04313,
           0.06758,
           -0.00556
         ],
@@ -1347,7 +1347,7 @@
         "name": "inferior_vena_cava",
         "label": "Inferior vena cava",
         "position": [
-          -0.02738,
+          -0.0301,
           -0.05318,
           -0.01152
         ],
