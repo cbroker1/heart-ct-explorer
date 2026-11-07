@@ -1,0 +1,533 @@
+{
+  "exam": {
+    "Modality": "CT",
+    "StudyDescription": "CT CARDIAC CALCIUM SCORING ONLY",
+    "BodyPartExamined": "HEART",
+    "Manufacturer": "Siemens Healthineers",
+    "ManufacturerModelName": "SOMATOM X.ceed",
+    "SoftwareVersions": "syngo CT VB20A",
+    "ProtocolName": "CALCIUM SCORE",
+    "PatientSex": "M",
+    "PatientAge": "037Y",
+    "StudyDate": "20261105",
+    "KVP": 120.0,
+    "CTDIvol": "2.0135687907676116",
+    "RevolutionTime": "0.25",
+    "SingleCollimationWidth": "0.6",
+    "TotalCollimationWidth": "38.4",
+    "PatientPosition": "FFS"
+  },
+  "series": {
+    "calcium": {
+      "key": "calcium",
+      "description": "CALCIUM SCORE",
+      "seriesNumber": 3,
+      "kernel": "Sa36d",
+      "sliceThickness": 3.0,
+      "sliceSpacing": 1.5,
+      "pixelSpacing": [
+        0.30774609375,
+        0.30774609375
+      ],
+      "size": [
+        512,
+        512,
+        91
+      ],
+      "kvp": 120.0,
+      "imageType": [
+        "ORIGINAL",
+        "PRIMARY",
+        "AXIAL",
+        "CT_SOM5 SEQ",
+        "120KVP_EQ"
+      ],
+      "window": [
+        200.0,
+        600.0
+      ],
+      "origin": [
+        -74.037126953125,
+        -271.720127,
+        1683.25
+      ],
+      "direction": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "reconDiameter": 157.565521240234
+    },
+    "axial_st": {
+      "key": "axial_st",
+      "description": "AXIAL ST WO",
+      "seriesNumber": 4,
+      "kernel": "Br40d",
+      "sliceThickness": 3.0,
+      "sliceSpacing": 3.0,
+      "pixelSpacing": [
+        0.56256640625,
+        0.56256690647482
+      ],
+      "size": [
+        695,
+        512,
+        46
+      ],
+      "kvp": 120.0,
+      "imageType": [
+        "ORIGINAL",
+        "PRIMARY",
+        "AXIAL",
+        "CT_SOM5 SEQ"
+      ],
+      "window": [
+        40.0,
+        400.0
+      ],
+      "origin": [
+        -210.0981796875,
+        -308.3551796875,
+        1683.25
+      ],
+      "direction": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "reconDiameter": 390.995249271
+    },
+    "axial_lung": {
+      "key": "axial_lung",
+      "description": "AXIAL LUNG WO",
+      "seriesNumber": 6,
+      "kernel": "Bl64d",
+      "sliceThickness": 3.0,
+      "sliceSpacing": 3.0,
+      "pixelSpacing": [
+        0.56256640625,
+        0.56256690647482
+      ],
+      "size": [
+        695,
+        512,
+        46
+      ],
+      "kvp": 120.0,
+      "imageType": [
+        "ORIGINAL",
+        "PRIMARY",
+        "AXIAL",
+        "CT_SOM5 SEQ"
+      ],
+      "window": [
+        -700.0,
+        1500.0
+      ],
+      "origin": [
+        -210.0981796875,
+        -308.3551796875,
+        1683.25
+      ],
+      "direction": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "reconDiameter": 390.995249271
+    },
+    "cor_st": {
+      "key": "cor_st",
+      "description": "COR ST WO",
+      "seriesNumber": 8,
+      "kernel": "Br40d",
+      "sliceThickness": 4.0,
+      "sliceSpacing": 2.0,
+      "pixelSpacing": [
+        0.26953125,
+        0.2695313577
+      ],
+      "size": [
+        1451,
+        512,
+        143
+      ],
+      "kvp": 120.0,
+      "imageType": [
+        "ORIGINAL",
+        "PRIMARY",
+        "AXIAL",
+        "CT_SOM5 SEQ"
+      ],
+      "window": [
+        40.0,
+        400.0
+      ],
+      "origin": [
+        -210.1510762,
+        -306.737,
+        1819.36807617187
+      ],
+      "direction": [
+        1.0,
+        0.0,
+        -0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "reconDiameter": 390.995249271
+    },
+    "sag_st": {
+      "key": "sag_st",
+      "description": "SAG ST WO",
+      "seriesNumber": 10,
+      "kernel": "Br40d",
+      "sliceThickness": 4.0,
+      "sliceSpacing": 2.0,
+      "pixelSpacing": [
+        0.26953125,
+        0.2695313377
+      ],
+      "size": [
+        1069,
+        512,
+        194
+      ],
+      "kvp": 120.0,
+      "imageType": [
+        "ORIGINAL",
+        "PRIMARY",
+        "AXIAL",
+        "CT_SOM5 SEQ"
+      ],
+      "window": [
+        40.0,
+        400.0
+      ],
+      "origin": [
+        177.514,
+        -308.503124,
+        1819.46862402344
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        -1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "reconDiameter": 288.033149718
+    },
+    "axial_lung_mip": {
+      "key": "axial_lung_mip",
+      "description": "AXIAL LUNG MIP",
+      "seriesNumber": 12,
+      "kernel": "Bl64d",
+      "sliceThickness": 10.0,
+      "sliceSpacing": 2.0,
+      "pixelSpacing": [
+        0.56256640625,
+        0.56256690647482
+      ],
+      "size": [
+        695,
+        512,
+        65
+      ],
+      "kvp": 120.0,
+      "imageType": [
+        "ORIGINAL",
+        "PRIMARY",
+        "AXIAL",
+        "CT_SOM5 SEQ"
+      ],
+      "window": [
+        -600.0,
+        1200.0
+      ],
+      "origin": [
+        -210.0981796875,
+        -308.3551796875,
+        1686.75
+      ],
+      "direction": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "reconDiameter": 390.995249271
+    },
+    "thin_lung": {
+      "key": "thin_lung",
+      "description": "SURG PLANNING LUNG",
+      "seriesNumber": 14,
+      "kernel": "Bl64d",
+      "sliceThickness": 1.5,
+      "sliceSpacing": 0.75,
+      "pixelSpacing": [
+        0.74437890625,
+        0.74437890625
+      ],
+      "size": [
+        512,
+        512,
+        183
+      ],
+      "kvp": 120.0,
+      "imageType": [
+        "ORIGINAL",
+        "PRIMARY",
+        "AXIAL",
+        "CT_SOM5 SEQ"
+      ],
+      "window": [
+        -600.0,
+        1200.0
+      ],
+      "origin": [
+        -204.1498105,
+        -348.0898105,
+        1682.5
+      ],
+      "direction": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "reconDiameter": 381.121808085
+    },
+    "cr_vessel_suppress": {
+      "key": "cr_vessel_suppress",
+      "description": "CR Vessel Suppress",
+      "seriesNumber": 2015,
+      "kernel": "",
+      "sliceThickness": 1.5,
+      "sliceSpacing": 0.75,
+      "pixelSpacing": [
+        0.74437890625,
+        0.74437890625
+      ],
+      "size": [
+        512,
+        512,
+        183
+      ],
+      "kvp": 120.0,
+      "imageType": [
+        "DERIVED",
+        "SECONDARY",
+        "C2001"
+      ],
+      "window": [
+        -600.0,
+        1200.0
+      ],
+      "origin": [
+        -204.1498105,
+        -348.0898105,
+        1682.5
+      ],
+      "direction": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "reconDiameter": 381.121808085
+    }
+  },
+  "topograms": {
+    "ap": {
+      "png": "topogram_ap.png",
+      "crop": [
+        18,
+        246,
+        0,
+        512
+      ],
+      "pixelSpacing": [
+        1.075630859375,
+        1.07563025210084
+      ],
+      "orientation": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "position": [
+        -274.8236846,
+        -150.0,
+        1895.82352941176
+      ],
+      "kvp": 100.0,
+      "shape": [
+        228,
+        512
+      ],
+      "scanRangeRows": [
+        53.4,
+        180.3
+      ]
+    },
+    "lateral": {
+      "png": "topogram_lat.png",
+      "crop": [
+        274,
+        494,
+        0,
+        512
+      ],
+      "pixelSpacing": [
+        1.075630859375,
+        1.07563025210084
+      ],
+      "orientation": [
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "position": [
+        0.0,
+        -424.8236846,
+        2162.82352941176
+      ],
+      "kvp": 140.0,
+      "shape": [
+        220,
+        512
+      ],
+      "scanRangeRows": [
+        45.6,
+        172.6
+      ]
+    }
+  },
+  "radiologistMeasurement": {
+    "label": "36.1mm",
+    "what": "Ascending aorta diameter (radiologist caliper)",
+    "series": "axial_st",
+    "instance": 13,
+    "pointsLPS": [
+      [
+        -42.03220405137537,
+        -185.9016885578842,
+        1782.25
+      ],
+      [
+        -14.760197435498242,
+        -209.6053905673899,
+        1782.25
+      ]
+    ],
+    "lengthMM": 36.133472484828935
+  },
+  "dose": {
+    "dlpTotal_mGycm": 31.39,
+    "ctdivol_mGy": 2.12,
+    "ssde_mGy": 2.87,
+    "waterEquivalentDiameter_cm": 27.4,
+    "kvp": 120,
+    "rotationTime_s": 0.25,
+    "mode": "Prospectively ECG-triggered sequential (step-and-shoot), 4 steps"
+  },
+  "ecg": {
+    "hrAvg": 85,
+    "hrMin": 82,
+    "hrMax": 88,
+    "scanPhase": "75%",
+    "reconPhase": "BestDiast 76%"
+  },
+  "clearRead": {
+    "lungVolumeRightL": 1.9,
+    "lungVolumeLeftL": 1.8,
+    "findings": 0,
+    "note": "ClearRead CT (Riverain) automated nodule detection: no findings."
+  },
+  "stl": [
+    {
+      "name": "heart",
+      "file": "print_heart.stl",
+      "bytes": 9000084,
+      "triangles": 180000,
+      "watertight": true,
+      "sizeMM": [
+        124.6,
+        134.1,
+        140.9
+      ]
+    },
+    {
+      "name": "ribcage",
+      "file": "print_ribcage.stl",
+      "bytes": 9000084,
+      "triangles": 180000,
+      "watertight": false,
+      "sizeMM": [
+        301.1,
+        136.7,
+        229.9
+      ]
+    },
+    {
+      "name": "lungs_airways",
+      "file": "print_lungs_airways.stl",
+      "bytes": 9000084,
+      "triangles": 180000,
+      "watertight": false,
+      "sizeMM": [
+        290.9,
+        136.7,
+        200.9
+      ]
+    }
+  ]
+}

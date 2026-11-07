@@ -1,0 +1,2622 @@
+{
+  "version": 1,
+  "generated": "2026-11-07T02:27:35",
+  "title": "Heart CT Explorer",
+  "exam": {
+    "Modality": "CT",
+    "StudyDescription": "CT CARDIAC CALCIUM SCORING ONLY",
+    "BodyPartExamined": "HEART",
+    "Manufacturer": "Siemens Healthineers",
+    "ManufacturerModelName": "SOMATOM X.ceed",
+    "SoftwareVersions": "syngo CT VB20A",
+    "ProtocolName": "CALCIUM SCORE",
+    "PatientSex": "M",
+    "PatientAge": "037Y",
+    "StudyDate": "20261105",
+    "KVP": 120.0,
+    "CTDIvol": "2.0135687907676116",
+    "RevolutionTime": "0.25",
+    "SingleCollimationWidth": "0.6",
+    "TotalCollimationWidth": "38.4",
+    "PatientPosition": "FFS"
+  },
+  "worldCenterLPS": [
+    4.594,
+    -203.565,
+    1744.472
+  ],
+  "volumes": [
+    {
+      "file": "vol/calcium.i16.gz",
+      "bytes": 23336946,
+      "rawBytes": 47710208,
+      "dtype": "int16",
+      "shuffle": true,
+      "dims": [
+        512,
+        512,
+        91
+      ],
+      "spacing": [
+        0.3077460825443268,
+        0.3077460825443268,
+        1.5
+      ],
+      "origin": [
+        -74.03712463378906,
+        -271.7201232910156,
+        1683.25
+      ],
+      "direction": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "key": "calcium",
+      "label": "Calcium score",
+      "description": "CALCIUM SCORE",
+      "blurb": "The heart-only, ECG-gated scan used for calcium scoring: 3 mm slices every 1.5 mm, 0.31 mm pixels.",
+      "kernel": "Sa36d",
+      "sliceThickness": 3.0,
+      "kvp": 120.0,
+      "defaultWindow": [
+        200,
+        600
+      ],
+      "group": "heart"
+    },
+    {
+      "file": "vol/axial_st.i16.gz",
+      "bytes": 12732495,
+      "rawBytes": 32737280,
+      "dtype": "int16",
+      "shuffle": true,
+      "dims": [
+        695,
+        512,
+        46
+      ],
+      "spacing": [
+        0.5625663995742798,
+        0.5625669360160828,
+        3.0
+      ],
+      "origin": [
+        -210.09817504882812,
+        -308.3551940917969,
+        1683.25
+      ],
+      "direction": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "key": "axial_st",
+      "label": "Chest \u00b7 soft tissue",
+      "description": "AXIAL ST WO",
+      "blurb": "Whole-chest axial slices (3 mm) with a smooth soft-tissue kernel: best for heart, vessels, mediastinum.",
+      "kernel": "Br40d",
+      "sliceThickness": 3.0,
+      "kvp": 120.0,
+      "defaultWindow": [
+        40,
+        400
+      ],
+      "group": "chest"
+    },
+    {
+      "file": "vol/axial_lung.i16.gz",
+      "bytes": 14558345,
+      "rawBytes": 32737280,
+      "dtype": "int16",
+      "shuffle": true,
+      "dims": [
+        695,
+        512,
+        46
+      ],
+      "spacing": [
+        0.5625663995742798,
+        0.5625669360160828,
+        3.0
+      ],
+      "origin": [
+        -210.09817504882812,
+        -308.3551940917969,
+        1683.25
+      ],
+      "direction": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "key": "axial_lung",
+      "label": "Chest \u00b7 lung",
+      "description": "AXIAL LUNG WO",
+      "blurb": "Same slices, sharp lung kernel: crisp lung detail.",
+      "kernel": "Bl64d",
+      "sliceThickness": 3.0,
+      "kvp": 120.0,
+      "defaultWindow": [
+        -600,
+        1500
+      ],
+      "group": "lung"
+    },
+    {
+      "file": "vol/thin_lung.i16.gz",
+      "bytes": 36248059,
+      "rawBytes": 95944704,
+      "dtype": "int16",
+      "shuffle": true,
+      "dims": [
+        512,
+        512,
+        183
+      ],
+      "spacing": [
+        0.744378924369812,
+        0.744378924369812,
+        0.75
+      ],
+      "origin": [
+        -204.14981079101562,
+        -348.0898132324219,
+        1682.5
+      ],
+      "direction": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "key": "thin_lung",
+      "label": "Thin lung (1.5 mm)",
+      "description": "SURG PLANNING LUNG",
+      "blurb": "Thin 1.5 mm slices every 0.75 mm: the sharpest 3D detail; the 3D model was built from this.",
+      "kernel": "Bl64d",
+      "sliceThickness": 1.5,
+      "kvp": 120.0,
+      "defaultWindow": [
+        -600,
+        1500
+      ],
+      "group": "lung"
+    },
+    {
+      "file": "vol/axial_lung_mip.i16.gz",
+      "bytes": 19920554,
+      "rawBytes": 46259200,
+      "dtype": "int16",
+      "shuffle": true,
+      "dims": [
+        695,
+        512,
+        65
+      ],
+      "spacing": [
+        0.5625663995742798,
+        0.5625669360160828,
+        2.0
+      ],
+      "origin": [
+        -210.09817504882812,
+        -308.3551940917969,
+        1686.75
+      ],
+      "direction": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "key": "axial_lung_mip",
+      "label": "Lung MIP (10 mm)",
+      "description": "AXIAL LUNG MIP",
+      "blurb": "Maximum-intensity projection slabs: vessels look like branching tubes, nodules like dots.",
+      "kernel": "Bl64d",
+      "sliceThickness": 10.0,
+      "kvp": 120.0,
+      "defaultWindow": [
+        -600,
+        1200
+      ],
+      "group": "lung"
+    },
+    {
+      "file": "vol/cr_vessel_suppress.i16.gz",
+      "bytes": 33447726,
+      "rawBytes": 95944704,
+      "dtype": "int16",
+      "shuffle": true,
+      "dims": [
+        512,
+        512,
+        183
+      ],
+      "spacing": [
+        0.744378924369812,
+        0.744378924369812,
+        0.75
+      ],
+      "origin": [
+        -204.14981079101562,
+        -348.0898132324219,
+        1682.5
+      ],
+      "direction": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "key": "cr_vessel_suppress",
+      "label": "AI vessel-suppressed",
+      "description": "CR Vessel Suppress",
+      "blurb": "Riverain ClearRead CT: AI digitally erased the blood vessels so lung nodules can't hide. It found none.",
+      "kernel": "",
+      "sliceThickness": 1.5,
+      "kvp": 120.0,
+      "defaultWindow": [
+        -600,
+        1200
+      ],
+      "group": "ai"
+    },
+    {
+      "file": "vol/cor_st.i16.gz",
+      "bytes": 19920064,
+      "rawBytes": 53081600,
+      "dtype": "int16",
+      "shuffle": true,
+      "dims": [
+        725,
+        256,
+        143
+      ],
+      "spacing": [
+        0.5390625,
+        0.5390627384185791,
+        2.0
+      ],
+      "origin": [
+        -210.0163116455078,
+        -306.73699951171875,
+        1819.2332763075829
+      ],
+      "direction": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        -0.0,
+        1.0,
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "key": "cor_st",
+      "label": "Coronal (radiologist)",
+      "description": "COR ST WO",
+      "blurb": "The scanner's own coronal soft-tissue reformats (4 mm), downsampled 2x for the web.",
+      "kernel": "Br40d",
+      "sliceThickness": 4.0,
+      "kvp": 120.0,
+      "defaultWindow": [
+        40,
+        400
+      ],
+      "group": "chest"
+    },
+    {
+      "file": "vol/sag_st.i16.gz",
+      "bytes": 20249673,
+      "rawBytes": 53041152,
+      "dtype": "int16",
+      "shuffle": true,
+      "dims": [
+        534,
+        256,
+        194
+      ],
+      "spacing": [
+        0.5390625,
+        0.5390626788139343,
+        2.0
+      ],
+      "origin": [
+        177.51400756835938,
+        -308.36834716796875,
+        1819.333862259984
+      ],
+      "direction": [
+        0.0,
+        0.0,
+        -1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "key": "sag_st",
+      "label": "Sagittal (radiologist)",
+      "description": "SAG ST WO",
+      "blurb": "The scanner's own sagittal soft-tissue reformats (4 mm), downsampled 2x for the web.",
+      "kernel": "Br40d",
+      "sliceThickness": 4.0,
+      "kvp": 120.0,
+      "defaultWindow": [
+        40,
+        400
+      ],
+      "group": "chest"
+    }
+  ],
+  "labels": {
+    "file": "vol/labels.u8.gz",
+    "bytes": 796852,
+    "rawBytes": 47972352,
+    "dtype": "uint8",
+    "shuffle": false,
+    "dims": [
+      512,
+      512,
+      183
+    ],
+    "spacing": [
+      0.744378924369812,
+      0.744378924369812,
+      0.75
+    ],
+    "origin": [
+      -204.14981079101562,
+      -348.0898132324219,
+      1682.5
+    ],
+    "direction": [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "classes": [
+      {
+        "id": 1,
+        "name": "body_trunc",
+        "display": "Skin & soft tissue",
+        "color": "#d9a58f",
+        "group": "body",
+        "volumeML": 5138.2,
+        "source": "body"
+      },
+      {
+        "id": 2,
+        "name": "lung_upper_lobe_left",
+        "display": "Left upper lobe",
+        "color": "#7fd3ff",
+        "group": "lungs",
+        "volumeML": 667.2,
+        "source": "total"
+      },
+      {
+        "id": 3,
+        "name": "lung_lower_lobe_left",
+        "display": "Left lower lobe",
+        "color": "#5ab7f0",
+        "group": "lungs",
+        "volumeML": 921.7,
+        "source": "total"
+      },
+      {
+        "id": 4,
+        "name": "lung_upper_lobe_right",
+        "display": "Right upper lobe",
+        "color": "#8ee6c8",
+        "group": "lungs",
+        "volumeML": 386.9,
+        "source": "total"
+      },
+      {
+        "id": 5,
+        "name": "lung_middle_lobe_right",
+        "display": "Right middle lobe",
+        "color": "#b8ec8c",
+        "group": "lungs",
+        "volumeML": 436.6,
+        "source": "total"
+      },
+      {
+        "id": 6,
+        "name": "lung_lower_lobe_right",
+        "display": "Right lower lobe",
+        "color": "#66cfb0",
+        "group": "lungs",
+        "volumeML": 874.8,
+        "source": "total"
+      },
+      {
+        "id": 7,
+        "name": "pericardium",
+        "display": "Pericardial sac & fat",
+        "color": "#ffd27a",
+        "group": "heart",
+        "volumeML": 107.1,
+        "source": "cav"
+      },
+      {
+        "id": 8,
+        "name": "liver",
+        "display": "Liver (dome)",
+        "color": "#9b3f30",
+        "group": "abdomen",
+        "volumeML": 504.4,
+        "source": "total"
+      },
+      {
+        "id": 9,
+        "name": "spleen",
+        "display": "Spleen (tip)",
+        "color": "#7a3069",
+        "group": "abdomen",
+        "volumeML": 75.8,
+        "source": "total"
+      },
+      {
+        "id": 10,
+        "name": "stomach",
+        "display": "Stomach (fundus)",
+        "color": "#e2a96b",
+        "group": "abdomen",
+        "volumeML": 79.8,
+        "source": "total"
+      },
+      {
+        "id": 11,
+        "name": "colon",
+        "display": "Colon (splenic flexure)",
+        "color": "#c79a63",
+        "group": "abdomen",
+        "volumeML": 10.9,
+        "source": "total"
+      },
+      {
+        "id": 12,
+        "name": "autochthon_left",
+        "display": "Left back muscles",
+        "color": "#b5544a",
+        "group": "muscle",
+        "volumeML": 90.1,
+        "source": "total"
+      },
+      {
+        "id": 13,
+        "name": "autochthon_right",
+        "display": "Right back muscles",
+        "color": "#b5544a",
+        "group": "muscle",
+        "volumeML": 91.0,
+        "source": "total"
+      },
+      {
+        "id": 14,
+        "name": "esophagus",
+        "display": "Esophagus",
+        "color": "#e7a77a",
+        "group": "airways",
+        "volumeML": 17.0,
+        "source": "total"
+      },
+      {
+        "id": 15,
+        "name": "heart_myocardium",
+        "display": "Heart muscle (LV myocardium)",
+        "color": "#b8323f",
+        "group": "heart",
+        "volumeML": 95.5,
+        "source": "v1"
+      },
+      {
+        "id": 16,
+        "name": "heart_ventricle_left",
+        "display": "Left ventricle",
+        "color": "#ff5d6c",
+        "group": "heart",
+        "volumeML": 83.7,
+        "source": "v1"
+      },
+      {
+        "id": 17,
+        "name": "heart_ventricle_right",
+        "display": "Right ventricle",
+        "color": "#5f80ff",
+        "group": "heart",
+        "volumeML": 128.8,
+        "source": "v1"
+      },
+      {
+        "id": 18,
+        "name": "heart_atrium_left",
+        "display": "Left atrium",
+        "color": "#ff8f7d",
+        "group": "heart",
+        "volumeML": 40.2,
+        "source": "v1"
+      },
+      {
+        "id": 19,
+        "name": "heart_atrium_right",
+        "display": "Right atrium",
+        "color": "#82a6ff",
+        "group": "heart",
+        "volumeML": 52.4,
+        "source": "v1"
+      },
+      {
+        "id": 20,
+        "name": "atrial_appendage_left",
+        "display": "Left atrial appendage",
+        "color": "#ffae8f",
+        "group": "heart",
+        "volumeML": 3.4,
+        "source": "total"
+      },
+      {
+        "id": 21,
+        "name": "aorta",
+        "display": "Aorta",
+        "color": "#ff2d3f",
+        "group": "vessels",
+        "volumeML": 110.6,
+        "source": "total"
+      },
+      {
+        "id": 22,
+        "name": "pulmonary_artery",
+        "display": "Pulmonary artery",
+        "color": "#3e6bff",
+        "group": "vessels",
+        "volumeML": 48.3,
+        "source": "v1"
+      },
+      {
+        "id": 23,
+        "name": "pulmonary_vein",
+        "display": "Pulmonary veins",
+        "color": "#ff7759",
+        "group": "vessels",
+        "volumeML": 19.6,
+        "source": "total"
+      },
+      {
+        "id": 24,
+        "name": "superior_vena_cava",
+        "display": "Superior vena cava",
+        "color": "#4f72d8",
+        "group": "vessels",
+        "volumeML": 7.7,
+        "source": "total"
+      },
+      {
+        "id": 25,
+        "name": "inferior_vena_cava",
+        "display": "Inferior vena cava",
+        "color": "#4f72d8",
+        "group": "vessels",
+        "volumeML": 16.3,
+        "source": "total"
+      },
+      {
+        "id": 26,
+        "name": "lung_arteries",
+        "display": "Lung arteries",
+        "color": "#5a86ff",
+        "group": "vessels",
+        "volumeML": 118.4,
+        "source": "lv"
+      },
+      {
+        "id": 27,
+        "name": "lung_veins",
+        "display": "Lung veins",
+        "color": "#ff6e6e",
+        "group": "vessels",
+        "volumeML": 111.6,
+        "source": "lv"
+      },
+      {
+        "id": 28,
+        "name": "trachea",
+        "display": "Trachea",
+        "color": "#a8dcff",
+        "group": "airways",
+        "volumeML": 12.3,
+        "source": "total"
+      },
+      {
+        "id": 29,
+        "name": "lung_airways",
+        "display": "Bronchial tree",
+        "color": "#c9eeff",
+        "group": "airways",
+        "volumeML": 22.5,
+        "source": "lv"
+      },
+      {
+        "id": 30,
+        "name": "costal_cartilages",
+        "display": "Costal cartilage",
+        "color": "#bfe3dc",
+        "group": "bones",
+        "volumeML": 91.8,
+        "source": "total"
+      },
+      {
+        "id": 31,
+        "name": "sternum",
+        "display": "Sternum",
+        "color": "#f3e8d0",
+        "group": "bones",
+        "volumeML": 31.6,
+        "source": "total"
+      },
+      {
+        "id": 32,
+        "name": "scapula_left",
+        "display": "Left scapula",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 25.2,
+        "source": "total"
+      },
+      {
+        "id": 33,
+        "name": "scapula_right",
+        "display": "Right scapula",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 26.1,
+        "source": "total"
+      },
+      {
+        "id": 34,
+        "name": "vertebrae_T5",
+        "display": "T5 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "volumeML": 0.7,
+        "source": "v1"
+      },
+      {
+        "id": 35,
+        "name": "vertebrae_T6",
+        "display": "T6 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "volumeML": 16.0,
+        "source": "v1"
+      },
+      {
+        "id": 36,
+        "name": "vertebrae_T7",
+        "display": "T7 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "volumeML": 23.1,
+        "source": "v1"
+      },
+      {
+        "id": 37,
+        "name": "vertebrae_T8",
+        "display": "T8 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "volumeML": 25.9,
+        "source": "v1"
+      },
+      {
+        "id": 38,
+        "name": "vertebrae_T9",
+        "display": "T9 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "volumeML": 26.1,
+        "source": "v1"
+      },
+      {
+        "id": 39,
+        "name": "vertebrae_T10",
+        "display": "T10 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "volumeML": 30.4,
+        "source": "v1"
+      },
+      {
+        "id": 40,
+        "name": "vertebrae_T11",
+        "display": "T11 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "volumeML": 31.2,
+        "source": "v1"
+      },
+      {
+        "id": 41,
+        "name": "vertebrae_T12",
+        "display": "T12 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "volumeML": 0.9,
+        "source": "v1"
+      },
+      {
+        "id": 42,
+        "name": "rib_left_3",
+        "display": "Left 3rd rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 4.4,
+        "source": "total"
+      },
+      {
+        "id": 43,
+        "name": "rib_left_4",
+        "display": "Left 4th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 9.5,
+        "source": "total"
+      },
+      {
+        "id": 44,
+        "name": "rib_left_5",
+        "display": "Left 5th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 11.3,
+        "source": "total"
+      },
+      {
+        "id": 45,
+        "name": "rib_left_6",
+        "display": "Left 6th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 16.2,
+        "source": "total"
+      },
+      {
+        "id": 46,
+        "name": "rib_left_7",
+        "display": "Left 7th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 17.6,
+        "source": "total"
+      },
+      {
+        "id": 47,
+        "name": "rib_left_8",
+        "display": "Left 8th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 12.9,
+        "source": "total"
+      },
+      {
+        "id": 48,
+        "name": "rib_left_9",
+        "display": "Left 9th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 10.0,
+        "source": "total"
+      },
+      {
+        "id": 49,
+        "name": "rib_left_10",
+        "display": "Left 10th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 5.9,
+        "source": "total"
+      },
+      {
+        "id": 50,
+        "name": "rib_left_11",
+        "display": "Left 11th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 3.7,
+        "source": "total"
+      },
+      {
+        "id": 51,
+        "name": "rib_right_3",
+        "display": "Right 3rd rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 4.2,
+        "source": "total"
+      },
+      {
+        "id": 52,
+        "name": "rib_right_4",
+        "display": "Right 4th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 9.5,
+        "source": "total"
+      },
+      {
+        "id": 53,
+        "name": "rib_right_5",
+        "display": "Right 5th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 12.5,
+        "source": "total"
+      },
+      {
+        "id": 54,
+        "name": "rib_right_6",
+        "display": "Right 6th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 19.3,
+        "source": "total"
+      },
+      {
+        "id": 55,
+        "name": "rib_right_7",
+        "display": "Right 7th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 16.5,
+        "source": "total"
+      },
+      {
+        "id": 56,
+        "name": "rib_right_8",
+        "display": "Right 8th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 12.2,
+        "source": "total"
+      },
+      {
+        "id": 57,
+        "name": "rib_right_9",
+        "display": "Right 9th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 8.3,
+        "source": "total"
+      },
+      {
+        "id": 58,
+        "name": "rib_right_10",
+        "display": "Right 10th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 2.8,
+        "source": "total"
+      },
+      {
+        "id": 59,
+        "name": "rib_right_11",
+        "display": "Right 11th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 0.7,
+        "source": "total"
+      },
+      {
+        "id": 60,
+        "name": "spinal_cord",
+        "display": "Spinal cord",
+        "color": "#ffe27a",
+        "group": "bones",
+        "volumeML": 28.7,
+        "source": "total"
+      }
+    ]
+  },
+  "lesions": {
+    "file": "vol/calcium_candidates.u8.gz",
+    "bytes": 24263,
+    "rawBytes": 23855104,
+    "dtype": "uint8",
+    "shuffle": false,
+    "dims": [
+      512,
+      512,
+      91
+    ],
+    "spacing": [
+      0.3077460825443268,
+      0.3077460825443268,
+      1.5
+    ],
+    "origin": [
+      -74.03712463378906,
+      -271.7201232910156,
+      1683.25
+    ],
+    "direction": [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "classes": [
+      {
+        "id": 1,
+        "name": "cand_1",
+        "display": "Candidate #1",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 2,
+        "name": "cand_2",
+        "display": "Candidate #2",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 3,
+        "name": "cand_3",
+        "display": "Candidate #3",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 4,
+        "name": "cand_4",
+        "display": "Candidate #4",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 5,
+        "name": "cand_5",
+        "display": "Candidate #5",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 6,
+        "name": "cand_6",
+        "display": "Candidate #6",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 7,
+        "name": "cand_7",
+        "display": "Candidate #7",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 8,
+        "name": "cand_8",
+        "display": "Candidate #8",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 9,
+        "name": "cand_9",
+        "display": "Candidate #9",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 10,
+        "name": "cand_10",
+        "display": "Candidate #10",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 11,
+        "name": "cand_11",
+        "display": "Candidate #11",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 12,
+        "name": "cand_12",
+        "display": "Candidate #12",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 13,
+        "name": "cand_13",
+        "display": "Candidate #13",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 14,
+        "name": "cand_14",
+        "display": "Candidate #14",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 15,
+        "name": "cand_15",
+        "display": "Candidate #15",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 16,
+        "name": "cand_16",
+        "display": "Candidate #16",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 17,
+        "name": "cand_17",
+        "display": "Candidate #17",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 18,
+        "name": "cand_18",
+        "display": "Candidate #18",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 19,
+        "name": "cand_19",
+        "display": "Candidate #19",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 20,
+        "name": "cand_20",
+        "display": "Candidate #20",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 21,
+        "name": "cand_21",
+        "display": "Candidate #21",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 22,
+        "name": "cand_22",
+        "display": "Candidate #22",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 23,
+        "name": "cand_23",
+        "display": "Candidate #23",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 24,
+        "name": "cand_24",
+        "display": "Candidate #24",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 25,
+        "name": "cand_25",
+        "display": "Candidate #25",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 26,
+        "name": "cand_26",
+        "display": "Candidate #26",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 27,
+        "name": "cand_27",
+        "display": "Candidate #27",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 28,
+        "name": "cand_28",
+        "display": "Candidate #28",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 29,
+        "name": "cand_29",
+        "display": "Candidate #29",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 30,
+        "name": "cand_30",
+        "display": "Candidate #30",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 31,
+        "name": "cand_31",
+        "display": "Candidate #31",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 32,
+        "name": "cand_32",
+        "display": "Candidate #32",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 33,
+        "name": "cand_33",
+        "display": "Candidate #33",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 34,
+        "name": "cand_34",
+        "display": "Candidate #34",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 35,
+        "name": "cand_35",
+        "display": "Candidate #35",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 36,
+        "name": "cand_36",
+        "display": "Candidate #36",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 37,
+        "name": "cand_37",
+        "display": "Candidate #37",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 38,
+        "name": "cand_38",
+        "display": "Candidate #38",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 39,
+        "name": "cand_39",
+        "display": "Candidate #39",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 40,
+        "name": "cand_40",
+        "display": "Candidate #40",
+        "color": "#64d2ff",
+        "group": "noise"
+      },
+      {
+        "id": 41,
+        "name": "cand_41",
+        "display": "Candidate #41",
+        "color": "#64d2ff",
+        "group": "noise"
+      }
+    ]
+  },
+  "render": {
+    "file": "vol/render.u8.gz",
+    "bytes": 5309588,
+    "rawBytes": 11993088,
+    "dtype": "uint8",
+    "shuffle": false,
+    "dims": [
+      256,
+      256,
+      183
+    ],
+    "spacing": [
+      1.488757848739624,
+      1.488757848739624,
+      0.75
+    ],
+    "origin": [
+      -203.77762132883072,
+      -347.71762377023697,
+      1682.5
+    ],
+    "direction": [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "huMin": -1024.0,
+    "huMax": 1976.0
+  },
+  "renderLabels": {
+    "file": "vol/render_labels.u8.gz",
+    "bytes": 469987,
+    "rawBytes": 11993088,
+    "dtype": "uint8",
+    "shuffle": false,
+    "dims": [
+      256,
+      256,
+      183
+    ],
+    "spacing": [
+      1.488757848739624,
+      1.488757848739624,
+      0.75
+    ],
+    "origin": [
+      -203.77762132883072,
+      -347.71762377023697,
+      1682.5
+    ],
+    "direction": [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "classes": [
+      {
+        "id": 1,
+        "name": "body_trunc",
+        "display": "Skin & soft tissue",
+        "color": "#d9a58f",
+        "group": "body",
+        "volumeML": 5138.2,
+        "source": "body"
+      },
+      {
+        "id": 2,
+        "name": "lung_upper_lobe_left",
+        "display": "Left upper lobe",
+        "color": "#7fd3ff",
+        "group": "lungs",
+        "volumeML": 667.2,
+        "source": "total"
+      },
+      {
+        "id": 3,
+        "name": "lung_lower_lobe_left",
+        "display": "Left lower lobe",
+        "color": "#5ab7f0",
+        "group": "lungs",
+        "volumeML": 921.7,
+        "source": "total"
+      },
+      {
+        "id": 4,
+        "name": "lung_upper_lobe_right",
+        "display": "Right upper lobe",
+        "color": "#8ee6c8",
+        "group": "lungs",
+        "volumeML": 386.9,
+        "source": "total"
+      },
+      {
+        "id": 5,
+        "name": "lung_middle_lobe_right",
+        "display": "Right middle lobe",
+        "color": "#b8ec8c",
+        "group": "lungs",
+        "volumeML": 436.6,
+        "source": "total"
+      },
+      {
+        "id": 6,
+        "name": "lung_lower_lobe_right",
+        "display": "Right lower lobe",
+        "color": "#66cfb0",
+        "group": "lungs",
+        "volumeML": 874.8,
+        "source": "total"
+      },
+      {
+        "id": 7,
+        "name": "pericardium",
+        "display": "Pericardial sac & fat",
+        "color": "#ffd27a",
+        "group": "heart",
+        "volumeML": 107.1,
+        "source": "cav"
+      },
+      {
+        "id": 8,
+        "name": "liver",
+        "display": "Liver (dome)",
+        "color": "#9b3f30",
+        "group": "abdomen",
+        "volumeML": 504.4,
+        "source": "total"
+      },
+      {
+        "id": 9,
+        "name": "spleen",
+        "display": "Spleen (tip)",
+        "color": "#7a3069",
+        "group": "abdomen",
+        "volumeML": 75.8,
+        "source": "total"
+      },
+      {
+        "id": 10,
+        "name": "stomach",
+        "display": "Stomach (fundus)",
+        "color": "#e2a96b",
+        "group": "abdomen",
+        "volumeML": 79.8,
+        "source": "total"
+      },
+      {
+        "id": 11,
+        "name": "colon",
+        "display": "Colon (splenic flexure)",
+        "color": "#c79a63",
+        "group": "abdomen",
+        "volumeML": 10.9,
+        "source": "total"
+      },
+      {
+        "id": 12,
+        "name": "autochthon_left",
+        "display": "Left back muscles",
+        "color": "#b5544a",
+        "group": "muscle",
+        "volumeML": 90.1,
+        "source": "total"
+      },
+      {
+        "id": 13,
+        "name": "autochthon_right",
+        "display": "Right back muscles",
+        "color": "#b5544a",
+        "group": "muscle",
+        "volumeML": 91.0,
+        "source": "total"
+      },
+      {
+        "id": 14,
+        "name": "esophagus",
+        "display": "Esophagus",
+        "color": "#e7a77a",
+        "group": "airways",
+        "volumeML": 17.0,
+        "source": "total"
+      },
+      {
+        "id": 15,
+        "name": "heart_myocardium",
+        "display": "Heart muscle (LV myocardium)",
+        "color": "#b8323f",
+        "group": "heart",
+        "volumeML": 95.5,
+        "source": "v1"
+      },
+      {
+        "id": 16,
+        "name": "heart_ventricle_left",
+        "display": "Left ventricle",
+        "color": "#ff5d6c",
+        "group": "heart",
+        "volumeML": 83.7,
+        "source": "v1"
+      },
+      {
+        "id": 17,
+        "name": "heart_ventricle_right",
+        "display": "Right ventricle",
+        "color": "#5f80ff",
+        "group": "heart",
+        "volumeML": 128.8,
+        "source": "v1"
+      },
+      {
+        "id": 18,
+        "name": "heart_atrium_left",
+        "display": "Left atrium",
+        "color": "#ff8f7d",
+        "group": "heart",
+        "volumeML": 40.2,
+        "source": "v1"
+      },
+      {
+        "id": 19,
+        "name": "heart_atrium_right",
+        "display": "Right atrium",
+        "color": "#82a6ff",
+        "group": "heart",
+        "volumeML": 52.4,
+        "source": "v1"
+      },
+      {
+        "id": 20,
+        "name": "atrial_appendage_left",
+        "display": "Left atrial appendage",
+        "color": "#ffae8f",
+        "group": "heart",
+        "volumeML": 3.4,
+        "source": "total"
+      },
+      {
+        "id": 21,
+        "name": "aorta",
+        "display": "Aorta",
+        "color": "#ff2d3f",
+        "group": "vessels",
+        "volumeML": 110.6,
+        "source": "total"
+      },
+      {
+        "id": 22,
+        "name": "pulmonary_artery",
+        "display": "Pulmonary artery",
+        "color": "#3e6bff",
+        "group": "vessels",
+        "volumeML": 48.3,
+        "source": "v1"
+      },
+      {
+        "id": 23,
+        "name": "pulmonary_vein",
+        "display": "Pulmonary veins",
+        "color": "#ff7759",
+        "group": "vessels",
+        "volumeML": 19.6,
+        "source": "total"
+      },
+      {
+        "id": 24,
+        "name": "superior_vena_cava",
+        "display": "Superior vena cava",
+        "color": "#4f72d8",
+        "group": "vessels",
+        "volumeML": 7.7,
+        "source": "total"
+      },
+      {
+        "id": 25,
+        "name": "inferior_vena_cava",
+        "display": "Inferior vena cava",
+        "color": "#4f72d8",
+        "group": "vessels",
+        "volumeML": 16.3,
+        "source": "total"
+      },
+      {
+        "id": 26,
+        "name": "lung_arteries",
+        "display": "Lung arteries",
+        "color": "#5a86ff",
+        "group": "vessels",
+        "volumeML": 118.4,
+        "source": "lv"
+      },
+      {
+        "id": 27,
+        "name": "lung_veins",
+        "display": "Lung veins",
+        "color": "#ff6e6e",
+        "group": "vessels",
+        "volumeML": 111.6,
+        "source": "lv"
+      },
+      {
+        "id": 28,
+        "name": "trachea",
+        "display": "Trachea",
+        "color": "#a8dcff",
+        "group": "airways",
+        "volumeML": 12.3,
+        "source": "total"
+      },
+      {
+        "id": 29,
+        "name": "lung_airways",
+        "display": "Bronchial tree",
+        "color": "#c9eeff",
+        "group": "airways",
+        "volumeML": 22.5,
+        "source": "lv"
+      },
+      {
+        "id": 30,
+        "name": "costal_cartilages",
+        "display": "Costal cartilage",
+        "color": "#bfe3dc",
+        "group": "bones",
+        "volumeML": 91.8,
+        "source": "total"
+      },
+      {
+        "id": 31,
+        "name": "sternum",
+        "display": "Sternum",
+        "color": "#f3e8d0",
+        "group": "bones",
+        "volumeML": 31.6,
+        "source": "total"
+      },
+      {
+        "id": 32,
+        "name": "scapula_left",
+        "display": "Left scapula",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 25.2,
+        "source": "total"
+      },
+      {
+        "id": 33,
+        "name": "scapula_right",
+        "display": "Right scapula",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 26.1,
+        "source": "total"
+      },
+      {
+        "id": 34,
+        "name": "vertebrae_T5",
+        "display": "T5 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "volumeML": 0.7,
+        "source": "v1"
+      },
+      {
+        "id": 35,
+        "name": "vertebrae_T6",
+        "display": "T6 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "volumeML": 16.0,
+        "source": "v1"
+      },
+      {
+        "id": 36,
+        "name": "vertebrae_T7",
+        "display": "T7 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "volumeML": 23.1,
+        "source": "v1"
+      },
+      {
+        "id": 37,
+        "name": "vertebrae_T8",
+        "display": "T8 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "volumeML": 25.9,
+        "source": "v1"
+      },
+      {
+        "id": 38,
+        "name": "vertebrae_T9",
+        "display": "T9 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "volumeML": 26.1,
+        "source": "v1"
+      },
+      {
+        "id": 39,
+        "name": "vertebrae_T10",
+        "display": "T10 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "volumeML": 30.4,
+        "source": "v1"
+      },
+      {
+        "id": 40,
+        "name": "vertebrae_T11",
+        "display": "T11 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "volumeML": 31.2,
+        "source": "v1"
+      },
+      {
+        "id": 41,
+        "name": "vertebrae_T12",
+        "display": "T12 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "volumeML": 0.9,
+        "source": "v1"
+      },
+      {
+        "id": 42,
+        "name": "rib_left_3",
+        "display": "Left 3rd rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 4.4,
+        "source": "total"
+      },
+      {
+        "id": 43,
+        "name": "rib_left_4",
+        "display": "Left 4th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 9.5,
+        "source": "total"
+      },
+      {
+        "id": 44,
+        "name": "rib_left_5",
+        "display": "Left 5th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 11.3,
+        "source": "total"
+      },
+      {
+        "id": 45,
+        "name": "rib_left_6",
+        "display": "Left 6th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 16.2,
+        "source": "total"
+      },
+      {
+        "id": 46,
+        "name": "rib_left_7",
+        "display": "Left 7th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 17.6,
+        "source": "total"
+      },
+      {
+        "id": 47,
+        "name": "rib_left_8",
+        "display": "Left 8th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 12.9,
+        "source": "total"
+      },
+      {
+        "id": 48,
+        "name": "rib_left_9",
+        "display": "Left 9th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 10.0,
+        "source": "total"
+      },
+      {
+        "id": 49,
+        "name": "rib_left_10",
+        "display": "Left 10th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 5.9,
+        "source": "total"
+      },
+      {
+        "id": 50,
+        "name": "rib_left_11",
+        "display": "Left 11th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 3.7,
+        "source": "total"
+      },
+      {
+        "id": 51,
+        "name": "rib_right_3",
+        "display": "Right 3rd rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 4.2,
+        "source": "total"
+      },
+      {
+        "id": 52,
+        "name": "rib_right_4",
+        "display": "Right 4th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 9.5,
+        "source": "total"
+      },
+      {
+        "id": 53,
+        "name": "rib_right_5",
+        "display": "Right 5th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 12.5,
+        "source": "total"
+      },
+      {
+        "id": 54,
+        "name": "rib_right_6",
+        "display": "Right 6th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 19.3,
+        "source": "total"
+      },
+      {
+        "id": 55,
+        "name": "rib_right_7",
+        "display": "Right 7th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 16.5,
+        "source": "total"
+      },
+      {
+        "id": 56,
+        "name": "rib_right_8",
+        "display": "Right 8th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 12.2,
+        "source": "total"
+      },
+      {
+        "id": 57,
+        "name": "rib_right_9",
+        "display": "Right 9th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 8.3,
+        "source": "total"
+      },
+      {
+        "id": 58,
+        "name": "rib_right_10",
+        "display": "Right 10th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 2.8,
+        "source": "total"
+      },
+      {
+        "id": 59,
+        "name": "rib_right_11",
+        "display": "Right 11th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "volumeML": 0.7,
+        "source": "total"
+      },
+      {
+        "id": 60,
+        "name": "spinal_cord",
+        "display": "Spinal cord",
+        "color": "#ffe27a",
+        "group": "bones",
+        "volumeML": 28.7,
+        "source": "total"
+      }
+    ]
+  },
+  "heartRender": {
+    "file": "vol/heart_render.u8.gz",
+    "bytes": 2858440,
+    "rawBytes": 5963776,
+    "dtype": "uint8",
+    "shuffle": false,
+    "dims": [
+      256,
+      256,
+      91
+    ],
+    "spacing": [
+      0.6154921650886536,
+      0.6154921650886536,
+      1.5
+    ],
+    "origin": [
+      -73.8832515925169,
+      -271.56625024974346,
+      1683.25
+    ],
+    "direction": [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "huMin": -1024.0,
+    "huMax": 1976.0
+  },
+  "meshes": {
+    "file": "mesh/anatomy.glb",
+    "bytes": 6968764,
+    "nodes": [
+      {
+        "name": "body_trunc",
+        "display": "Skin & soft tissue",
+        "color": "#d9a58f",
+        "group": "body",
+        "triangles": 60000,
+        "volumeML": 10808.0,
+        "defaultVisible": false,
+        "defaultOpacity": 0.12,
+        "source": "body"
+      },
+      {
+        "name": "lung_upper_lobe_left",
+        "display": "Left upper lobe",
+        "color": "#7fd3ff",
+        "group": "lungs",
+        "triangles": 37854,
+        "volumeML": 710.6,
+        "defaultVisible": true,
+        "defaultOpacity": 0.14,
+        "source": "total"
+      },
+      {
+        "name": "lung_lower_lobe_left",
+        "display": "Left lower lobe",
+        "color": "#5ab7f0",
+        "group": "lungs",
+        "triangles": 44080,
+        "volumeML": 978.4,
+        "defaultVisible": true,
+        "defaultOpacity": 0.14,
+        "source": "total"
+      },
+      {
+        "name": "lung_upper_lobe_right",
+        "display": "Right upper lobe",
+        "color": "#8ee6c8",
+        "group": "lungs",
+        "triangles": 23922,
+        "volumeML": 410.3,
+        "defaultVisible": true,
+        "defaultOpacity": 0.14,
+        "source": "total"
+      },
+      {
+        "name": "lung_middle_lobe_right",
+        "display": "Right middle lobe",
+        "color": "#b8ec8c",
+        "group": "lungs",
+        "triangles": 27078,
+        "volumeML": 460.8,
+        "defaultVisible": true,
+        "defaultOpacity": 0.14,
+        "source": "total"
+      },
+      {
+        "name": "lung_lower_lobe_right",
+        "display": "Right lower lobe",
+        "color": "#66cfb0",
+        "group": "lungs",
+        "triangles": 42544,
+        "volumeML": 925.5,
+        "defaultVisible": true,
+        "defaultOpacity": 0.14,
+        "source": "total"
+      },
+      {
+        "name": "pericardium",
+        "display": "Pericardial sac & fat",
+        "color": "#ffd27a",
+        "group": "heart",
+        "triangles": 29234,
+        "volumeML": 572.1,
+        "defaultVisible": false,
+        "defaultOpacity": 0.25,
+        "source": "cav"
+      },
+      {
+        "name": "heart",
+        "display": "Heart (whole)",
+        "color": "#d8434f",
+        "group": "heart",
+        "triangles": 46658,
+        "volumeML": 429.8,
+        "defaultVisible": false,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "liver",
+        "display": "Liver (dome)",
+        "color": "#9b3f30",
+        "group": "abdomen",
+        "triangles": 34028,
+        "volumeML": 504.4,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "spleen",
+        "display": "Spleen (tip)",
+        "color": "#7a3069",
+        "group": "abdomen",
+        "triangles": 13320,
+        "volumeML": 75.8,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "stomach",
+        "display": "Stomach (fundus)",
+        "color": "#e2a96b",
+        "group": "abdomen",
+        "triangles": 13398,
+        "volumeML": 79.8,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "colon",
+        "display": "Colon (splenic flexure)",
+        "color": "#c79a63",
+        "group": "abdomen",
+        "triangles": 4344,
+        "volumeML": 10.9,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "autochthon_left",
+        "display": "Left back muscles",
+        "color": "#b5544a",
+        "group": "muscle",
+        "triangles": 15028,
+        "volumeML": 90.1,
+        "defaultVisible": false,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "autochthon_right",
+        "display": "Right back muscles",
+        "color": "#b5544a",
+        "group": "muscle",
+        "triangles": 15018,
+        "volumeML": 91.0,
+        "defaultVisible": false,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "esophagus",
+        "display": "Esophagus",
+        "color": "#e7a77a",
+        "group": "airways",
+        "triangles": 10514,
+        "volumeML": 17.6,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "heart_myocardium",
+        "display": "Heart muscle (LV myocardium)",
+        "color": "#b8323f",
+        "group": "heart",
+        "triangles": 41040,
+        "volumeML": 95.5,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "v1"
+      },
+      {
+        "name": "heart_ventricle_left",
+        "display": "Left ventricle",
+        "color": "#ff5d6c",
+        "group": "heart",
+        "triangles": 17766,
+        "volumeML": 83.7,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "v1"
+      },
+      {
+        "name": "heart_ventricle_right",
+        "display": "Right ventricle",
+        "color": "#5f80ff",
+        "group": "heart",
+        "triangles": 25830,
+        "volumeML": 128.8,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "v1"
+      },
+      {
+        "name": "heart_atrium_left",
+        "display": "Left atrium",
+        "color": "#ff8f7d",
+        "group": "heart",
+        "triangles": 10016,
+        "volumeML": 40.2,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "v1"
+      },
+      {
+        "name": "heart_atrium_right",
+        "display": "Right atrium",
+        "color": "#82a6ff",
+        "group": "heart",
+        "triangles": 13488,
+        "volumeML": 57.6,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "v1"
+      },
+      {
+        "name": "atrial_appendage_left",
+        "display": "Left atrial appendage",
+        "color": "#ffae8f",
+        "group": "heart",
+        "triangles": 2284,
+        "volumeML": 3.4,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "aorta",
+        "display": "Aorta",
+        "color": "#ff2d3f",
+        "group": "vessels",
+        "triangles": 28146,
+        "volumeML": 110.6,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "pulmonary_artery",
+        "display": "Pulmonary artery",
+        "color": "#3e6bff",
+        "group": "vessels",
+        "triangles": 15880,
+        "volumeML": 48.3,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "v1"
+      },
+      {
+        "name": "pulmonary_vein",
+        "display": "Pulmonary veins",
+        "color": "#ff7759",
+        "group": "vessels",
+        "triangles": 13242,
+        "volumeML": 19.6,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "superior_vena_cava",
+        "display": "Superior vena cava",
+        "color": "#4f72d8",
+        "group": "vessels",
+        "triangles": 4728,
+        "volumeML": 7.7,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "inferior_vena_cava",
+        "display": "Inferior vena cava",
+        "color": "#4f72d8",
+        "group": "vessels",
+        "triangles": 7194,
+        "volumeML": 16.3,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "lung_arteries",
+        "display": "Lung arteries",
+        "color": "#5a86ff",
+        "group": "vessels",
+        "triangles": 60000,
+        "volumeML": 118.4,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "lv"
+      },
+      {
+        "name": "lung_veins",
+        "display": "Lung veins",
+        "color": "#ff6e6e",
+        "group": "vessels",
+        "triangles": 60000,
+        "volumeML": 111.6,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "lv"
+      },
+      {
+        "name": "trachea",
+        "display": "Trachea",
+        "color": "#a8dcff",
+        "group": "airways",
+        "triangles": 7274,
+        "volumeML": 12.3,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "lung_airways",
+        "display": "Bronchial tree",
+        "color": "#c9eeff",
+        "group": "airways",
+        "triangles": 43194,
+        "volumeML": 22.5,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "lv"
+      },
+      {
+        "name": "costal_cartilages",
+        "display": "Costal cartilage",
+        "color": "#bfe3dc",
+        "group": "bones",
+        "triangles": 60000,
+        "volumeML": 91.8,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "sternum",
+        "display": "Sternum",
+        "color": "#f3e8d0",
+        "group": "bones",
+        "triangles": 12558,
+        "volumeML": 31.6,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "scapula_left",
+        "display": "Left scapula",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 14966,
+        "volumeML": 25.2,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "scapula_right",
+        "display": "Right scapula",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 17354,
+        "volumeML": 26.1,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "vertebrae_T5",
+        "display": "T5 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "triangles": 938,
+        "volumeML": 0.7,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "v1"
+      },
+      {
+        "name": "vertebrae_T6",
+        "display": "T6 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "triangles": 9104,
+        "volumeML": 16.0,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "v1"
+      },
+      {
+        "name": "vertebrae_T7",
+        "display": "T7 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "triangles": 12284,
+        "volumeML": 23.1,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "v1"
+      },
+      {
+        "name": "vertebrae_T8",
+        "display": "T8 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "triangles": 12604,
+        "volumeML": 25.9,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "v1"
+      },
+      {
+        "name": "vertebrae_T9",
+        "display": "T9 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "triangles": 12578,
+        "volumeML": 26.1,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "v1"
+      },
+      {
+        "name": "vertebrae_T10",
+        "display": "T10 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "triangles": 13436,
+        "volumeML": 30.4,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "v1"
+      },
+      {
+        "name": "vertebrae_T11",
+        "display": "T11 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "triangles": 13364,
+        "volumeML": 31.2,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "v1"
+      },
+      {
+        "name": "vertebrae_T12",
+        "display": "T12 vertebra",
+        "color": "#f0e6d2",
+        "group": "bones",
+        "triangles": 1170,
+        "volumeML": 0.9,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "v1"
+      },
+      {
+        "name": "rib_left_3",
+        "display": "Left 3rd rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 5642,
+        "volumeML": 4.4,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "rib_left_4",
+        "display": "Left 4th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 10008,
+        "volumeML": 9.5,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "rib_left_5",
+        "display": "Left 5th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 10912,
+        "volumeML": 11.3,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "rib_left_6",
+        "display": "Left 6th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 14146,
+        "volumeML": 16.2,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "rib_left_7",
+        "display": "Left 7th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 15354,
+        "volumeML": 17.6,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "rib_left_8",
+        "display": "Left 8th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 11832,
+        "volumeML": 12.9,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "rib_left_9",
+        "display": "Left 9th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 9440,
+        "volumeML": 10.0,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "rib_left_10",
+        "display": "Left 10th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 5434,
+        "volumeML": 5.9,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "rib_left_11",
+        "display": "Left 11th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 3274,
+        "volumeML": 3.7,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "rib_right_3",
+        "display": "Right 3rd rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 5426,
+        "volumeML": 4.2,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "rib_right_4",
+        "display": "Right 4th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 9732,
+        "volumeML": 9.5,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "rib_right_5",
+        "display": "Right 5th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 12262,
+        "volumeML": 12.5,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "rib_right_6",
+        "display": "Right 6th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 16618,
+        "volumeML": 19.3,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "rib_right_7",
+        "display": "Right 7th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 14450,
+        "volumeML": 16.5,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "rib_right_8",
+        "display": "Right 8th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 11478,
+        "volumeML": 12.2,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "rib_right_9",
+        "display": "Right 9th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 7666,
+        "volumeML": 8.3,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "rib_right_10",
+        "display": "Right 10th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 2964,
+        "volumeML": 2.8,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "rib_right_11",
+        "display": "Right 11th rib",
+        "color": "#eadfca",
+        "group": "bones",
+        "triangles": 816,
+        "volumeML": 0.7,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      },
+      {
+        "name": "spinal_cord",
+        "display": "Spinal cord",
+        "color": "#ffe27a",
+        "group": "bones",
+        "triangles": 12900,
+        "volumeML": 28.7,
+        "defaultVisible": true,
+        "defaultOpacity": 1.0,
+        "source": "total"
+      }
+    ]
+  },
+  "files": {
+    "exam": "exam.json",
+    "topogramAP": "topogram_ap.png",
+    "topogramLat": "topogram_lat.png",
+    "stl_heart": "mesh/print_heart.stl",
+    "stl_ribcage": "mesh/print_ribcage.stl",
+    "stl_lungs_airways": "mesh/print_lungs_airways.stl",
+    "calcium": "calcium.json",
+    "read": "read.json",
+    "biomarkers": "biomarkers.json",
+    "ecg": "ecg.json",
+    "heartAR": "mesh/heart_ar.glb"
+  }
+}

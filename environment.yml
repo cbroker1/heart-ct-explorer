@@ -1,0 +1,25 @@
+name: heartct
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+      - pydicom>=3.0
+      - pylibjpeg
+      - pylibjpeg-libjpeg
+      - python-gdcm
+      - numpy
+      - scipy
+      - scikit-image
+      - SimpleITK
+      - nibabel
+      - trimesh
+      - fast-simplification
+      - matplotlib
+      - pillow
+      - imageio
+      - pandas
+      - TotalSegmentator>=2.4
+      # torch: install the CUDA build that matches your driver, e.g.
+      # pip install torch --index-url https://download.pytorch.org/whl/cu124

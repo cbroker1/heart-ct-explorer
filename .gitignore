@@ -1,0 +1,12 @@
+# raw + intermediate imaging data never gets committed
+/data/
+*.dcm
+DICOM/
+DICOMDIR
+__pycache__/
+*.pyc
+node_modules/
+web/dist/
+.DS_Store
+.vite/
+*.log

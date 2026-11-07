@@ -1,0 +1,86 @@
+/** Inline SVG icons for the Lab sections (stroke icons use currentColor). */
+import type { SVGProps } from 'react'
+
+type P = SVGProps<SVGSVGElement>
+const base = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' } as const
+
+export const IconCubeAR = (p: P) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}>
+    <path d="M12 3 4 7.5v9L12 21l8-4.5v-9z" /><path d="M4 7.5 12 12l8-4.5M12 12v9" />
+    <path d="M2 5V3h2M22 5V3h-2M2 19v2h2M22 19v2h-2" />
+  </svg>
+)
+export const IconRotate = (p: P) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}><path d="M20 12a8 8 0 1 1-2.3-5.7" /><path d="M20 4v5h-5" /></svg>
+)
+export const IconTag = (p: P) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}><path d="M3 12V4h8l10 10-8 8z" /><circle cx="7.5" cy="8" r="1.4" /></svg>
+)
+export const IconReset = (p: P) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}><path d="M4 12a8 8 0 1 0 2.3-5.7" /><path d="M4 4v5h5" /><circle cx="12" cy="12" r="1.5" /></svg>
+)
+export const IconDownload = (p: P) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}><path d="M12 3v12" /><path d="m7 10 5 5 5-5" /><path d="M4 17v3h16v-3" /></svg>
+)
+export const IconLayers = (p: P) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}><path d="m12 3 9 5-9 5-9-5z" /><path d="m3 13 9 5 9-5" /></svg>
+)
+export const IconSupport = (p: P) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}><path d="M5 6h14" /><path d="M7 6v14M12 6v14M17 6v14" /><path d="M4 20h16" /></svg>
+)
+export const IconScale = (p: P) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}><path d="M4 20 20 4" /><path d="M14 4h6v6" /><path d="M10 20H4v-6" /></svg>
+)
+export const IconDrop = (p: P) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z" /></svg>
+)
+export const IconRuler = (p: P) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}><rect x="2.5" y="8" width="19" height="8" rx="1.5" /><path d="M6 8v3M9 8v2M12 8v3M15 8v2M18 8v3" /></svg>
+)
+export const IconCut = (p: P) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}><circle cx="6" cy="6" r="3" /><circle cx="6" cy="18" r="3" /><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12" /></svg>
+)
+export const IconCheck = (p: P) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>
+)
+export const IconShield = (p: P) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}><path d="M12 3 5 6v6c0 4.4 3 7.7 7 9 4-1.3 7-4.6 7-9V6z" /><path d="m9 12 2 2 4-4" /></svg>
+)
+export const IconAlert = (p: P) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}><path d="M12 3 2 20h20z" /><path d="M12 10v4M12 17v.01" /></svg>
+)
+export const IconPhone = (p: P) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}><rect x="6.5" y="2.5" width="11" height="19" rx="2.5" /><path d="M11 18.5h2" /></svg>
+)
+export const IconEye = (p: P) => (
+  <svg viewBox="0 0 24 24" {...base} {...p}><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /></svg>
+)
+
+/* --- radiation comparison pictograms (filled, coloured) --- */
+export const PicSun = (p: P) => (
+  <svg viewBox="0 0 24 24" {...p}>
+    <circle cx="12" cy="12" r="4.5" fill="#ffb547" />
+    <g stroke="#ffb547" strokeWidth="1.8" strokeLinecap="round">
+      <path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8" />
+    </g>
+  </svg>
+)
+export const PicXray = (p: P) => (
+  <svg viewBox="0 0 24 24" {...p}>
+    <rect x="3" y="2.5" width="18" height="19" rx="2.5" fill="#1d3a4f" stroke="#8be7ff" strokeWidth="1.2" />
+    <path d="M12 5v14M8 8.5c1.5-.6 2.8-.6 4 0M16 8.5c-1.5-.6-2.8-.6-4 0M7.5 11.5c1.7-.6 3.1-.6 4.5 0M16.5 11.5c-1.7-.6-3.1-.6-4.5 0M8 14.5c1.4-.5 2.7-.5 4 0M16 14.5c-1.4-.5-2.7-.5-4 0" stroke="#d6f6ff" strokeWidth="1.1" fill="none" strokeLinecap="round" />
+  </svg>
+)
+export const PicPlane = (p: P) => (
+  <svg viewBox="0 0 24 24" {...p}>
+    <path fill="#8be7ff" d="M21.5 15.5v-1.7l-8-5V3.5a1.5 1.5 0 0 0-3 0v5.3l-8 5v1.7l8-2.5v5.2l-2 1.5v1.3l3.5-1 3.5 1v-1.3l-2-1.5V13z" />
+  </svg>
+)
+export const PicBanana = (p: P) => (
+  <svg viewBox="0 0 24 24" {...p}>
+    <path fill="#ffd34d" d="M5.2 5.6c-.6 6.4 3 12.3 9.6 13.6 2.2.4 4.3.1 5.9-.8.6-.3.5-1.2-.2-1.3-6-1.2-10-5.6-11.1-11.4-.1-.7-.8-1.1-1.5-.9l-1.9.5c-.5.1-.8.4-.8.3z" />
+    <path fill="#e2b23a" d="M6.6 6.2c.6 5.6 4.3 10.4 10.4 12.1-5.7-.2-10-4.6-10.4-12.1z" opacity=".8" />
+    <path fill="none" stroke="#6b4d12" strokeWidth="1.6" strokeLinecap="round" d="M5.6 5.4 4.6 3.6" />
+    <circle cx="20.9" cy="17.8" r=".8" fill="#6b4d12" />
+  </svg>
+)
