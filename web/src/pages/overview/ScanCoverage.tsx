@@ -5,14 +5,17 @@ import { ArrowRight } from './icons'
 import type { ExamJson, TopogramMeta } from './types'
 import { slabCm, useManifestFacts } from './useOverviewData'
 
-function Topogram(props: { meta: TopogramMeta; view: 'ap' | 'lateral'; label: string; inView: boolean; frameAspect: number }) {
-  const { meta, view, label, inView, frameAspect } = props
+function Topogram(props: { meta: TopogramMeta; view: 'ap' | 'lateral'; label: string; inView: boolean; frameAspect: number; slab: string | null; halfSliceMM: number }) {
+  const { meta, view, label, inView, frameAspect, slab, halfSliceMM } = props
   const [rows, cols] = meta.shape
   const range = meta.scanRangeRows
-  // scanRangeRows use the pixel-centre convention; +0.5 converts to image-edge coordinates.
-  const top = range ? ((range[0] + 0.5) / rows) * 100 : null
-  const bottom = range ? ((range[1] + 0.5) / rows) * 100 : null
-  const mm = range ? (range[1] - range[0]) * meta.pixelSpacing[0] : null
+  // scanRangeRows are the first/last slice centres (pixel-centre convention; +0.5 converts to image-edge
+  // coordinates). Each end slice reaches half a slice thickness further, so the band is padded to match
+  // the slab length quoted in the text.
+  const pad = halfSliceMM / (meta.pixelSpacing[0] || 1)
+  const top = range ? Math.max(0, ((range[0] + 0.5 - pad) / rows) * 100) : null
+  const bottom = range ? Math.min(100, ((range[1] + 0.5 + pad) / rows) * 100) : null
+  const mmLabel = slab ?? (range ? slabCm((range[1] - range[0]) * meta.pixelSpacing[0] + 2 * halfSliceMM) : null)
   const sides = view === 'ap' ? ['R', 'L'] : ['A', 'P']
   const sideTitles = view === 'ap' ? ["patient's right", "patient's left"] : ['front (anterior)', 'back (posterior)']
   return (
@@ -29,7 +32,7 @@ function Topogram(props: { meta: TopogramMeta; view: 'ap' | 'lateral'; label: st
               <span className="ovw-topo-sweep" />
               <span className="ovw-topo-dimline" aria-hidden="true" />
               <span className="ovw-topo-tag">
-                this {mm !== null ? slabCm(mm) : '–'}&nbsp;cm slab
+                this {mmLabel ?? '–'}&nbsp;cm slab
               </span>
             </div>
           </>
@@ -51,13 +54,18 @@ function Topogram(props: { meta: TopogramMeta; view: 'ap' | 'lateral'; label: st
   )
 }
 
-export function ScanCoverage(props: { manifest: Manifest; exam: ExamJson | null }) {
-  const { manifest, exam } = props
+export function ScanCoverage(props: { manifest: Manifest; exam: ExamJson | null; examFailed?: boolean }) {
+  const { manifest, exam, examFailed = false } = props
   const facts = useManifestFacts(manifest)
   const [ref, inView] = useInView<HTMLDivElement>({ once: true, threshold: 0.2 })
   const ap = exam?.topograms?.ap
   const lat = exam?.topograms?.lateral
   const slab = facts.slabMM !== null ? slabCm(facts.slabMM) : null
+  const thin = manifest.volumes.find((v) => v.key === 'thin_lung')
+  const halfSliceMM = (Number(thin?.sliceThickness) || 0) / 2
+  const missing = examFailed
+    ? <div className="ovw-topo-skel is-failed">Scout image unavailable</div>
+    : <div className="ovw-topo-skel" />
   const steps = exam?.dose?.mode ? /(\d+)\s*steps/.exec(exam.dose.mode)?.[1] : null
   const calciumVol = manifest.volumes.find((v) => v.key === 'calcium')
   const aspects = [ap, lat].filter((t): t is TopogramMeta => !!t).map((t) => t.shape[1] / t.shape[0])
@@ -75,15 +83,16 @@ export function ScanCoverage(props: { manifest: Manifest; exam: ExamJson | null 
             the front, one from the side. The technologist uses them to set exactly where to scan.
           </p>
           <p>
-            Only the glowing band was imaged in 3D: a <b>{slab ?? '–'}&nbsp;cm slab</b> around my heart
-            {facts.vertebraRange ? <>, roughly from the T{facts.vertebraRange[0]} to the T{facts.vertebraRange[1]} vertebra</> : null}.
-            It holds the whole heart plus parts of the lungs, spine, ribs, liver and stomach. Everything else on this site
-            comes from inside that band.
+            Only the glowing band was imaged in 3D: a <b>{slab ?? '–'}&nbsp;cm slab</b> around my heart, from about
+            8&nbsp;mm above the carina (where the windpipe splits in two)
+            {facts.lowestVertebra ? <> down to about the {facts.lowestVertebra} vertebra</> : null}.
+            It holds the whole heart plus most of the lungs and parts of the spine, ribs, liver and stomach; the tops of
+            the lungs and the arch of the aorta are above it. Everything else on this site comes from inside that band.
           </p>
         </div>
         <div className="ovw-scan-figs">
-          {ap ? <Topogram meta={ap} view="ap" label="Front view" inView={inView} frameAspect={frameAspect} /> : <div className="ovw-topo-skel" />}
-          {lat ? <Topogram meta={lat} view="lateral" label="Side view" inView={inView} frameAspect={frameAspect} /> : <div className="ovw-topo-skel" />}
+          {ap ? <Topogram meta={ap} view="ap" label="Front view" inView={inView} frameAspect={frameAspect} slab={slab} halfSliceMM={halfSliceMM} /> : missing}
+          {lat ? <Topogram meta={lat} view="lateral" label="Side view" inView={inView} frameAspect={frameAspect} slab={slab} halfSliceMM={halfSliceMM} /> : missing}
         </div>
         <ul className="ovw-scan-facts">
           {steps && <li><b>{steps}</b> table steps, X-rays timed to my heartbeat</li>}

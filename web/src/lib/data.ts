@@ -72,7 +72,8 @@ export interface Manifest {
   render: GridMeta & { huMin: number; huMax: number }      // uint8 volume for ray marching
   renderLabels: LabelGridMeta       // labels resampled onto the render grid
   heartRender: (GridMeta & { huMin: number; huMax: number }) | null   // high-res heart-only uint8 volume
-  meshes: { file: string; bytes: number; nodes: MeshNode[] }
+  /** heartFile: small heart-only GLB (same world frame and node names) for light views */
+  meshes: { file: string; bytes: number; heartFile?: string; heartBytes?: number; nodes: MeshNode[] }
   files: Record<string, string>     // misc json/png/stl, e.g. calcium: "calcium.json"
 }
 

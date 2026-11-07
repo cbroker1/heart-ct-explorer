@@ -1,5 +1,5 @@
 /** Small presentational pieces shared by the AI read page. */
-import type { ReactNode } from 'react'
+import { Fragment, type ReactNode } from 'react'
 import { pct, SEV_TONE, SEVERITY_LABEL, statusMeta, verifMeta, type Severity, type Tone } from './model'
 import { IcCheck, IcInfo, IcMinus, IcX } from './icons'
 
@@ -58,4 +58,53 @@ export function Prose({ text, className }: { text: string; className?: string })
   if (!text) return null
   const paras = text.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean)
   return <>{paras.map((p, i) => <p key={i} className={`rd-prose ${className ?? ''}`}>{p}</p>)}</>
+}
+
+/** `**bold**` and `code` spans; everything else stays plain text (never HTML). */
+function inline(s: string): ReactNode[] {
+  const out: ReactNode[] = []
+  const re = /\*\*(.+?)\*\*|`([^`]+)`/g
+  let last = 0
+  let m: RegExpExecArray | null
+  while ((m = re.exec(s))) {
+    if (m.index > last) out.push(s.slice(last, m.index))
+    out.push(m[1] !== undefined ? <strong key={m.index}>{m[1]}</strong> : <code key={m.index}>{m[2]}</code>)
+    last = m.index + m[0].length
+  }
+  if (last < s.length) out.push(s.slice(last))
+  return out
+}
+
+/**
+ * The small Markdown subset the AI reviewers write: paragraphs (blank lines), line breaks,
+ * "- " bullet lists and **bold**. Used for the long skeptic notes.
+ */
+export function RichText({ text }: { text: string }) {
+  const blocks = text.split(/\n\s*\n/).map((b) => b.trim()).filter(Boolean)
+  return (
+    <>
+      {blocks.map((b, bi) => {
+        const out: ReactNode[] = []
+        let para: string[] = []
+        let list: string[] = []
+        const flushPara = () => {
+          if (para.length) out.push(<p key={`p${out.length}`}>{para.map((l, i) => <Fragment key={i}>{i > 0 && <br />}{inline(l)}</Fragment>)}</p>)
+          para = []
+        }
+        const flushList = () => {
+          if (list.length) out.push(<ul key={`u${out.length}`}>{list.map((l, i) => <li key={i}>{inline(l)}</li>)}</ul>)
+          list = []
+        }
+        for (const raw of b.split('\n')) {
+          const l = raw.trim()
+          if (!l) continue
+          const m = /^[-*•]\s+(.*)$/.exec(l)
+          if (m) { flushPara(); list.push(m[1]) } else { flushList(); para.push(l) }
+        }
+        flushPara()
+        flushList()
+        return <Fragment key={bi}>{out}</Fragment>
+      })}
+    </>
+  )
 }

@@ -45,6 +45,10 @@ export interface CalciumReport {
     reviewers: { key: string; lens: string; agatstonEstimate: number; confidenceZero: number; summary: string }[]
     consensus: string
     openItems?: string[]
+    /** calcifications reviewers noticed outside the candidate list (all non-coronary here) */
+    missedLesions?: { description: string; verdict: string; series?: string; sliceIndex?: number; lps?: Vec3; peakHU?: number; areaMM2?: number; artery?: string; evidence?: string[] }[]
+    /** the 203 HU soft-tissue-series cross-check, one entry per reviewer */
+    s8Blob?: { lps?: Vec3; peakHU?: number; verdict: string; note: string }[]
   }
   percentileContext?: {
     source: string
@@ -96,6 +100,8 @@ export interface ReadReport {
     findingsExamined: number
     skepticVotes: number
     dismissed: number
+    /** verified findings folded into another system's finding as duplicates */
+    merged?: number
     calciumAdjudicators: number
     imagesRendered?: number
     agents?: number

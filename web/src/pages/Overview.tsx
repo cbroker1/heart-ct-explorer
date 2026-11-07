@@ -4,6 +4,7 @@ import { useApp } from '../lib/store'
 import { HeartIcon } from '../components/ui'
 import { Hero } from './overview/Hero'
 import { useReducedMotion } from './overview/hooks'
+import { ReadTeaser } from './overview/ReadTeaser'
 import { ScanCoverage } from './overview/ScanCoverage'
 import { SectionCards } from './overview/SectionCards'
 import { StatsStrip } from './overview/StatsStrip'
@@ -18,15 +19,25 @@ export default function Overview() {
 }
 
 function OverviewPage({ manifest }: { manifest: NonNullable<ReturnType<typeof useApp.getState>['manifest']> }) {
-  const { exam, calcium, read, examError } = useOverviewData(manifest)
+  const { exam, calcium, read, examError, calciumError } = useOverviewData(manifest)
   const reduced = useReducedMotion()
   return (
     <div className="ovw">
       <Hero manifest={manifest} exam={exam} reducedMotion={reduced} />
       <div className="ovw-wrap">
-        <StatsStrip manifest={manifest} exam={exam} calcium={calcium} calciumListed={!!manifest.files?.calcium} reduced={reduced} />
+        <StatsStrip
+          manifest={manifest}
+          exam={exam}
+          calcium={calcium}
+          calciumListed={!!manifest.files?.calcium}
+          read={read}
+          examFailed={!!examError}
+          calciumFailed={calciumError}
+          reduced={reduced}
+        />
         {examError && <p className="ovw-error">Some exam details could not be loaded ({examError}).</p>}
-        <ScanCoverage manifest={manifest} exam={exam} />
+        {read && <ReadTeaser read={read} />}
+        <ScanCoverage manifest={manifest} exam={exam} examFailed={!!examError} />
         <SectionCards manifest={manifest} calcium={calcium} read={read} />
         <Timeline manifest={manifest} />
         <footer className="ovw-footer">

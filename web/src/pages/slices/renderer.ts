@@ -5,6 +5,7 @@
  */
 import type { GridMeta, Vec3 } from '../../lib/data'
 import { invAffine } from './geom'
+import { dataKRange } from './probe'
 import { FRAG, VERT } from './shaders'
 
 export interface ViewDraw {
@@ -38,12 +39,19 @@ export interface FrameDraw {
   calcThr: number
 }
 
-interface Grid3D { tex: WebGLTexture; dims: Vec3; inv: Float32Array; ready: boolean }
+interface Grid3D {
+  tex: WebGLTexture
+  dims: Vec3
+  inv: Float32Array
+  ready: boolean
+  /** k slices holding image data; blank padding slices at either end of the stack are drawn as "outside" */
+  kRange: [number, number]
+}
 
 type Uniforms = Record<string, WebGLUniformLocation | null>
 
 const UNIFORMS = [
-  'uVol', 'uLab', 'uLes', 'uLabLut', 'uLesLut', 'uVolM', 'uLabM', 'uLesM', 'uVolDims', 'uLabDims', 'uLesDims',
+  'uVol', 'uLab', 'uLes', 'uLabLut', 'uLesLut', 'uVolM', 'uLabM', 'uLesM', 'uVolDims', 'uVolK', 'uLabDims', 'uLesDims',
   'uP0', 'uPdx', 'uPdy', 'uN', 'uWin', 'uSlabMode', 'uSlabN', 'uSlabStep', 'uLabOn', 'uLabMode', 'uLabAlpha',
   'uSel', 'uHov', 'uEdge', 'uLesOn', 'uCalcOn', 'uCalcThr', 'uBg',
 ]
@@ -183,7 +191,7 @@ export class MprRenderer {
     gl.bindTexture(gl.TEXTURE_3D, t)
     this.params3D()
     gl.texStorage3D(gl.TEXTURE_3D, 1, internal, w, h, d)
-    const grid: Grid3D = { tex: t, dims: [w, h, d], inv: invAffine(meta), ready: false }
+    const grid: Grid3D = { tex: t, dims: [w, h, d], inv: invAffine(meta), ready: false, kRange: [0, d - 1] }
     const per = Math.max(1, Math.floor(6e6 / (w * h)))
     for (let z = 0; z < d; z += per) {
       if (this.disposed || epoch !== this.epoch || gl.isContextLost()) {
@@ -207,6 +215,7 @@ export class MprRenderer {
   async uploadVolume(key: string, meta: GridMeta, data: Int16Array, onProgress?: (done: number, total: number) => void) {
     const gl = this.gl
     const g = await this.upload(meta, gl.R16I, gl.RED_INTEGER, gl.SHORT, data, onProgress)
+    g.kRange = dataKRange(meta, data)
     const old = this.vols.get(key)
     if (old) gl.deleteTexture(old.tex)
     this.vols.set(key, g)
@@ -302,6 +311,7 @@ export class MprRenderer {
       gl.bindTexture(gl.TEXTURE_3D, vol.tex)
       gl.uniformMatrix4fv(u.uVolM, false, vol.inv)
       gl.uniform3i(u.uVolDims, vol.dims[0], vol.dims[1], vol.dims[2])
+      gl.uniform2f(u.uVolK, vol.kRange[0], vol.kRange[1])
       gl.uniform3f(u.uP0, v.p0[0], v.p0[1], v.p0[2])
       gl.uniform3f(u.uPdx, v.pdx[0], v.pdx[1], v.pdx[2])
       gl.uniform3f(u.uPdy, v.pdy[0], v.pdy[1], v.pdy[2])

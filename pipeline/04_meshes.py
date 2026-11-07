@@ -103,6 +103,23 @@ def main():
                       "defaultVisible": s.visible, "defaultOpacity": s.opacity, "source": s.source})
         print(f"  {s.name:26s} {vol:8.1f} mL  {len(mesh.faces):7d} tris")
 
+    # Heart-only GLB in the same world frame (small, for the landing page hero and other light views)
+    HEART_NODES = {"heart_myocardium", "heart_ventricle_left", "heart_ventricle_right", "heart_atrium_left",
+                   "heart_atrium_right", "atrial_appendage_left", "aorta", "pulmonary_artery", "pulmonary_vein",
+                   "superior_vena_cava", "inferior_vena_cava", "pericardium"}
+    hscene = trimesh.Scene()
+    for name in scene.graph.nodes_geometry:
+        if name in HEART_NODES:
+            hscene.add_geometry(scene.geometry[scene.graph[name][1]], node_name=name, geom_name=name)
+    hraw = OUT / "heart_raw.glb"
+    hraw.write_bytes(trimesh.exchange.gltf.export_glb(hscene, include_normals=True))
+    hout = OUT / "heart.glb"
+    r = subprocess.run(["npx", "-y", "@gltf-transform/cli@4.5.1", "meshopt", str(hraw), str(hout), "--level", "medium"],
+                       capture_output=True, text=True)
+    if r.returncode != 0:
+        hout.write_bytes(hraw.read_bytes())
+    print("heart glb", hout.stat().st_size // 1024, "KB")
+
     raw = OUT / "anatomy_raw.glb"
     raw.write_bytes(trimesh.exchange.gltf.export_glb(scene, include_normals=True))   # smooth shading out of the box
     out = OUT / "anatomy.glb"

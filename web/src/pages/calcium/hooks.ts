@@ -62,6 +62,12 @@ export function usePrefersReducedMotion(): boolean {
   return v
 }
 
+/** Smooth-scroll a section into view (instant when the user prefers reduced motion). */
+export function scrollToId(id: string) {
+  const reduced = typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+  document.getElementById(id)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' })
+}
+
 /** localStorage-backed state that never throws (private mode, blocked storage, ...). */
 export function useStoredNumber(key: string): [number | null, (v: number | null) => void] {
   const read = (): number | null => {

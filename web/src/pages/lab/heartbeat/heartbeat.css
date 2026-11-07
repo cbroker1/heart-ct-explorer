@@ -22,13 +22,17 @@
 .hb-stage { position: relative; }
 .hb-view { position: relative; height: clamp(360px, 40vw, 480px); }
 .hb-view .hb-canvas { position: absolute !important; inset: 0; }
-/* vertical swipes scroll the page, horizontal drags turn the heart */
-.hb-stage canvas { touch-action: pan-y; }
+/* vertical swipes scroll the page, horizontal drags turn the heart. OrbitControls writes an inline
+   touch-action:none on R3F's wrapper div (.hb-canvas), so this needs !important to win over it. */
+.hb-stage canvas, .hb-view .hb-canvas { touch-action: pan-y !important; }
 .hb-stage-msg {
   position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 12px;
   color: var(--muted); text-align: center; padding: 24px; pointer-events: none;
 }
 .hb-stage-msg .spinner { margin: 0; }
+.hb-stage-err b { color: var(--text); font-weight: 650; }
+.hb-err-detail { font-size: 11px; max-width: 520px; overflow-wrap: anywhere; }
+@media (min-width: 821px) { .hb-stage-err { right: 270px; } }   /* clear of the HUD */
 
 .hb-flash {
   position: absolute; inset: 0; pointer-events: none;
@@ -83,6 +87,7 @@
   text-shadow: 0 0 24px rgba(255, 77, 94, 0.45); display: inline-block; transform-origin: 30% 70%;
   animation: hb-thump 0.42s ease-out;
 }
+.hb-hr-num.empty { color: var(--faint); font-weight: 300; text-shadow: none; animation: none; }
 .hb-hr-v small { color: var(--muted); font-weight: 600; font-size: 13px; }
 @keyframes hb-thump { 0% { transform: scale(1.14); } 100% { transform: scale(1); } }
 .hb-sub { font-size: 12px; color: var(--muted); line-height: 1.5; }
@@ -174,7 +179,12 @@
 @media (max-width: 820px) {
   .hb-view { height: 320px; }
   .hb-tags { max-width: calc(100% - 28px); }
-  .hb-legend3d { display: none; }
+  /* phones: keep just the colour key, as a small pill (the X-ray toast covers it while it shows) */
+  .hb-legend3d {
+    left: 10px; bottom: 10px; max-width: calc(100% - 20px); gap: 2px 10px; font-size: 10.5px;
+    padding: 3px 8px; border-radius: 8px; background: rgba(7, 10, 15, 0.62); backdrop-filter: blur(6px);
+  }
+  .hb-legend3d span:nth-child(n + 3) { display: none; }
   .hb-toast { left: 10px; right: 10px; bottom: 10px; width: auto; font-size: 12.5px; }
   .hb-hud {
     position: static; width: auto; flex-direction: row; gap: 8px; padding: 10px;
@@ -198,6 +208,28 @@
   .hb-phase .hb-sub { font-size: 11px; }
   .hb-toast-sub { display: none; }
   .hb-stage-lbl { min-height: 0; }
+}
+/* the four shots: on narrow screens each row becomes a small labelled card instead of a 7-column table */
+@media (max-width: 700px) {
+  .hb-table-wrap table.hb-shots thead { display: none; }
+  .hb-table-wrap table.hb-shots, .hb-table-wrap table.hb-shots tbody { display: block; }
+  .hb-table-wrap table.hb-shots tr {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 12px; align-items: start;
+    padding: 12px 0; border-bottom: 1px solid var(--line);
+  }
+  .hb-table-wrap table.hb-shots tr:last-child { border-bottom: 0; }
+  .hb-table-wrap table.hb-shots td, .hb-table-wrap table.hb-shots td.num {
+    display: block; padding: 0; border: 0; text-align: left; white-space: normal; min-width: 0;
+  }
+  .hb-table-wrap table.hb-shots td[data-label]::before {
+    content: attr(data-label); display: block; margin-bottom: 1px;
+    font: 600 10px/1.4 var(--font); letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint);
+  }
+  .hb-table-wrap table.hb-shots td:first-child { align-self: center; }
+  .hb-table-wrap table.hb-shots td:last-child { grid-column: 1 / -1; }
+  .hb-details table.data { font-size: 11.5px; }
+  .hb-details table.data th, .hb-details table.data td { padding: 6px 3px; }
+  .hb-details table.data th { letter-spacing: 0.04em; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hb-hr-num, .hb-live.on .dot { animation: none; }

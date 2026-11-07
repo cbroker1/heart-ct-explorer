@@ -6,7 +6,7 @@
 import type { MeshNode } from '../../lib/data'
 
 export type GroupKey = 'heart' | 'vessels' | 'airways' | 'lungs' | 'bones' | 'abdomen' | 'muscle' | 'body'
-export type CameraView = 'front' | 'back' | 'left' | 'right' | 'top' | 'bottom' | 'heart' | 'home' | 'oblique'
+export type CameraView = 'front' | 'back' | 'left' | 'right' | 'top' | 'bottom' | 'heart' | 'home' | 'oblique' | 'chest'
 export type ClipAxis = 'axial' | 'coronal' | 'sagittal'
 export type SliceMode = 'full' | 'caps' | 'off'
 export type WindowKey = 'soft' | 'lung' | 'bone'
@@ -43,9 +43,19 @@ export const SOURCE_LABEL: Record<string, string> = {
   lv: 'TotalSegmentator lung-vessels model',
   body: 'TotalSegmentator body model',
 }
+/** Which AI model traced a structure. The v1.5 run is its full "total" model: the heart comes from its cardiac part, the spine from its vertebrae part. */
+export function sourceLabel(n: MeshNode & { source?: string }): string | null {
+  if (!n.source) return null
+  if (n.source === 'v1' && n.group === 'bones') return 'TotalSegmentator v1.5 (“total” model, vertebrae part)'
+  return SOURCE_LABEL[n.source] ?? null
+}
 
 export const GREAT_VESSELS = ['aorta', 'pulmonary_artery', 'pulmonary_vein', 'superior_vena_cava', 'inferior_vena_cava']
 export const HEART_PARTS = ['heart_myocardium', 'heart_ventricle_left', 'heart_ventricle_right', 'heart_atrium_left', 'heart_atrium_right', 'atrial_appendage_left']
+/** Windpipe + bronchial tree. */
+export const AIRWAY_TREE = ['trachea', 'lung_airways']
+/** Ribs, cartilage, sternum, spine (the shoulder blades sit outside the cage and only add clutter). */
+const isRibcage = (n: MeshNode) => n.group === 'bones' && !n.name.startsWith('scapula_')
 
 // ------------------------------------------------------------------ presets
 export interface Preset {
@@ -61,8 +71,9 @@ export interface Preset {
 
 export const PRESETS: Preset[] = [
   {
-    key: 'chest', label: 'Chest', hint: 'The default view: heart, vessels and airways inside glassy lungs and a ghosted ribcage',
-    show: (n) => n.defaultVisible, opacity: { bones: 0.34 }, view: 'home',
+    key: 'chest', label: 'Chest', hint: 'The default view: the heart and great vessels, solid, with the windpipe and bronchi, inside glassy lungs and a ghosted ribcage',
+    show: (n) => HEART_PARTS.includes(n.name) || GREAT_VESSELS.includes(n.name) || AIRWAY_TREE.includes(n.name) || n.group === 'lungs' || isRibcage(n),
+    opacity: { bones: 0.2, lungs: 0.05 }, view: 'chest',
   },
   {
     key: 'heart', label: 'Heart', hint: 'Just the four chambers and the heart muscle',
@@ -82,6 +93,10 @@ export const PRESETS: Preset[] = [
     show: (n) => n.group === 'bones' || n.name === 'heart', view: 'home',
   },
   {
+    key: 'full', label: 'Full chest', hint: 'Every main layer at once: lung vessels and airways, upper abdomen, ribs and shoulder blades (busy, but complete)',
+    show: (n) => n.defaultVisible, opacity: { bones: 0.34 }, view: 'home',
+  },
+  {
     key: 'everything', label: 'Everything', hint: 'Every structure at once (the whole-heart shell stays hidden so the chambers do not double up)',
     show: (n) => n.name !== 'heart', view: 'home',
   },
@@ -97,18 +112,21 @@ export const PRESETS: Preset[] = [
 ]
 
 // ------------------------------------------------------------------ camera views
-export const VIEWS: { key: CameraView; label: string; title: string; dir: [number, number, number] }[] = [
-  { key: 'front', label: 'Front', title: 'Anterior view: you face the patient, his left on your right', dir: [0, 0, 1] },
-  { key: 'back', label: 'Back', title: 'Posterior view, from behind', dir: [0, 0, -1] },
-  { key: 'left', label: 'Left side', title: 'From the patient’s left side (front of the chest on your left)', dir: [1, 0, 0] },
-  { key: 'right', label: 'Right side', title: 'From the patient’s right side (front of the chest on your right)', dir: [-1, 0, 0] },
-  { key: 'top', label: 'Top', title: 'From above (head end), front of the chest at the top', dir: [0, 1, -0.002] },
-  { key: 'heart', label: 'Heart', title: 'Close-up of the heart (left-anterior oblique)', dir: [0.62, 0.3, 1] },
+/** `short` is used on phones, where the six buttons must fit beside the orientation gizmo. */
+export const VIEWS: { key: CameraView; label: string; short: string; title: string; dir: [number, number, number] }[] = [
+  { key: 'front', label: 'Front', short: 'Front', title: 'Anterior view: you face the patient, his left on your right', dir: [0, 0, 1] },
+  { key: 'back', label: 'Back', short: 'Back', title: 'Posterior view, from behind', dir: [0, 0, -1] },
+  { key: 'left', label: 'Left side', short: 'Left', title: 'From the patient’s left side (front of the chest on your left)', dir: [1, 0, 0] },
+  { key: 'right', label: 'Right side', short: 'Right', title: 'From the patient’s right side (front of the chest on your right)', dir: [-1, 0, 0] },
+  { key: 'top', label: 'Top', short: 'Top', title: 'From above (head end), front of the chest at the top', dir: [0, 1, -0.002] },
+  { key: 'heart', label: 'Heart', short: 'Heart', title: 'Close-up of the heart (left-anterior oblique)', dir: [0.62, 0.3, 1] },
 ]
 export const EXTRA_DIRS: Record<string, [number, number, number]> = {
   bottom: [0, -1, -0.002],
   home: [0.5, 0.26, 1],
   oblique: [0.62, 0.3, 1],
+  /** Three-quarter front view from the patient's left: the classic textbook angle on the heart. */
+  chest: [0.5, 0.26, 1],
 }
 
 // ------------------------------------------------------------------ CT windows for the cut plane
@@ -126,7 +144,7 @@ export const CAND_COLORS: Record<string, string> = {
 }
 export const CAND_LABEL: Record<string, string> = {
   coronary: 'Coronary calcium', aortic: 'Aortic (not coronary)', valvular: 'Valve (not coronary)',
-  'noise-artifact': 'Image noise', noise: 'Image noise', review: 'Flagged for review', bone: 'Bone', other: 'Other',
+  'noise-artifact': 'Noise (ruled out)', noise: 'Noise (ruled out)', review: 'Flagged for review', bone: 'Bone', other: 'Other',
 }
 
 // ------------------------------------------------------------------ floating labels
@@ -156,7 +174,7 @@ const BLURBS: Record<string, string> = {
   heart_atrium_left: 'Receives oxygen-rich blood from the lungs through the pulmonary veins. It is the most posterior chamber, just in front of the esophagus.',
   heart_atrium_right: 'Collects oxygen-poor blood returning from the body through the superior and inferior vena cava.',
   atrial_appendage_left: 'A small ear-shaped pouch off the left atrium.',
-  aorta: 'The body’s main artery. It leaves the left ventricle, arches over the heart and runs down in front of the spine.',
+  aorta: 'The body’s main artery. It leaves the left ventricle and arches over the heart (the arch itself is just above this scan), then runs down beside the spine.',
   pulmonary_artery: 'Carries blood from the right ventricle to the lungs to pick up oxygen.',
   pulmonary_vein: 'The veins that bring oxygen-rich blood back from the lungs into the left atrium.',
   superior_vena_cava: 'The large vein that returns blood from the head and arms to the right atrium.',
@@ -186,6 +204,9 @@ const GROUP_BLURB: Record<string, string> = {
 export function blurbFor(n: MeshNode): string {
   if (BLURBS[n.name]) return BLURBS[n.name]
   if (n.name.startsWith('rib_')) return 'One of the ribs that form the cage around the heart and lungs. Only the part inside the scan is shown.'
-  if (n.name.startsWith('vertebrae_')) return `A thoracic vertebra (${n.name.replace('vertebrae_', '')}), one of the stacked bones of the spine.`
+  if (n.name.startsWith('vertebrae_')) {
+    const sliver = (n.volumeML ?? Infinity) < 3 ? ' Only a thin sliver of it lies inside the scanned slab.' : ''
+    return `A thoracic vertebra (${n.name.replace('vertebrae_', '')}), one of the stacked bones of the spine.${sliver}`
+  }
   return GROUP_BLURB[n.group] ?? ''
 }

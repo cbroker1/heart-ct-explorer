@@ -245,6 +245,12 @@ void main() {
 #else
   // ---------------- compositing modes (TF and/or label surfaces) ----------------
   vec4 acc = vec4(0.0);
+#ifdef PROBE
+  // picking looks THROUGH glass shells (lung lobes, skin) at the solid structure behind them;
+  // the glass surface itself is only reported when nothing solid is hit
+  float sAcc = 0.0;
+  vec3 glassP = vec3(-1.0);
+#endif
   vec3 dM = 1.0 / uMaskDims;
   mat3 J = mat3(uToMask);
   mat3 Jt = transpose(J);
@@ -312,6 +318,9 @@ void main() {
         float alpha = 1.0 - pow(1.0 - min(a, 0.995), uStep);
         acc.rgb += (1.0 - acc.a) * alpha * col;
         acc.a += (1.0 - acc.a) * alpha;
+#ifdef PROBE
+        sAcc += (1.0 - sAcc) * alpha;
+#endif
       }
     }
 #endif
@@ -341,6 +350,9 @@ void main() {
           float alpha = 1.0 - pow(1.0 - min(sa, 0.995), uStep);
           acc.rgb += (1.0 - acc.a) * alpha * col;
           acc.a += (1.0 - acc.a) * alpha;
+#ifdef PROBE
+          sAcc += (1.0 - sAcc) * alpha;
+#endif
         }
       }
 #endif
@@ -373,12 +385,14 @@ void main() {
 #endif
 
 #ifdef PROBE
-    if (hitP.x < 0.0 && acc.a > 0.35) hitP = clamp(p + rd * 1.2, uClipMin, uClipMax);   // just inside the surface
+    if (sAcc > 0.35) { hitP = clamp(p + rd * 1.2, uClipMin, uClipMax); break; }   // just inside the surface
+    if (glassP.x < 0.0 && acc.a > 0.35) glassP = clamp(p + rd * 1.2, uClipMin, uClipMax);
 #endif
     if (acc.a > 0.985) break;
     t += uStep;
   }
 #ifdef PROBE
+  if (hitP.x < 0.0) hitP = glassP;
   fragColor = hitP.x >= 0.0 ? vec4(hitP / uSize, 1.0) : vec4(0.0);
 #else
   fragColor = acc;

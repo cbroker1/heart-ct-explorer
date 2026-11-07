@@ -1,9 +1,10 @@
 /** One finding: plain-English first, radiology details + skeptic review on demand. */
-import { categoryMeta, lensMeta, pct, seriesLabel, SEV_TONE, SEVERITY_LABEL, verifMeta, type NFinding } from './model'
+import { useLayoutEffect, useRef, useState } from 'react'
+import { categoryMeta, lensMeta, pct, seriesLabel, SEV_TONE, SEVERITY_LABEL, verifMeta, type NFinding, type NVote } from './model'
 import { useRead } from './ctx'
 import { useLightbox, Thumb } from './Lightbox'
 import { Locator } from './Topogram'
-import { ConfidenceBar, Prose, SevChip, ToneChip, VerifChip } from './bits'
+import { ConfidenceBar, Prose, RichText, SevChip, ToneChip, VerifChip } from './bits'
 import { IcArrowRight, IcCheck, IcChevron, IcGavel, IcImage, IcSlices, IcTarget, IcX } from './icons'
 
 export function FindingCard({ f }: { f: NFinding }) {
@@ -89,7 +90,7 @@ export function FindingCard({ f }: { f: NFinding }) {
                 </div>
               )}
               {f.link && (
-                <button type="button" className="rd-slice-cta rd-noprint" onClick={() => openSlice(f.link!)}>
+                <button type="button" className="rd-slice-cta rd-noprint" onClick={() => openSlice(f.link!, f.id)}>
                   <span className="rd-slice-ic"><IcSlices size={20} /></span>
                   <span className="grow">
                     <b>Show in slice viewer</b>
@@ -127,6 +128,7 @@ export function FindingCard({ f }: { f: NFinding }) {
 }
 
 function SkepticPanel({ f, upheld }: { f: NFinding; upheld: number }) {
+  const [openVote, setOpenVote] = useState<number | null>(null)
   const m = verifMeta(f.status)
   const n = f.votes.length
   const refuted = n - upheld
@@ -148,22 +150,75 @@ function SkepticPanel({ f, upheld }: { f: NFinding; upheld: number }) {
         </div>
       </div>
       {n > 0 && (
-        <div className="rd-votes">
-          {f.votes.map((v, i) => {
-            const lm = lensMeta(v.lens)
-            return (
-              <div key={i} className={`rd-vote ${v.refuted ? 'refuted' : 'upheld'}`}>
-                <div className="rd-vote-head">
-                  <span className="rd-vote-ic">{v.refuted ? <IcX size={14} /> : <IcCheck size={14} />}</span>
-                  <b>{lm.label}</b>
-                </div>
-                {lm.question && <div className="rd-vote-q">{lm.question}</div>}
-                <div className="rd-vote-verdict">{v.refuted ? 'Refuted it' : 'Could not refute it'}</div>
-                {v.note && <p className="rd-vote-note">{v.note}</p>}
-              </div>
-            )
-          })}
+        // While a note is open every card takes the full width, so the long note stays readable.
+        <div className={`rd-votes ${openVote !== null ? 'has-open' : ''}`}>
+          {f.votes.map((v, i) => (
+            <VoteCard
+              key={i}
+              v={v}
+              id={`rd-vn-${f.id}-${i}`}
+              open={openVote === i}
+              onToggle={() => setOpenVote((o) => (o === i ? null : i))}
+            />
+          ))}
         </div>
+      )}
+    </div>
+  )
+}
+
+/** One skeptic's vote. Their notes run to thousands of characters, so only the opening shows at first. */
+function VoteCard({ v, id, open, onToggle }: { v: NVote; id: string; open: boolean; onToggle: () => void }) {
+  const lm = lensMeta(v.lens)
+  const cardRef = useRef<HTMLDivElement>(null)
+  const noteRef = useRef<HTMLDivElement>(null)
+  const [overflows, setOverflows] = useState(false)
+
+  // Is the clamped note actually cut off? Re-checked on resize (and when the details panel is first shown).
+  useLayoutEffect(() => {
+    const el = noteRef.current
+    if (!el || open) return
+    const check = () => { if (el.clientHeight > 0) setOverflows(el.scrollHeight > el.clientHeight + 2) }
+    check()
+    if (typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(check)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [open, v.note])
+
+  const toggle = () => {
+    const closing = open
+    onToggle()
+    // After collapsing a long note, bring the card back into view if its top scrolled away.
+    if (closing) {
+      requestAnimationFrame(() => {
+        const el = cardRef.current
+        const scroller = el?.closest('.page-scroll')
+        if (el && scroller && el.getBoundingClientRect().top < scroller.getBoundingClientRect().top) el.scrollIntoView({ block: 'start' })
+      })
+    }
+  }
+
+  return (
+    <div ref={cardRef} className={`rd-vote ${v.refuted ? 'refuted' : 'upheld'} ${open ? 'open' : ''}`}>
+      <div className="rd-vote-head">
+        <span className="rd-vote-ic">{v.refuted ? <IcX size={14} /> : <IcCheck size={14} />}</span>
+        <b>{lm.label}</b>
+      </div>
+      {lm.question && <div className="rd-vote-q">{lm.question}</div>}
+      <div className="rd-vote-verdict">{v.refuted ? 'Refuted it' : 'Could not refute it'}</div>
+      {v.note && (
+        <>
+          <div id={id} ref={noteRef} className={`rd-vote-note ${open ? '' : 'clamped'} ${!open && overflows ? 'faded' : ''}`}>
+            <RichText text={v.note} />
+          </div>
+          {(open || overflows) && (
+            <button type="button" className="rd-vote-more rd-noprint" aria-expanded={open} aria-controls={id} onClick={toggle}>
+              {open ? 'Show less' : 'Read the full note'}
+              <IcChevron size={14} className="rd-chev" />
+            </button>
+          )}
+        </>
       )}
     </div>
   )

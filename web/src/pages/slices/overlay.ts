@@ -183,8 +183,8 @@ export function drawOverlay(ctx: CanvasRenderingContext2D, o: OverlayInput) {
       ctx.fill()
     }
 
-    // ---- scale bar (bottom right, above the zoom readout)
-    if (r.w > 160 && r.h > 140) {
+    // ---- scale bar (bottom right, above the zoom readout; tiny views have no room for it)
+    if (r.w >= 220 && r.h >= 170) {
       const mm = niceScale(sl.s, Math.min(90, r.w * 0.16))
       const px = mm / sl.s
       const x1 = r.x + r.w - 26

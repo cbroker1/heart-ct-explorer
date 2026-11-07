@@ -264,7 +264,7 @@ interface HeartProps {
 }
 
 function Heart({ model, player, manifest, autoRotate, onReady }: HeartProps) {
-  const gltf = useGLTF(dataUrl(manifest.meshes.file))
+  const gltf = useGLTF(dataUrl(manifest.meshes.heartFile ?? manifest.meshes.file))
   const built = useMemo(
     () => build(gltf.scene, model, Object.fromEntries(manifest.meshes.nodes.map((n) => [n.name, n.color]))),
     [gltf, model, manifest],

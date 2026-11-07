@@ -14,6 +14,7 @@ import { Timeline } from './heartbeat/Timeline'
 import { Hud } from './heartbeat/Hud'
 import { BeatDiagram, HrChart, RhythmCard, ShotsTable, StripProof } from './heartbeat/Explainers'
 import type { SceneInfo } from './heartbeat/HeartScene'
+import { hasWebGL2 } from './core/hooks'
 import './heartbeat/heartbeat.css'
 
 const HeartScene = lazy(() => import('./heartbeat/HeartScene'))
@@ -23,32 +24,27 @@ type Speed = '0.25' | '0.5' | '1'
 /** where each slab sits, top of the heart first (the scanner stepped downwards) */
 const SLAB_WHERE = ['top of the heart', 'upper middle', 'lower middle', 'bottom of the heart']
 
-function hasWebGL2(): boolean {
-  try {
-    const c = document.createElement('canvas')
-    return !!c.getContext('webgl2')
-  } catch {
-    return false
-  }
-}
-
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-export default function Heartbeat() {
+/** `onSettled` fires once the ECG has loaded (or failed), i.e. once this section has its real height. */
+export default function Heartbeat({ onSettled }: { onSettled?: () => void }) {
   const manifest = useApp((s) => s.manifest)
   const [ecg, setEcg] = useState<EcgData | null>(null)
   const [err, setErr] = useState<string | null>(null)
+  const [attempt, setAttempt] = useState(0)
   useEffect(() => {
     let alive = true
     loadEcg().then((d) => alive && setEcg(d)).catch((e) => alive && setErr(String(e?.message ?? e)))
     return () => { alive = false }
-  }, [])
+  }, [attempt])
+  useEffect(() => { if (ecg || err) onSettled?.() }, [ecg, err, onSettled])
   if (err) {
     return (
       <div className="card" style={{ borderColor: 'rgba(255,92,92,.4)' }}>
         <h3 style={{ color: 'var(--danger)' }}>Couldn't load the ECG</h3>
         <p className="mono muted" style={{ fontSize: 12 }}>{err}</p>
+        <button className="btn small" onClick={() => { setErr(null); setAttempt((a) => a + 1) }}>Try again</button>
       </div>
     )
   }
@@ -62,6 +58,9 @@ function HeartbeatLab({ ecg, manifest }: { ecg: EcgData; manifest: Manifest }) {
   const player = useMemo(() => {
     const p = new Player(model)
     p.playing = !reduced
+    // Reduced motion: no autoplay, so start on a frame worth looking at: just after the first X-ray,
+    // with a full screen of trace behind the playhead and that shot's band on it.
+    if (reduced && model.x.length) p.seek(model.x[0].xray[1] + 0.06)
     return p
   }, [model, reduced])
   const bus = useMemo(() => new Set<FrameFn>(), [])
@@ -85,6 +84,8 @@ function HeartbeatLab({ ecg, manifest }: { ecg: EcgData; manifest: Manifest }) {
   const soundRef = useRef(false)
   soundRef.current = sound
   const slowChip = useRef<HTMLSpanElement>(null)
+  /** X-ray shot under the playhead at the last frame (-1 none, -2 = re-check after a seek) */
+  const lastShot = useRef(-1)
 
   // pause all work while the section is off-screen
   useEffect(() => {
@@ -110,7 +111,6 @@ function HeartbeatLab({ ecg, manifest }: { ecg: EcgData; manifest: Manifest }) {
   useEffect(() => {
     let raf = 0
     let lastBeat = -2
-    let lastShot = -1
     let toastKey = 0
     let wasSlow = false
     let wasPlaying = player.playing
@@ -121,9 +121,9 @@ function HeartbeatLab({ ecg, manifest }: { ecg: EcgData; manifest: Manifest }) {
       const k = model.beatIndex(t)
       if (k !== lastBeat) { lastBeat = k; setBeat(k) }
       const xi = model.exposureAt(t)
-      if (xi !== lastShot) {
+      if (xi !== lastShot.current) {
         if (xi >= 0) setToast({ i: xi, key: ++toastKey })
-        lastShot = xi
+        lastShot.current = xi
       }
       if (wasPlaying !== player.playing) { wasPlaying = player.playing; setPlaying(player.playing) }
       const slow = player.playing && player.slowmo && model.slowFactor(t) < 0.9
@@ -159,12 +159,20 @@ function HeartbeatLab({ ecg, manifest }: { ecg: EcgData; manifest: Manifest }) {
     player.resetClock()
     setPlaying(on)
   }, [player])
-  const seek = useCallback((t: number) => { player.seek(t) ; for (const f of bus) f(player.t) }, [player, bus])
+  const seek = useCallback((t: number) => {
+    player.seek(t)
+    // a toast from before the jump no longer matches the playhead; the next frame re-checks
+    setToast(null)
+    lastShot.current = -2
+    for (const f of bus) f(player.t)
+  }, [player, bus])
   const heroRef = useRef<HTMLDivElement>(null)
   const jumpToShot = useCallback((i: number, scroll = false) => {
     const e = model.x[i]
     if (!e) return
-    seek(e.xray[0] - 1.6)
+    // ~1.6 s of run-up, but start after the previous shot's slow-motion so it doesn't replay first
+    const prevEnd = i > 0 ? model.x[i - 1].xray[1] + 0.3 : -Infinity
+    seek(Math.max(e.xray[0] - 1.6, prevEnd))
     play(true)
     if (scroll) heroRef.current?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' })
   }, [model, seek, play, reduced])
@@ -200,7 +208,7 @@ function HeartbeatLab({ ecg, manifest }: { ecg: EcgData; manifest: Manifest }) {
   const beamMs = ex.reduce((s, e) => s + e.durationMs, 0)
   const t = toast ? ex[toast.i] : null
   const cov = toast && info ? info.coverage[toast.i] : null
-  const glbBytes = manifest.meshes.bytes
+  const glbBytes = manifest.meshes.heartBytes ?? manifest.meshes.bytes
 
   return (
     <div className="hb" ref={rootRef}>
@@ -232,9 +240,11 @@ function HeartbeatLab({ ecg, manifest }: { ecg: EcgData; manifest: Manifest }) {
               )}
             </Suspense>
           ) : (
-            <div className="hb-stage-msg">
+            <div className="hb-stage-msg hb-stage-err">
               <span style={{ fontSize: 28 }}>🫀</span>
-              <span>{sceneErr ? `The 3D heart couldn't load (${sceneErr}).` : "This browser can't show the 3D heart (WebGL2 is off)."} The ECG below still plays.</span>
+              <b>{sceneErr ? "The 3D heart couldn't load." : "This browser can't show the 3D heart (WebGL2 is off)."}</b>
+              <span>The ECG below still plays.</span>
+              {sceneErr && <span className="mono faint hb-err-detail">{sceneErr}</span>}
             </div>
           )}
           {!reduced && toast && <div key={`flash-${toast.key}`} className="hb-flash" aria-hidden />}
@@ -310,7 +320,7 @@ function HeartbeatLab({ ecg, manifest }: { ecg: EcgData; manifest: Manifest }) {
           <p className="hb-explain">
             The scanner watched this ECG live. After each R wave (the tall spike) it predicted when the next beat would
             arrive from the previous ones, and switched the X-ray on for just ~0.16 s centred at {ecg.header.scanPhase.split(' ')[0]} of
-            the beat: late diastole, when the heart is relaxed and almost still. Then the table moved about 3.5 cm during the
+            the beat: mid-to-late diastole, when the heart is relaxed and almost still. Then the table moved about 3.5 cm during the
             next beat and it fired again: {ex.length} shots, every second heartbeat, covering the whole heart in{' '}
             {(ex[ex.length - 1].xray[1] - ex[0].xray[0]).toFixed(1)} s while keeping the dose low.
           </p>

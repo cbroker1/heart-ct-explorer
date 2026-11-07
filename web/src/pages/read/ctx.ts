@@ -9,7 +9,8 @@ export interface ReadCtxValue {
   exam: ExamInfo | null
   expanded: Set<string>
   toggleFinding: (id: string) => void
-  openSlice: (link: NLink) => void
+  /** Opens the slice viewer; with `fromFinding`, Back returns to that finding. */
+  openSlice: (link: NLink, fromFinding?: string) => void
 }
 
 export const ReadCtx = createContext<ReadCtxValue | null>(null)

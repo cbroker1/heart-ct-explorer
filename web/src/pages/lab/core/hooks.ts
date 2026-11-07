@@ -98,14 +98,14 @@ export function useCountUp(target: number, start: boolean, ms = 1100): number {
 }
 
 let webgl2: boolean | null = null
-/** Probe WebGL2 once (and release the probe context straight away). */
+/** Probe WebGL2 once per page load, shared by every Lab section. The tiny probe canvas is simply
+ *  dropped (forcing a context loss on it makes Chrome log a CONTEXT_LOST warning). */
 export function hasWebGL2(): boolean {
   if (webgl2 !== null) return webgl2
   try {
     const c = document.createElement('canvas')
-    const gl = c.getContext('webgl2')
-    webgl2 = !!gl
-    gl?.getExtension('WEBGL_lose_context')?.loseContext()
+    c.width = c.height = 1
+    webgl2 = !!c.getContext('webgl2')
   } catch {
     webgl2 = false
   }

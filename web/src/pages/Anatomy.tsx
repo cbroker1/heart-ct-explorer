@@ -6,8 +6,8 @@
 import { Component, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import * as THREE from 'three'
 import { Canvas } from '@react-three/fiber'
-import { PerformanceMonitor } from '@react-three/drei'
-import { formatBytes, loadJSON } from '../lib/data'
+import { PerformanceMonitor, useGLTF } from '@react-three/drei'
+import { dataUrl, formatBytes, loadJSON } from '../lib/data'
 import { lpsToWorld } from '../lib/coords'
 import type { CalciumReport } from '../lib/reports'
 import { useApp } from '../lib/store'
@@ -21,18 +21,33 @@ import { rig, setView } from './anatomy/rig'
 import { useAnat, type ClipState } from './anatomy/state'
 import './anatomy/anatomy.css'
 
-class Boundary extends Component<{ children: ReactNode }, { error: string | null }> {
+const errText = (e: unknown) => String((e as Error)?.message ?? e)
+
+class Boundary extends Component<{ children: ReactNode; onError: (msg: string | null) => void; onRetry: () => void }, { error: string | null }> {
   state = { error: null as string | null }
   static getDerivedStateFromError(e: unknown) {
-    return { error: String((e as Error)?.message ?? e) }
+    return { error: errText(e) }
+  }
+  componentDidCatch(e: unknown) {
+    this.props.onError(errText(e))
+  }
+  retry = () => {
+    this.props.onRetry()
+    this.props.onError(null)
+    this.setState({ error: null })
   }
   render() {
     if (this.state.error) {
+      const download = /load|fetch|network|HTTP/i.test(this.state.error)
       return (
         <div className="ana-nogl">
           <div className="card">
             <h3 style={{ color: 'var(--danger)' }}>The 3D view could not start</h3>
-            <p className="muted mono" style={{ fontSize: 12, whiteSpace: 'pre-wrap' }}>{this.state.error}</p>
+            <p className="muted">
+              {download ? 'The 3D model did not download completely. Check your connection and try again.' : 'Something went wrong while building the 3D scene.'}
+            </p>
+            <p className="muted mono" style={{ fontSize: 11.5, whiteSpace: 'pre-wrap', margin: '8px 0 12px' }}>{this.state.error}</p>
+            <button className="btn small" onClick={this.retry}>Try again</button>
           </div>
         </div>
       )
@@ -43,7 +58,11 @@ class Boundary extends Component<{ children: ReactNode }, { error: string | null
 
 function hasWebGL2() {
   try {
-    return !!document.createElement('canvas').getContext('webgl2')
+    const gl = document.createElement('canvas').getContext('webgl2')
+    // Release the probe context right away (frees a GPU context slot; an orphaned context makes
+    // Chrome log "CONTEXT_LOST_WEBGL" when it is garbage-collected).
+    gl?.getExtension('WEBGL_lose_context')?.loseContext()
+    return !!gl
   } catch {
     return false
   }
@@ -109,6 +128,7 @@ export default function Anatomy() {
     return () => mq.removeEventListener('change', on)
   }, [])
   const [dpr, setDpr] = useState(() => Math.min(2, window.devicePixelRatio || 1))
+  const [glError, setGlError] = useState<string | null>(null)
 
   // Keyboard: Esc clears the selection.
   useEffect(() => {
@@ -201,7 +221,7 @@ export default function Anatomy() {
     <div className="viewer ana">
       <div className="stage ana-stage" ref={stageRef}>
         {webgl2 ? (
-          <Boundary>
+          <Boundary onError={setGlError} onRetry={() => useGLTF.clear(dataUrl(manifest.meshes.file))}>
             <Canvas
               className="ana-canvas"
               dpr={dpr}
@@ -228,8 +248,8 @@ export default function Anatomy() {
             </div>
           </div>
         )}
-        {webgl2 && <Overlays manifest={manifest} calcium={calcium} stageRef={stageRef} ct={ct} />}
-        {webgl2 && !ready && <LoaderOverlay label={`Building your 3D anatomy · ${manifest.meshes.nodes.length} structures, ${formatBytes(manifest.meshes.bytes)}`} />}
+        {webgl2 && !glError && <Overlays manifest={manifest} calcium={calcium} stageRef={stageRef} ct={ct} />}
+        {webgl2 && !ready && !glError && <LoaderOverlay label={`Building your 3D anatomy · ${manifest.meshes.nodes.length} structures, ${formatBytes(manifest.meshes.bytes)}`} />}
       </div>
       <Sidebar manifest={manifest} calcium={calcium} ct={{ ...ct, ready: !!ct.vol }} />
     </div>

@@ -2,8 +2,8 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { navigate } from '../../components/ui'
 import {
-  plural, SEV_SHORT, SEV_TONE, SEVERITIES, statusMeta, verdictMeta, VERDICTS,
-  type NFinding, type NReport, type NSystem, type Severity,
+  fmtInt, plural, SEV_SHORT, SEV_TONE, SEVERITIES, statusMeta, verdictMeta, VERDICTS,
+  type NDismissed, type NFinding, type NPanel, type NReport, type NSystem, type Severity,
 } from './model'
 import { ConfidenceBar, SevChip, StatusChip } from './bits'
 import { IcAlert, IcArrowRight, IcFlag, IcGavel, IcHeart, IcInfo, IcShield, SystemIcon } from './icons'
@@ -87,7 +87,7 @@ function CountUp({ to, ms = 900 }: { to: number; ms?: number }) {
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
   }, [to, ms, reduce])
-  return <>{v}</>
+  return <>{Number.isInteger(v) ? fmtInt(v) : v}</>
 }
 
 export function Impression({ items }: { items: NReport['impression'] }) {
@@ -191,8 +191,61 @@ export function GlanceGrid(props: { systems: NSystem[]; onGo: (anchor: string) =
   )
 }
 
-/** Severity histogram + verification funnel, used in "About this read". */
-export function VerificationFunnel({ findings }: { findings: NFinding[] }) {
+/** Findings the skeptic panel threw out, across the whole report (top summary). */
+export function DismissedCard({ items, onGo }: { items: NDismissed[]; onGo: (anchor: string) => void }) {
+  return (
+    <div className="rd-tossed card">
+      <div className="rd-tossed-top">
+        <span className="rd-tossed-ic"><IcGavel size={16} /></span>
+        <div>
+          <div className="eyebrow">Thrown out by the skeptics</div>
+          <p className="rd-tossed-lead">
+            {items.length === 1
+              ? 'A specialist flagged this, but the skeptic panel re-checked the images and showed it was not real, so it is not counted as a finding.'
+              : 'Specialists flagged these, but the skeptic panel re-checked the images and showed they were not real, so they are not counted as findings.'}
+          </p>
+        </div>
+      </div>
+      <ul className="rd-tossed-links">
+        {items.map((d, i) => (
+          <li key={i}>
+            <button type="button" onClick={() => onGo(d.anchor)} title={`Jump to ${d.systemTitle}`}>
+              <span className="rd-tossed-item">{d.item}</span>
+              <span className="rd-tossed-sys">{d.systemTitle}{d.result ? ` · ${d.result}` : ''}<IcArrowRight size={13} /></span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+/** The skeptic stage in "About this read": the panel's own totals when present, else the per-finding verdicts. */
+export function VerificationFunnel({ findings, panel }: { findings: NFinding[]; panel: NPanel | null }) {
+  if (panel?.findingsExamined) {
+    const examined = panel.findingsExamined
+    const out = Math.min(examined, panel.dismissed ?? 0)
+    const merged = Math.min(examined - out, panel.merged ?? 0)
+    const kept = examined - out - merged
+    return (
+      <div className="rd-funnel">
+        <div className="rd-funnel-bar" role="img" aria-label={`${examined} findings cross-examined: ${kept} confirmed, ${merged ? `${merged} merged duplicate, ` : ''}${out} thrown out`}>
+          {kept > 0 && <div className="rd-tone-violet k-kept" style={{ flex: kept }} title={`${kept} confirmed`} />}
+          {merged > 0 && <div className="rd-tone-cyan k-merged" style={{ flex: merged }} title={`${merged} merged duplicate`} />}
+          {out > 0 && <div className="rd-tone-neutral k-refuted" style={{ flex: out }} title={`${out} thrown out`} />}
+        </div>
+        <div className="rd-funnel-legend">
+          <span>
+            <b className="mono">{fmtInt(examined)}</b> cross-examined
+            {panel.skepticVotes ? <> · <b className="mono">{fmtInt(panel.skepticVotes)}</b> skeptic votes</> : null}
+          </span>
+          <span className="rd-tone-violet"><i className="rd-legend-dot" /><b className="mono">{fmtInt(kept)}</b> confirmed</span>
+          {merged > 0 && <span className="rd-tone-cyan"><i className="rd-legend-dot" /><b className="mono">{fmtInt(merged)}</b> merged duplicate</span>}
+          {panel.dismissed !== null && <span className="rd-tone-neutral"><i className="rd-legend-dot" /><b className="mono">{fmtInt(out)}</b> thrown out</span>}
+        </div>
+      </div>
+    )
+  }
   const total = findings.length
   if (!total) return <p className="muted rd-funnel-empty">No findings needed skeptic review.</p>
   const groups = [

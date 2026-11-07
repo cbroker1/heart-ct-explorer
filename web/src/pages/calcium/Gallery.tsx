@@ -1,7 +1,8 @@
 import { useMemo, useState, type KeyboardEvent } from 'react'
 import { dataUrl } from '../../lib/data'
 import type { CalciumCandidate } from '../../lib/reports'
-import { chamberLabel, fmtNum, frac01, shortReason, sliceRange, thumbUrl, verdict, VERDICT_ORDER } from './model'
+import { cleanNote, conf01, isNoise, summarizeVotes, voteColor, voteLabel, voterName, type ReviewerInfo } from './adjudication'
+import { chamberLabel, fmtNum, pct, shortReason, sliceRange, thumbUrl, verdict, VERDICT_ORDER } from './model'
 import type { CalciumVM } from './useCalciumData'
 
 export function VerdictChip({ cls, small }: { cls: string; small?: boolean }) {
@@ -14,21 +15,62 @@ export function VerdictChip({ cls, small }: { cls: string; small?: boolean }) {
   )
 }
 
-export function Votes({ c }: { c: CalciumCandidate }) {
-  if (!c.reviewVotes?.length) return null
+const confRange = (lo: number | null, hi: number | null) =>
+  lo === null || hi === null ? '' : Math.round(lo * 100) === Math.round(hi * 100) ? pct(lo) : `${Math.round(lo * 100)}–${pct(hi)}`
+
+/** One-line vote summary for a gallery card: three pips + "3/3 AI reviewers: noise / artifact" + confidence range. */
+export function VoteStrip({ c, reviewers }: { c: CalciumCandidate; reviewers: ReviewerInfo[] }) {
+  const s = summarizeVotes(c)
+  if (!s) return null
+  const vs = c.reviewVotes ?? []
+  const agreedWithRules = c.ruleClass === 'noise' && s.unanimous && isNoise(s.top) && s.topN === s.n
+  const title = vs.map((v, i) => {
+    const cf = conf01(v.confidence)
+    return `${voterName(v, i, reviewers)}: ${voteLabel(v.verdict)}${cf !== null ? ` (${pct(cf)} sure)` : ''}`
+  }).join('\n')
+  const range = confRange(s.confMin, s.confMax)
   return (
-    <div className="cal-votes">
-      {c.reviewVotes.map((v, i) => {
-        const vm = verdict(v.verdict)
-        const conf = frac01(v.confidence)
+    <div className="cal-vstrip" title={title}>
+      <span className="cal-vpips" aria-hidden>{vs.map((v, i) => <i key={i} style={{ background: voteColor(v.verdict) }} />)}</span>
+      <b>{s.topN}/{s.n}</b> AI reviewers{agreedWithRules ? ' agreed' : `: ${voteLabel(s.top)}`}
+      {range && <span className="muted mono cal-vstrip-c"> · {range} sure</span>}
+    </div>
+  )
+}
+
+/** Every reviewer's vote with its note (candidate sheet). */
+export function VoteList({ c, reviewers }: { c: CalciumCandidate; reviewers: ReviewerInfo[] }) {
+  const vs = c.reviewVotes ?? []
+  if (!vs.length) return null
+  return (
+    <ul className="cal-vlist">
+      {vs.map((v, i) => {
+        const cf = conf01(v.confidence)
+        const note = cleanNote(v.note)
         return (
-          <span key={i} className="cal-vote" title={v.note ?? ''}>
-            <i style={{ background: vm.color }} />
-            <b>{v.reviewer ?? `reviewer ${i + 1}`}</b> {vm.short.toLowerCase()}{v.artery ? ` (${v.artery})` : ''}
-            {conf !== null && <span className="muted">{Math.round(conf * 100)}%</span>}
-          </span>
+          <li key={i}>
+            <div className="cal-vlist-head">
+              <i style={{ background: voteColor(v.verdict) }} aria-hidden />
+              <b>{voterName(v, i, reviewers)}</b>
+              <span className="cal-vlist-v">{voteLabel(v.verdict)}{v.artery ? ` · ${v.artery}` : ''}</span>
+              {cf !== null && <span className="cal-vlist-conf mono" title="How sure this reviewer was about this verdict">{pct(cf)} sure</span>}
+            </div>
+            {note && <ClampText text={note} />}
+          </li>
         )
       })}
+    </ul>
+  )
+}
+
+/** Long text clamped to a few lines with a "more" toggle. */
+export function ClampText({ text, limit = 260 }: { text: string; limit?: number }) {
+  const [open, setOpen] = useState(false)
+  const long = text.length > limit
+  return (
+    <div className="cal-clamp-wrap">
+      <p className={`cal-clamp ${long && !open ? 'on' : ''}`}>{text}</p>
+      {long && <button className="cal-linkbtn" onClick={() => setOpen((o) => !o)} aria-expanded={open}>{open ? 'Show less' : 'Read more'}</button>}
     </div>
   )
 }
@@ -81,8 +123,7 @@ function Card({ c, vm, hot, onOpen, onHover }: {
           </div>
         )}
         {ruleDiffers && c.ruleReasons.length > 0 && <div className="cal-cand-rule muted">rules said: {verdict(c.ruleClass).short.toLowerCase()}</div>}
-        {c.reviewNote && <div className="cal-cand-note">{c.reviewNote}</div>}
-        <Votes c={c} />
+        {c.reviewVotes?.length ? <VoteStrip c={c} reviewers={vm.reviewers} /> : c.reviewNote ? <div className="cal-cand-note">{cleanNote(c.reviewNote)}</div> : null}
       </div>
     </article>
   )
@@ -115,7 +156,7 @@ export default function Gallery({ vm, hoverId, onHover, onOpen }: {
             </button>
           ))}
         </div>
-        <span className="muted" style={{ fontSize: 12 }}>Sorted: {vm.pending.length ? 'borderline first' : 'most important first'}, then by peak HU</span>
+        <span className="muted" style={{ fontSize: 12 }}>Sorted: {vm.pending.length || vm.borderline.length ? 'borderline first' : 'most important first'}, then by peak HU</span>
       </div>
       <div className="cal-cands">
         {shown.map((c) => (

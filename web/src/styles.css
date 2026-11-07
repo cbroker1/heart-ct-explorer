@@ -173,6 +173,7 @@ table.data { width: 100%; border-collapse: collapse; font-size: 13px; }
 table.data th { text-align: left; color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; padding: 8px 8px; border-bottom: 1px solid var(--line-2); }
 table.data td { padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
 table.data td.num { font-family: var(--mono); text-align: right; }
+table.data th.num { text-align: right; }
 
 .disclaimer { font-size: 12px; color: var(--muted); border-left: 3px solid var(--amber); padding: 8px 12px; background: rgba(255, 181, 71, 0.06); border-radius: 0 8px 8px 0; }
 
@@ -189,4 +190,7 @@ table.data td.num { font-family: var(--mono); text-align: right; }
 }
 canvas { display: block; }
 /* Full-bleed viewers own every gesture; inline canvases on scrolling pages must let the page scroll. */
-.viewer canvas { touch-action: none; }
+.viewer .stage canvas { touch-action: none; }
+/* On scrolling pages, inline 3D views must still let a vertical swipe scroll the page. drei's controls
+   write an inline touch-action:none on the canvas wrapper, so override it there too. */
+.page-scroll canvas, .page-scroll div:has(> canvas) { touch-action: pan-y !important; }

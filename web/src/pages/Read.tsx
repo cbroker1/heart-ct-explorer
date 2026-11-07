@@ -2,23 +2,23 @@
  * AI Second Read (#/read): "do a complete doctor analysis of all the images; if you see anything
  * concerning let me know". A radiology report crossed with a calm health dashboard.
  *
- * Data: public/data/read.json (ReadReport), falling back to read.mock.json while the real read is
- * being produced. Deep links: #/read?finding=<id> or #/read?section=<system key>.
+ * Data: public/data/read.json (ReadReport). Deep links: #/read?finding=<id> or #/read?section=<system key>.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
-import { ErrorBox, LoaderOverlay, navigate } from '../components/ui'
+import { LoaderOverlay, navigate } from '../components/ui'
 import { useApp } from '../lib/store'
 import type { Manifest } from '../lib/data'
 import {
-  formatDicomDate, formatGenerated, loadExamInfo, loadReport, mode, plural, SEV_SHORT, SEVERITIES, SEVERITY_LABEL, sliceRoute, verdictMeta,
+  describePanel, fmtInt, formatDicomDate, formatGenerated, loadExamInfo, loadReport, mode, plural, SEV_SHORT, SEVERITIES, SEVERITY_LABEL,
+  skepticsPerFinding, sliceRoute, verdictMeta,
   type ExamInfo, type LoadedReport, type NFinding, type NLink, type Severity,
 } from './read/model'
 import { ReadCtx, useMedia, type ReadCtxValue } from './read/ctx'
 import { LightboxProvider } from './read/Lightbox'
 import { FindingsMap } from './read/Topogram'
 import { SystemSection, type HiddenInfo } from './read/SystemSection'
-import { CalciumCard, GlanceGrid, Impression, MockBanner, VerdictBanner, VerificationFunnel } from './read/Summary'
+import { CalciumCard, DismissedCard, GlanceGrid, Impression, MockBanner, VerdictBanner, VerificationFunnel } from './read/Summary'
 import { Actions, DEFAULT_FILTERS, Rail, Toolbar, type FilterCounts, type Filters, type TocEntry } from './read/Controls'
 import { Prose } from './read/bits'
 import { IcArrowUp, IcPrinter } from './read/icons'
@@ -35,7 +35,10 @@ function getReport(m: Manifest) {
   return reportPromise
 }
 function getExam(m: Manifest) {
-  if (!examPromise) examPromise = loadExamInfo(m)
+  if (!examPromise) {
+    examPromise = loadExamInfo(m)
+    examPromise.then((x) => { if (!x) examPromise = null })   // exam.json failed: try again next time
+  }
   return examPromise
 }
 
@@ -44,6 +47,7 @@ export default function Read() {
   const [data, setData] = useState<LoadedReport | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [exam, setExam] = useState<ExamInfo | null>(null)
+  const [attempt, setAttempt] = useState(0)
 
   useEffect(() => {
     if (!manifest) return
@@ -53,9 +57,20 @@ export default function Read() {
       .catch((e) => { if (alive) setError(String(e?.message ?? e)) })
     getExam(manifest).then((x) => { if (alive) setExam(x) })
     return () => { alive = false }
-  }, [manifest])
+  }, [manifest, attempt])
 
-  if (error) return <ErrorBox error={`Could not load the AI second read (read.json, nor the read.mock.json placeholder).\n${error}`} />
+  if (error) {
+    return (
+      <div className="page-pad">
+        <div className="card rd-error" role="alert">
+          <h3>The AI second read could not be loaded</h3>
+          <p className="muted">The report file (<code>read.json</code>) did not load. Check your connection and try again.</p>
+          <p className="mono rd-error-detail">{error}</p>
+          <button type="button" className="btn" onClick={() => { setError(null); setAttempt((a) => a + 1) }}>Try again</button>
+        </div>
+      </div>
+    )
+  }
   if (!manifest || !data) return <LoaderOverlay label="Loading the AI second read…" />
   return <ReportView data={data} exam={exam} manifest={manifest} />
 }
@@ -131,13 +146,13 @@ function ReportView({ data, exam, manifest }: { data: LoadedReport; exam: ExamIn
   const expandAll = useCallback(() => setExpanded(new Set(visibleAll.map((f) => f.id))), [visibleAll])
   const collapseAll = useCallback(() => setExpanded(new Set()), [])
 
-  const goTo = useCallback((id: string) => {
+  const goTo = useCallback((id: string, instant = false) => {
     const el = document.getElementById(id)
     if (!el) return
-    el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' })
+    el.scrollIntoView({ behavior: reduced || instant ? 'auto' : 'smooth', block: 'start' })
   }, [reduced])
 
-  const pickFinding = useCallback((id: string) => {
+  const pickFinding = useCallback((id: string, instant = false) => {
     const f = report.findings.find((x) => x.id === id)
     if (!f) return
     flushSync(() => {
@@ -150,34 +165,45 @@ function ReportView({ data, exam, manifest }: { data: LoadedReport; exam: ExamIn
     })
     const el = document.getElementById(`rd-f-${id}`)
     if (!el) return
-    el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' })
+    el.scrollIntoView({ behavior: reduced || instant ? 'auto' : 'smooth', block: 'start' })
     el.classList.remove('rd-flash')
     void el.offsetWidth
     el.classList.add('rd-flash')
     window.setTimeout(() => el.classList.remove('rd-flash'), 1800)
   }, [report, reduced])
 
-  const openSlice = useCallback((l: NLink) => {
+  const openSlice = useCallback((l: NLink, fromFinding?: string) => {
+    // Rewrite this history entry first, so Back from the slice viewer lands on the same finding
+    // instead of the top of a very long report. (replaceState does not fire hashchange.)
+    if (fromFinding) {
+      try { window.history.replaceState(window.history.state, '', `#/read?finding=${encodeURIComponent(fromFinding)}`) } catch { /* ignore */ }
+    }
     const app = useApp.getState()
     if (l.lps) app.setCursor(l.lps)
     if (l.series && manifest.volumes.some((v) => v.key === l.series)) app.setSliceSeries(l.series)
     navigate(sliceRoute(l, manifest.volumes))
   }, [manifest])
 
-  // Deep links: #/read?finding=<id> | #/read?section=<system key or element id>
-  useEffect(() => {
-    const qs = new URLSearchParams(window.location.hash.split('?')[1] ?? '')
+  // Deep links: #/read?finding=<id> | #/read?section=<system key or element id>.
+  // Applied on arrival (instant jump: smooth-scrolling a 20k px page is slow) and when the hash changes in place.
+  const deepLink = useRef<() => void>(() => {})
+  deepLink.current = () => {
+    const [path, q] = window.location.hash.replace(/^#/, '').split('?')
+    if (path !== '/read' || !q) return
+    const qs = new URLSearchParams(q)
     const fid = qs.get('finding')
     const sec = qs.get('section')
-    const t = window.setTimeout(() => {
-      if (fid && report.findings.some((f) => f.id === fid)) pickFinding(fid)
-      else if (sec) {
-        const s = report.systems.find((x) => x.key === sec || x.anchor === sec)
-        goTo(s ? s.anchor : sec.startsWith('rd-') ? sec : `rd-${sec}`)
-      }
-    }, 80)
-    return () => window.clearTimeout(t)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (fid && report.findings.some((f) => f.id === fid)) pickFinding(fid, true)
+    else if (sec) {
+      const s = report.systems.find((x) => x.key === sec || x.anchor === sec)
+      goTo(s ? s.anchor : sec.startsWith('rd-') ? sec : `rd-${sec}`, true)
+    }
+  }
+  useEffect(() => {
+    const t = window.setTimeout(() => deepLink.current(), 80)
+    const onHash = () => deepLink.current()
+    window.addEventListener('hashchange', onHash)
+    return () => { window.clearTimeout(t); window.removeEventListener('hashchange', onHash) }
   }, [])
 
   // ---------------------------------------------------------------- scroll spy + back-to-top
@@ -240,27 +266,53 @@ function ReportView({ data, exam, manifest }: { data: LoadedReport; exam: ExamIn
   // ---------------------------------------------------------------- derived copy
   const real = report.findings.filter((f) => !f.isArtifact && !f.isRefuted)
   const nSys = report.systems.length
-  const reviewers = nSys ? plural(nSys, 'AI specialist reviewer') : 'AI specialist reviewers'
-  const voted = report.findings.filter((f) => f.votes.length > 0)
-  const skeptics = mode(voted.map((f) => f.votes.length)) ?? 3
-  const skepticsTxt = `${skeptics} independent AI skeptic${skeptics === 1 ? '' : 's'}`
-  const madeBy = !report.findings.length
-    ? `${reviewers} read every series and flagged nothing, so the AI skeptics had nothing to attack.`
-    : !voted.length
-      ? `${reviewers} read every series. No skeptic review was recorded for the flagged findings.`
-      : voted.length === report.findings.length
-        ? `${reviewers} read every series; each flagged finding was attacked by ${skepticsTxt}.`
-        : `${reviewers} read every series; ${voted.length} of ${report.findings.length} flagged findings were attacked by ${skepticsTxt}.`
+  const pn = report.panel
+  const perFinding = skepticsPerFinding(pn, report.findings)
   const checks = report.systems.reduce((a, s) => a + s.checked.length, 0)
   const votes = report.findings.reduce((a, f) => a + f.votes.length, 0)
   const sevMix = SEVERITIES.map((s) => [s, real.filter((f) => f.severity === s).length] as const)
     .filter(([, n]) => n > 0).map(([s, n]) => `${n} ${SEV_SHORT[s].toLowerCase()}`).join(' · ')
-  const stats = [
-    { v: nSys, k: nSys === 1 ? 'system reviewed' : 'systems reviewed', cap: 'each read by its own AI specialist' },
-    { v: real.length, k: real.length === 1 ? 'finding' : 'findings', cap: real.length ? sevMix : 'nothing flagged' },
-    { v: checks, k: 'items checked', cap: 'specific things looked for, listed per system' },
-    { v: votes, k: 'skeptic votes', cap: 'independent attempts to disprove the findings' },
-  ]
+  const findingStat = { v: real.length, k: real.length === 1 ? 'finding' : 'findings', cap: real.length ? sevMix : 'nothing flagged' }
+
+  // With the panel block (how the read was produced) the counts are the panel's own; otherwise
+  // they are derived from the findings, and only what the data shows is claimed.
+  let madeBy: string
+  let stats: { v: number; k: string; cap: string }[]
+  if (pn) {
+    madeBy = describePanel(pn, nSys, perFinding)
+    const nRev = pn.reviewers ?? nSys
+    const examined = pn.findingsExamined
+    stats = [
+      { v: nRev, k: nRev === 1 ? 'AI specialist' : 'AI specialists', cap: `${nRev === nSys ? 'one per body system' : `across ${plural(nSys, 'body system')}`} · ${plural(checks, 'item')} checked` },
+      pn.imagesRendered
+        ? { v: pn.imagesRendered, k: 'images inspected', cap: 'rendered and examined by the specialists' }
+        : { v: checks, k: 'items checked', cap: 'specific things looked for, listed per system' },
+      findingStat,
+      {
+        v: pn.skepticVotes ?? votes,
+        k: 'skeptic votes',
+        cap: examined
+          ? `${plural(examined, 'finding')} cross-examined${pn.dismissed !== null ? ` · ${fmtInt(pn.dismissed)} thrown out` : ''}`
+          : 'independent attempts to disprove the findings',
+      },
+    ]
+  } else {
+    const reviewers = nSys ? plural(nSys, 'AI specialist reviewer') : 'AI specialist reviewers'
+    const voted = real.filter((f) => f.votes.length > 0)
+    const skeptics = mode(voted.map((f) => f.votes.length)) ?? 3
+    const skepticsTxt = `${skeptics} independent AI skeptic${skeptics === 1 ? '' : 's'}`
+    madeBy = !report.findings.length
+      ? `${reviewers} read every series and flagged nothing, so the AI skeptics had nothing to attack.`
+      : !voted.length
+        ? `${reviewers} read every series. No skeptic review was recorded for the flagged findings.`
+        : `${reviewers} read every series; ${plural(voted.length, 'finding')} ${voted.length === 1 ? 'was' : 'were'} cross-examined by ${skepticsTxt}.`
+    stats = [
+      { v: nSys, k: nSys === 1 ? 'system reviewed' : 'systems reviewed', cap: 'each read by its own AI specialist' },
+      findingStat,
+      { v: checks, k: 'items checked', cap: 'specific things looked for, listed per system' },
+      { v: votes, k: 'skeptic votes', cap: 'independent attempts to disprove the findings' },
+    ]
+  }
 
   const ex = manifest.exam ?? {}
   const age = parseInt(String(ex.PatientAge ?? ''), 10)
@@ -300,10 +352,15 @@ function ReportView({ data, exam, manifest }: { data: LoadedReport; exam: ExamIn
     if (report.calcium && report.calcium.agatston !== null) {
       out.push('', `Coronary calcium (AI estimate): ${report.calcium.agatston} Agatston units.${report.calcium.summary ? ` ${report.calcium.summary}` : ''}`)
     }
+    if (report.dismissed.length) {
+      out.push('', 'Flagged, then thrown out by the AI skeptic panel (not real findings):')
+      for (const d of report.dismissed) out.push(`  - ${d.item} (${d.systemTitle})`)
+    }
+    if (madeBy) out.push('', `How it was made: ${madeBy.replace(/\.$/, '')}.`)
     out.push('', report.disclaimer || 'Not a medical device. The official radiologist report is what counts.')
     out.push('Written by AI models; it can miss things and can flag things that are not there.')
     return out.join('\n')
-  }, [report, isMock, ex])
+  }, [report, isMock, ex, madeBy])
 
   const controls = { filters, counts, onFilters: setFilters, allOpen, onExpand: expandAll, onCollapse: collapseAll, onPrint: doPrint, getSummary }
 
@@ -337,7 +394,12 @@ function ReportView({ data, exam, manifest }: { data: LoadedReport; exam: ExamIn
             <div className="rd-main">
               <section id="rd-impression" className="rd-row-imp" aria-label="Impression">
                 <Impression items={report.impression} />
-                {report.calcium && <CalciumCard calcium={report.calcium} />}
+                {(report.calcium || report.dismissed.length > 0) && (
+                  <div className="rd-imp-side">
+                    {report.calcium && <CalciumCard calcium={report.calcium} />}
+                    {report.dismissed.length > 0 && <DismissedCard items={report.dismissed} onGo={goTo} />}
+                  </div>
+                )}
               </section>
 
               <section id="rd-glance" className="rd-block" aria-labelledby="rd-glance-h">
@@ -376,8 +438,19 @@ function ReportView({ data, exam, manifest }: { data: LoadedReport; exam: ExamIn
                   <div className="card rd-about-card">
                     <h3>Method</h3>
                     {report.method ? <Prose text={report.method} /> : <p className="muted">Not provided.</p>}
-                    <div className="rd-label">Skeptic review of the flagged findings</div>
-                    <VerificationFunnel findings={report.findings} />
+                    <div className="rd-label">{pn?.findingsExamined ? 'Skeptic cross-examination' : 'Skeptic review of the flagged findings'}</div>
+                    <VerificationFunnel findings={report.findings} panel={pn} />
+                    {pn && (pn.agents || pn.toolCalls || pn.calciumAdjudicators || pn.imagesRendered) ? (
+                      <>
+                        <div className="rd-label">The panel in numbers</div>
+                        <div className="rd-series rd-panel-facts">
+                          {!!pn.imagesRendered && <span className="rd-series-chip" title="Images rendered and inspected by the specialist reviewers"><b className="mono">{fmtInt(pn.imagesRendered)}</b> images inspected</span>}
+                          {!!pn.calciumAdjudicators && <span className="rd-series-chip" title="Independent reviewers who adjudicated the coronary calcium score"><b className="mono">{fmtInt(pn.calciumAdjudicators)}</b> calcium adjudicators</span>}
+                          {!!pn.agents && <span className="rd-series-chip" title="AI agents involved in total: the specialists, the skeptics and the calcium adjudicators"><b className="mono">{fmtInt(pn.agents)}</b> AI agents</span>}
+                          {!!pn.toolCalls && <span className="rd-series-chip" title="Image renders, measurements and other actions the agents ran"><b className="mono">{fmtInt(pn.toolCalls)}</b> tool calls</span>}
+                        </div>
+                      </>
+                    ) : null}
                   </div>
                   <div className="card rd-about-card">
                     <h3>Technique</h3>

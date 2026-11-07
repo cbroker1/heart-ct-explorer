@@ -39,6 +39,8 @@ class Structure:
     min_ml: float = 0.3     # drop tiny fragments
     level: float = 0.5      # marching-cubes iso level on the smoothed mask (>0.5 shrinks slightly)
     exclude: tuple = ()     # structure names whose voxels are removed from this one
+    exclude_dilate: int = 0 # grow the excluded masks by this many voxels first (kills 1-voxel rims)
+    min_island_frac: float = 0.0  # drop connected pieces smaller than this fraction of the largest
 
 
 def _ribs():
@@ -61,14 +63,14 @@ def _vertebrae():
 
 CATALOG: list[Structure] = [
     # --- containers first (lowest priority) ---
-    Structure("body_trunc", "Skin & soft tissue", "#d9a58f", "body", "body", ("body_trunc",), sigma=1.6, keep=0.08,
+    Structure("body_trunc", "Body (skin to skin)", "#d9a58f", "body", "body", ("body_trunc",), sigma=1.6, keep=0.08,
               visible=False, opacity=0.12),
     Structure("lung_upper_lobe_left", "Left upper lobe", "#7fd3ff", "lungs", "total", ("lung_upper_lobe_left",), sigma=1.4, keep=0.12, opacity=0.14),
     Structure("lung_lower_lobe_left", "Left lower lobe", "#5ab7f0", "lungs", "total", ("lung_lower_lobe_left",), sigma=1.4, keep=0.12, opacity=0.14),
     Structure("lung_upper_lobe_right", "Right upper lobe", "#8ee6c8", "lungs", "total", ("lung_upper_lobe_right",), sigma=1.4, keep=0.12, opacity=0.14),
     Structure("lung_middle_lobe_right", "Right middle lobe", "#b8ec8c", "lungs", "total", ("lung_middle_lobe_right",), sigma=1.4, keep=0.12, opacity=0.14),
     Structure("lung_lower_lobe_right", "Right lower lobe", "#66cfb0", "lungs", "total", ("lung_lower_lobe_right",), sigma=1.4, keep=0.12, opacity=0.14),
-    Structure("pericardium", "Pericardial sac & fat", "#ffd27a", "heart", "cav", ("pericardium",), sigma=1.3, keep=0.15,
+    Structure("pericardium", "Pericardial sac (whole)", "#ffd27a", "heart", "cav", ("pericardium",), sigma=1.3, keep=0.15,
               visible=False, opacity=0.25),
     Structure("heart", "Heart (whole)", "#d8434f", "heart", "total", ("heart",), sigma=1.2, keep=0.2, visible=False),
     # --- organs ---
@@ -80,22 +82,22 @@ CATALOG: list[Structure] = [
     Structure("autochthon_right", "Right back muscles", "#b5544a", "muscle", "total", ("autochthon_right",), sigma=1.1, keep=0.2, visible=False),
     Structure("esophagus", "Esophagus", "#e7a77a", "airways", "total", ("esophagus",), sigma=0.9, keep=0.35),
     # --- heart detail (TotalSegmentator v1 cardiac model) ---
-    Structure("heart_myocardium", "Heart muscle (LV myocardium)", "#b8323f", "heart", "v1", ("heart_myocardium",), sigma=1.0, keep=0.3, level=0.58),
-    Structure("heart_ventricle_left", "Left ventricle", "#ff5d6c", "heart", "v1", ("heart_ventricle_left",), sigma=1.0, keep=0.3, level=0.58),
-    Structure("heart_ventricle_right", "Right ventricle", "#5f80ff", "heart", "v1", ("heart_ventricle_right",), sigma=1.0, keep=0.3, level=0.58),
-    Structure("heart_atrium_left", "Left atrium", "#ff8f7d", "heart", "v1", ("heart_atrium_left",), sigma=1.0, keep=0.3, level=0.58),
-    Structure("heart_atrium_right", "Right atrium", "#82a6ff", "heart", "v1", ("heart_atrium_right",), sigma=1.0, keep=0.3, level=0.58),
-    Structure("atrial_appendage_left", "Left atrial appendage", "#ffae8f", "heart", "total", ("atrial_appendage_left",), sigma=0.9, keep=0.35, level=0.58),
+    Structure("heart_myocardium", "Heart muscle (LV myocardium)", "#b8323f", "heart", "v1", ("heart_myocardium",), sigma=1.0, keep=0.3, level=0.58, min_island_frac=0.03),
+    Structure("heart_ventricle_left", "Left ventricle", "#ff5d6c", "heart", "v1", ("heart_ventricle_left",), sigma=1.0, keep=0.3, level=0.58, min_island_frac=0.03),
+    Structure("heart_ventricle_right", "Right ventricle", "#5f80ff", "heart", "v1", ("heart_ventricle_right",), sigma=1.0, keep=0.3, level=0.58, min_island_frac=0.03),
+    Structure("heart_atrium_left", "Left atrium", "#ff8f7d", "heart", "v1", ("heart_atrium_left",), sigma=1.0, keep=0.3, level=0.58, min_island_frac=0.03),
+    Structure("heart_atrium_right", "Right atrium", "#82a6ff", "heart", "v1", ("heart_atrium_right",), sigma=1.0, keep=0.3, level=0.58, min_island_frac=0.03),
+    Structure("atrial_appendage_left", "Left atrial appendage", "#ffae8f", "heart", "total", ("atrial_appendage_left",), sigma=0.9, keep=0.35, level=0.58, min_island_frac=0.03),
     # --- great vessels ---
-    Structure("aorta", "Aorta", "#ff2d3f", "vessels", "total", ("aorta",), sigma=1.0, keep=0.3, level=0.58),
-    Structure("pulmonary_artery", "Pulmonary artery", "#3e6bff", "vessels", "v1", ("pulmonary_artery",), sigma=1.0, keep=0.3, level=0.58),
-    Structure("pulmonary_vein", "Pulmonary veins", "#ff7759", "vessels", "total", ("pulmonary_vein",), sigma=0.9, keep=0.35, level=0.58),
-    Structure("superior_vena_cava", "Superior vena cava", "#4f72d8", "vessels", "total", ("superior_vena_cava",), sigma=0.9, keep=0.35, level=0.58),
-    Structure("inferior_vena_cava", "Inferior vena cava", "#4f72d8", "vessels", "total", ("inferior_vena_cava",), sigma=0.9, keep=0.35, level=0.58),
+    Structure("aorta", "Aorta", "#ff2d3f", "vessels", "total", ("aorta",), sigma=1.0, keep=0.3, level=0.58, min_island_frac=0.03),
+    Structure("pulmonary_artery", "Pulmonary artery", "#3e6bff", "vessels", "v1", ("pulmonary_artery",), sigma=1.0, keep=0.3, level=0.58, min_island_frac=0.03),
+    Structure("pulmonary_vein", "Pulmonary veins", "#ff7759", "vessels", "total", ("pulmonary_vein",), sigma=0.9, keep=0.35, level=0.58, min_island_frac=0.03),
+    Structure("superior_vena_cava", "Superior vena cava", "#4f72d8", "vessels", "total", ("superior_vena_cava",), sigma=0.9, keep=0.35, level=0.58, min_island_frac=0.03),
+    Structure("inferior_vena_cava", "Inferior vena cava", "#4f72d8", "vessels", "total", ("inferior_vena_cava",), sigma=0.9, keep=0.35, level=0.58, min_island_frac=0.03),
     Structure("lung_arteries", "Lung arteries", "#5a86ff", "vessels", "lv", ("lung_arteries",), sigma=0.6, keep=0.3,
-              exclude=("heart_myocardium", "heart_ventricle_left", "heart_ventricle_right", "heart_atrium_left", "heart_atrium_right", "atrial_appendage_left", "aorta", "pulmonary_artery", "pulmonary_vein", "superior_vena_cava", "inferior_vena_cava", "heart")),
+              exclude=("heart_myocardium", "heart_ventricle_left", "heart_ventricle_right", "heart_atrium_left", "heart_atrium_right", "atrial_appendage_left", "aorta", "pulmonary_artery", "pulmonary_vein", "superior_vena_cava", "inferior_vena_cava", "heart"), exclude_dilate=2),
     Structure("lung_veins", "Lung veins", "#ff6e6e", "vessels", "lv", ("lung_veins",), sigma=0.6, keep=0.3,
-              exclude=("heart_myocardium", "heart_ventricle_left", "heart_ventricle_right", "heart_atrium_left", "heart_atrium_right", "atrial_appendage_left", "aorta", "pulmonary_artery", "pulmonary_vein", "superior_vena_cava", "inferior_vena_cava", "heart")),
+              exclude=("heart_myocardium", "heart_ventricle_left", "heart_ventricle_right", "heart_atrium_left", "heart_atrium_right", "atrial_appendage_left", "aorta", "pulmonary_artery", "pulmonary_vein", "superior_vena_cava", "inferior_vena_cava", "heart"), exclude_dilate=2),
     # --- airways ---
     Structure("trachea", "Trachea", "#a8dcff", "airways", "total", ("trachea",), sigma=0.9, keep=0.35),
     Structure("lung_airways", "Bronchial tree", "#c9eeff", "airways", "lv", ("lung_airways",), sigma=0.6, keep=0.35, exclude=("trachea", "esophagus")),
@@ -129,11 +131,23 @@ def _raw_mask(s: Structure) -> np.ndarray:
 
 
 def structure_mask(s: Structure) -> np.ndarray:
+    from scipy import ndimage as ndi
     m = _raw_mask(s)
-    for name in s.exclude:
-        other = next((o for o in CATALOG if o.name == name), None)
-        if other is not None:
-            m &= ~_raw_mask(other)
+    if s.exclude:
+        ex = np.zeros_like(m)
+        for name in s.exclude:
+            other = next((o for o in CATALOG if o.name == name), None)
+            if other is not None:
+                ex |= _raw_mask(other)
+        if s.exclude_dilate:
+            ex = ndi.binary_dilation(ex, iterations=s.exclude_dilate)
+        m &= ~ex
+    if s.min_island_frac > 0 and m.any():
+        lab, n = ndi.label(m)
+        if n > 1:
+            sizes = ndi.sum(m, lab, range(1, n + 1))
+            keep = np.where(sizes >= s.min_island_frac * sizes.max())[0] + 1
+            m = np.isin(lab, keep)
     return m
 
 

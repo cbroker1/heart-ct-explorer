@@ -5,7 +5,7 @@
 import type { Manifest, Vec3 } from '../../lib/data'
 import { useApp } from '../../lib/store'
 import type { Plane } from './geom'
-import { isPresetKey, PRESET_BY_KEY, presetFor, type PresetKey } from './presets'
+import { isLungSeries, isPresetKey, PRESET_BY_KEY, presetFor, type PresetKey } from './presets'
 import { useSlc } from './state'
 
 export interface DeepLink {
@@ -48,8 +48,18 @@ export function parseDeepLink(hash: string, m: Manifest): DeepLink | null {
 export function applyDeepLink(d: DeepLink): boolean {
   const app = useApp.getState()
   const slc = useSlc.getState()
-  if (d.series && d.series !== app.sliceSeries) app.setSliceSeries(d.series)
   const patch: Parameters<typeof slc.set>[0] = {}
+  if (d.series && d.series !== app.sliceSeries) {
+    // no window in the link: like picking the series by hand, hop to its default window when switching
+    // between a lung-kernel and a soft-tissue series (a lung window on a soft-tissue series looks broken)
+    const prev = app.manifest?.volumes.find((v) => v.key === app.sliceSeries)
+    const next = app.manifest?.volumes.find((v) => v.key === d.series)
+    if (!d.window && prev && next && isLungSeries(prev) !== isLungSeries(next)) {
+      const [c, w] = next.defaultWindow
+      patch.win = { c, w, preset: presetFor(c, w) }
+    }
+    app.setSliceSeries(d.series)
+  }
   if (d.plane) patch.plane = d.plane
   if (d.layout) { patch.layout = d.layout; patch.layoutChosen = true }
   if (d.window) patch.win = d.window

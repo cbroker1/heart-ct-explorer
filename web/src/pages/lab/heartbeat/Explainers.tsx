@@ -211,15 +211,16 @@ export function ShotsTable({ data, coverage, onJump }: { data: EcgData; coverage
           </tr>
         </thead>
         <tbody>
+          {/* data-label: on phones the rows reflow into small cards that label each value */}
           {data.exposures.map((e, i) => (
             <tr key={e.n}>
               <td><button className="btn small cyan" onClick={() => onJump(i)} title="Replay this shot">▶ X{e.n}</button></td>
-              <td className="num">{e.xray[0].toFixed(2)} s</td>
-              <td className="num">{e.hrPrinted} bpm</td>
-              <td className="num">{Math.round(e.phase.xrayCenter * 100)}% <span className="muted">(images {Math.round(e.phase.reconCenter * 100)}%)</span></td>
-              <td className="num">{e.durationMs} ms</td>
-              <td className="num">{e.zRangeLPS ? `${e.zRangeLPS[0].toFixed(0)}–${e.zRangeLPS[1].toFixed(0)} mm` : '—'}</td>
-              <td className="muted">{coverage?.[i]?.length ? coverage[i].join(', ') : '…'}</td>
+              <td className="num" data-label="At">{e.xray[0].toFixed(2)} s</td>
+              <td className="num" data-label="Heart rate">{e.hrPrinted} bpm</td>
+              <td className="num" data-label="Beam centred at">{Math.round(e.phase.xrayCenter * 100)}% <span className="muted">(images {Math.round(e.phase.reconCenter * 100)}%)</span></td>
+              <td className="num" data-label="Beam on">{e.durationMs} ms</td>
+              <td className="num" data-label="Slab (height)">{e.zRangeLPS ? `${e.zRangeLPS[0].toFixed(0)}–${e.zRangeLPS[1].toFixed(0)} mm` : '—'}</td>
+              <td className="muted" data-label="Inside the slab">{coverage?.[i]?.length ? coverage[i].join(', ') : '…'}</td>
             </tr>
           ))}
         </tbody>
@@ -279,8 +280,9 @@ export function StripProof({ data }: { data: EcgData }) {
     <div>
       <div className="row wrap" style={{ justifyContent: 'space-between', marginBottom: 10 }}>
         <p className="muted" style={{ margin: 0, maxWidth: 760 }}>
-          The scanner's own printout: 3 images, 7 rows of 4 s each. The cyan line is my digitized trace drawn
-          back on top; R markers and heart-rate numbers are the scanner's.
+          The scanner's own printout: {new Set(data.rows.map((r) => r.image)).size} images, {data.rows.length} rows of
+          up to {data.calibration.rowSeconds} s each. The cyan line is my digitized trace drawn back on top; R markers
+          and heart-rate numbers are the scanner's.
         </p>
         <Toggle label="Show digitized trace" checked={overlay} onChange={setOverlay} />
       </div>

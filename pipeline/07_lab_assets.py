@@ -510,7 +510,9 @@ class Bio:
                          f"arteries: roughly {v_eat / 15:.0f} tablespoons.",
                  context="Studies of middle-aged adults typically find roughly 50-150 mL, rising with age and weight. "
                          "More epicardial fat goes with more coronary plaque; there is no single agreed cut-off "
-                         "and definitions differ between studies.",
+                         "and definitions differ between studies. The AI second read got about 76 mL (74-79 mL across "
+                         "three series) with a stricter mask that removes the heart, aorta and pulmonary vessels "
+                         "completely; the methods differ, and both numbers are in the typical range.",
                  method=(f"Calcium-score series (3 mm slices every 1.5 mm, 0.31 mm pixels, soft Sa36d kernel): the "
                          f"reconstruction epicardial-fat studies use on calcium scans. Its noise is low "
                          f"(SD {noise:.0f} HU in blood) and its 158 mm field of view contains the whole pericardium; the "
@@ -569,7 +571,8 @@ class Bio:
                          "edge, rib or lung pixels leak in; mean HU of all remaining voxels. Only the top of the "
                          "liver and spleen are inside this heart scan.")
         self.add(key="liver_hu", group="fat_liver", label="Liver density", value=round(L), unit="HU",
-                 caption="Fat makes the liver look darker on CT. A healthy liver is brighter than 40 HU.",
+                 caption="Fat makes the liver look darker on CT. Below about 40 HU usually means at least moderate fatty liver; "
+                         "healthy livers read about 50-70 HU.",
                  context="Non-contrast CT: liver under 40 HU suggests at least moderate fatty liver; healthy livers "
                          "usually sit around 50-70 HU.",
                  method=method_common + f" Liver: {out['liver']['n']:,} voxels ({out['liver']['ml']:.0f} mL), "
@@ -693,7 +696,7 @@ class Bio:
             lung |= m
         thin = rt.vol("thin_lung")
         zz = np.nonzero(lung.any((1, 2)))[0]
-        cover_mm = (zz.max() - zz.min() + 1) * thin.spacing[2]
+        cover_mm = (zz.max() - zz.min()) * thin.spacing[2] + 1.5   # centre-to-centre span + one slice thickness = full imaged extent (13.8 cm)
         # thumbnail: coronal slab through the lungs (thin series, lightly smoothed for display)
         cp = mask_points_lps(lung, stride=200).mean(0)
         pl = Plane((cp[0], cp[1] + 8, cp[2]), (1, 0, 0), (0, 0, -1), 330, 160, 0.6)
@@ -717,7 +720,7 @@ class Bio:
                   "coverageMM": r1(cover_mm)}
         self.add(key="lung_volume", group="lungs", label="Lung volume inside the scan", value=round(R + Lf, 2),
                  unit="L", display=f"{R + Lf:.1f}",
-                 caption=f"Right {R:.1f} L + left {Lf:.1f} L of lung inside the {cover_mm / 10:.0f} cm slab the scan "
+                 caption=f"Right {R:.1f} L + left {Lf:.1f} L of lung inside the {cover_mm / 10:.1f} cm slab the scan "
                          f"covered. The scan targets the heart, so the lung tops are cut off.",
                  context=(f"The hospital's ClearRead CT software reported {cr.get('lungVolumeRightL')} L right and "
                           f"{cr.get('lungVolumeLeftL')} L left: close to these AI numbers, and also limited to the "
@@ -780,10 +783,11 @@ class Bio:
                              "not clustered holes.")
         self.add(key="laa950", group="lungs", label="Emphysema index (LAA-950)", value=r1(soft["laa950"]), unit="%",
                  display=f"{soft['laa950']:.1f}",
-                 caption="Share of lung so dark (below -950 HU) that it could be emphysema, the air-trapping damage "
-                         "from smoking. Here it is mostly image noise.",
-                 context=("Under about 5% is generally read as normal on standard-dose, smooth-kernel scans. This scan is "
-                          "low-dose and only covers part of the lungs, both of which push the number up. The same "
+                 caption=(f"Share of lung so dark (below -950 HU) that it could be emphysema, the lung damage typically "
+                          f"caused by smoking. At {soft['laa950']:.1f}% it is in the normal range; most of these dark pixels "
+                          f"are image noise."),
+                 context=("Under about 5% is generally read as normal on standard-dose, smooth-kernel scans. Low dose adds "
+                          "image noise, which pushes the number up. The same "
                           f"calculation on the sharp lung-kernel series gives a meaningless {sharp['laa950']:.0f}% because "
                           f"its noise (SD {noise['axial_lung']:.0f} HU in blood vs {noise['axial_st']:.0f} HU on the smooth "
                           "series) pushes normal lung below -950 HU."),
@@ -838,19 +842,22 @@ class Bio:
                              "The radiologist's caliper across the ascending aorta, on the exact slice they used.")
         self.aorta_mm = dmm
         self.add(key="ascending_aorta", group="vessels", label="Ascending aorta", value=r1(dmm), unit="mm",
-                 caption="The main artery leaving the heart, measured across by the radiologist.",
+                 caption="The main artery leaving the heart, measured across by the radiologist. The AI second read "
+                         "measured 37-38 mm at its widest point, a little higher up.",
                  context="In adult men the ascending aorta is usually under about 40 mm (it grows slowly with age and "
-                         "body size); radiologists start calling it dilated from around 40-45 mm.",
+                         "body size); doctors call it dilated from 40 mm and aneurysmal from about 45 mm. 37-38 mm is "
+                         "the upper end of normal for a 37-year-old man: no follow-up needed, but a good baseline "
+                         "number for your doctor.",
                  method=("Radiologist's caliper on the chest soft-tissue series (instance 13), recovered from the "
                          "DICOM presentation state." + (
                              f" AI cross-check on the same slice: area-equivalent diameter {xcheck['eqDiameter']} mm "
                              f"(narrowest-widest {xcheck['minFeret']}-{xcheck['maxFeret']} mm)." if xcheck else "")),
                  confidence="measured", series="axial_st", status="typical" if dmm < 40 else "borderline",
-                 statusLabel="normal size" if dmm < 40 else "upper limit",
+                 statusLabel=("upper end of normal" if dmm >= 35 else "normal size") if dmm < 40 else "dilated",
                  gauge={"min": 20, "max": 50, "zones": [
                      {"from": 20, "to": 40, "tone": "good", "label": "normal"},
-                     {"from": 40, "to": 45, "tone": "neutral", "label": "borderline"},
-                     {"from": 45, "to": 50, "tone": "warn", "label": "dilated"}], "ticks": [30, 40, 45]},
+                     {"from": 40, "to": 45, "tone": "neutral", "label": "dilated"},
+                     {"from": 45, "to": 50, "tone": "warn", "label": "aneurysm range"}], "ticks": [30, 40, 45]},
                  detail={"aiCrossCheck": xcheck, "by": "radiologist"}, image=img,
                  link={"series": "axial_st", "lps": [r1(mid[0]), r1(mid[1]), r1(z, 2)], "plane": "axial",
                        "window": "mediastinum"})
@@ -872,11 +879,12 @@ class Bio:
                  detail={k: v for k, v in res.items() if k not in ("method", "image")}, image=res["image"],
                  link={"series": "calcium", "lps": res["centerLPS"], "plane": "axial", "window": "mediastinum"})
         self.add(key="pa_ao_ratio", group="vessels", label="Pulmonary artery : aorta ratio", value=round(ratio, 2),
-                 unit="", display=f"{ratio:.2f}",
+                 unit="", display=f"0.7-{ratio:.2f}",
                  caption="The pulmonary artery should be narrower than the aorta beside it.",
                  context="Framingham: ratios under 0.9 are normal; above 1.0 suggests raised lung blood pressure.",
-                 method=f"Main pulmonary artery ({D:.1f} mm, above) divided by the radiologist's ascending aorta "
-                        f"({self.aorta_mm:.1f} mm) at the same level.",
+                 method=f"Main pulmonary artery ({D:.1f} mm, above) divided by the radiologist's ascending-aorta "
+                        f"caliper ({self.aorta_mm:.1f} mm, drawn about 1.3 cm lower). Using the AI second read's "
+                        f"37-38 mm aortic maximum instead gives about 0.7.",
                  confidence="measured", series="calcium", status="typical" if ratio < 0.9 else "high",
                  statusLabel="normal" if ratio < 0.9 else "raised",
                  gauge={"min": 0.5, "max": 1.3, "zones": [
@@ -906,21 +914,24 @@ class Bio:
                  display=f"{dlp:.2f}",
                  caption="The scanner's own tally of radiation delivered along the scanned length.",
                  context=f"CTDIvol {d['ctdivol_mGy']} mGy, size-specific dose {d['ssde_mGy']} mGy for a "
-                         f"{d['waterEquivalentDiameter_cm']} cm-wide body. A typical full chest CT is several times higher.",
+                         f"body with a {d['waterEquivalentDiameter_cm']} cm water-equivalent diameter. A typical full chest CT is "
+                         f"several times higher.",
                  method=f"Siemens dose report (DICOM structured report): {d['mode']}, {d['kvp']} kV, "
                         f"{d['rotationTime_s']} s rotation.",
                  confidence="measured", series="dose report", status="info", viz="specs",
                  detail={"items": [
                      {"k": "CTDIvol", "v": d["ctdivol_mGy"], "unit": "mGy", "hint": "dose inside a standard plastic phantom"},
                      {"k": "Size-specific dose", "v": d["ssde_mGy"], "unit": "mGy",
-                      "hint": f"adjusted to my {d['waterEquivalentDiameter_cm']} cm water-equivalent body width"},
+                      "hint": f"adjusted for my body size ({d['waterEquivalentDiameter_cm']} cm water-equivalent diameter)"},
                      {"k": "Tube voltage", "v": d["kvp"], "unit": "kV", "hint": "standard for calcium scoring"},
                      {"k": "Rotation", "v": d["rotationTime_s"], "unit": "s", "hint": "one turn of the X-ray tube"},
                      {"k": "Mode", "v": "ECG-triggered, 4 steps", "unit": "",
                       "hint": "X-rays only fired at the chosen moment of each heartbeat"}]})
         self.add(key="effective_dose", group="radiation", label="Effective dose", value=round(e, 2), unit="mSv",
                  display=f"{e:.2f}", viz="radiation",
-                 caption=f"About {e / (bg_year / 365):.0f} days of the natural radiation everyone absorbs anyway.",
+                 caption=(f"About {e / (bg_year / 365):.0f} days of the natural radiation everyone absorbs anyway "
+                          f"({dlp * 0.026:.2f} mSv, about {dlp * 0.026 / (bg_year / 365):.0f} days, with the "
+                          f"heart-specific factor)."),
                  context="Effective dose converts the scan into whole-body risk terms. The everyday comparisons use "
                          "rounded reference values.",
                  method=(f"DLP {dlp} mGy·cm x k = {k} mSv/(mGy·cm), the standard adult chest conversion factor. "

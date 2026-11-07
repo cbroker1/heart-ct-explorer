@@ -26,8 +26,9 @@ const LEFT = new Set(['heart_atrium_left', 'atrial_appendage_left', 'heart_ventr
 
 // Fallback facts if biomarkers.json is missing (values from pipeline/07_lab_assets.py).
 const FALLBACK: Pick<ArModel, 'sizeMM' | 'bytes' | 'triangles' | 'nodes' | 'hotspots'> = {
-  sizeMM: [129.1, 136.6, 140.3], bytes: 2772340, triangles: 114990, nodes: [], hotspots: [],
+  sizeMM: [129.1, 136.6, 140.3], bytes: 2772428, triangles: 114994, nodes: [], hotspots: [],
 }
+const IS_MAC = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)
 
 function useIsTouch() {
   const [touch, setTouch] = useState(() => typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches)
@@ -65,7 +66,7 @@ function QrCard() {
           <IconPhone width={16} height={16} /> Scan with your phone
         </div>
         <p>Opens this page right here; then tap <b style={{ color: 'var(--text)' }}>View in your space</b>.</p>
-        {local && <p style={{ color: 'var(--amber)' }}>This is a local address, so it only works on the same network once the site is published.</p>}
+        {local && <p style={{ color: 'var(--amber)' }}>This is a local address that a phone can't open; on the published site the code points to the public page.</p>}
         <button
           className="lc-link"
           style={{ justifySelf: 'start' }}
@@ -88,7 +89,9 @@ export default function ARHeart() {
   const materials = useRef<Map<string, { m: MVMaterial; rgba: [number, number, number, number] }>>(new Map())
 
   const [phase, setPhase] = useState<'idle' | 'script' | 'model' | 'ready' | 'error'>('idle')
-  const [err, setErr] = useState<string | null>(null)
+  const [err, setErr] = useState<{ msg: string; script: boolean } | null>(null)
+  const [attempt, setAttempt] = useState(0)
+  const [wheelHint, setWheelHint] = useState(false)
   const [progress, setProgress] = useState(0)
   const [autoRotate, setAutoRotate] = useState(!reduced)
   const [labels, setLabels] = useState(() => !(typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches))
@@ -106,8 +109,39 @@ export default function ARHeart() {
     setPhase('script')
     loadModelViewer()
       .then(() => setPhase('model'))
-      .catch((e) => { setErr(String(e?.message ?? e)); setPhase('error') })
+      .catch((e) => { setErr({ msg: String(e?.message ?? e), script: true }); setPhase('error') })
   }, [inView, phase])
+  const retry = () => {
+    const script = !!err?.script
+    setErr(null)
+    setProgress(0)
+    materials.current = new Map()
+    // model-viewer remembers a failed URL and fails again at once, so a retry asks for a fresh one
+    if (!script) setAttempt((a) => a + 1)
+    setPhase(script ? 'idle' : 'model')
+  }
+
+  // The Lab is a scrolling page: a plain mouse wheel over the model scrolls the page instead of being
+  // swallowed as zoom. Ctrl/⌘ + wheel (and trackpad pinch, which arrives as Ctrl + wheel) still zooms.
+  useEffect(() => {
+    const el = stageRef.current
+    if (!el) return
+    let hide = 0
+    let shownAt = -1e9
+    const onWheel = (e: WheelEvent) => {
+      if (e.ctrlKey || e.metaKey) return
+      e.stopPropagation()          // model-viewer never sees it, and nothing calls preventDefault
+      const now = performance.now()
+      if (now - shownAt > 5000) {  // a brief hint, not a nag while scrolling past
+        shownAt = now
+        setWheelHint(true)
+        window.clearTimeout(hide)
+        hide = window.setTimeout(() => setWheelHint(false), 1600)
+      }
+    }
+    el.addEventListener('wheel', onWheel, { capture: true, passive: true })
+    return () => { el.removeEventListener('wheel', onWheel, { capture: true }); window.clearTimeout(hide) }
+  }, [stageRef])
 
   // 2) deep link #/lab?ar=1 (from the QR code): bring this section into view
   useEffect(() => {
@@ -144,7 +178,7 @@ export default function ARHeart() {
       window.setTimeout(() => setCanAR(!!el.canActivateAR), 1500)
       setPhase('ready')
     }
-    const onError = () => { setErr('The 3D model could not be loaded.'); setPhase('error') }
+    const onError = () => { setErr({ msg: 'The 3D model could not be loaded.', script: false }); setPhase('error') }
     const onAr = (e: Event) => setArStatus((e as CustomEvent<{ status: string }>).detail?.status ?? null)
     el.addEventListener('progress', onProgress)
     el.addEventListener('load', onLoad)
@@ -218,15 +252,22 @@ export default function ARHeart() {
             <div className="lc-fallback">
               <div style={{ display: 'grid', gap: 10, justifyItems: 'center' }}>
                 <HeartIcon size={54} />
-                <div className="lc-err" style={{ fontWeight: 650 }}>{err}</div>
-                <a className="btn small" href={dataUrl(GLB)} download="my-heart-life-size.glb"><IconDownload width={14} height={14} /> Download the .glb instead</a>
+                <div className="lc-err" style={{ fontWeight: 650 }}>{err?.msg}</div>
+                <div className="row wrap" style={{ justifyContent: 'center', gap: 8 }}>
+                  <button className="btn small" onClick={retry}>Try again</button>
+                  {/* only the viewer failed: the model file itself may still download fine */}
+                  {err?.script && <a className="btn small" href={dataUrl(GLB)} download="my-heart-life-size.glb"><IconDownload width={14} height={14} /> Download the .glb instead</a>}
+                </div>
               </div>
             </div>
           )}
+          <div className={`lc-wheel-hint${wheelHint && phase === 'ready' ? ' on' : ''}`} aria-hidden>
+            {IS_MAC ? '⌘' : 'Ctrl'} + scroll to zoom
+          </div>
           {phase !== 'idle' && phase !== 'script' && phase !== 'error' && (
             <model-viewer
               ref={attach as unknown as Ref<HTMLElement>}
-              src={dataUrl(GLB)}
+              src={attempt ? `${dataUrl(GLB)}?retry=${attempt}` : dataUrl(GLB)}
               alt="3D model of my heart and its great vessels, at real size"
               ar
               ar-modes="webxr scene-viewer quick-look"
@@ -280,9 +321,9 @@ export default function ARHeart() {
           </div>
           {phase === 'ready' && (
             <div className="lc-ar-hud lc-ar-bottom">
-              <div className="lc-seg-mini" role="tablist" aria-label="What to show">
+              <div className="lc-seg-mini" role="group" aria-label="What to show">
                 {VIEWS.map((v) => (
-                  <button key={v.key} className={view === v.key ? 'on' : ''} title={v.title} onClick={() => setView(v.key)}>{v.label}</button>
+                  <button key={v.key} className={view === v.key ? 'on' : ''} aria-pressed={view === v.key} title={v.title} onClick={() => setView(v.key)}>{v.label}</button>
                 ))}
               </div>
               <button className={`lc-tool${autoRotate ? ' on' : ''}`} onClick={() => setAutoRotate((a) => !a)} title="Slowly turn the model" aria-label="Spin" aria-pressed={autoRotate}>
@@ -338,23 +379,26 @@ export default function ARHeart() {
       </div>
 
       <div className="lc-ar-foot">
-        <div className="lc-legend" aria-label="Parts of the model">
-          <span className="lc-k" style={{ alignSelf: 'center', marginRight: 4 }}>Fly to</span>
-          {legend.map((n) => {
-            const hs = model.hotspots.find((h) => h.name === n.name)
-            return (
-              <button
-                key={n.name}
-                className={focus === n.name ? 'on' : ''}
-                disabled={!hs || phase !== 'ready'}
-                onClick={() => hs && pickFocus(n.name)}
-                title={`${n.display}: ${n.volumeML} mL (AI estimate)`}
-              >
-                <i style={{ background: n.color }} />{n.name === 'heart_myocardium' ? 'Left ventricle' : n.display}
-              </button>
-            )
-          })}
-        </div>
+        {legend.length > 0 && (
+          <div className="lc-legend" role="group" aria-label="Fly to a part of the model">
+            <span className="lc-k" style={{ alignSelf: 'center', marginRight: 4 }}>Fly to</span>
+            {legend.map((n) => {
+              const hs = model.hotspots.find((h) => h.name === n.name)
+              return (
+                <button
+                  key={n.name}
+                  className={focus === n.name ? 'on' : ''}
+                  disabled={!hs || phase !== 'ready'}
+                  aria-pressed={focus === n.name}
+                  onClick={() => hs && pickFocus(n.name)}
+                  title={`${n.display}: ${n.volumeML} mL (AI estimate)${hs ? '' : ' · colour key only, no camera stop for this part'}`}
+                >
+                  <i style={{ background: n.color }} />{n.name === 'heart_myocardium' ? 'Left ventricle' : n.display}
+                </button>
+              )
+            })}
+          </div>
+        )}
         <div className="lc-ar-dl">
           <a className="btn small" href={dataUrl(GLB)} download="my-heart-life-size.glb">
             <IconDownload width={14} height={14} /> Download .glb

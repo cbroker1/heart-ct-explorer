@@ -6,9 +6,10 @@ import { sampleNearest } from '../../lib/coords'
 import { useApp } from '../../lib/store'
 import { cpuLabelGrid, cpuLesionGrid, cpuVolume, type SliceController } from './controller'
 import { buildDeepLink } from './deeplink'
-import { clamp, nearest, PLANE_ORDER, PLANES, type SlotModel } from './geom'
+import { clamp, PLANE_ORDER, PLANES, slotPlanes, type SlotModel } from './geom'
 import { Icon } from './icons'
 import { candidateClassLabel, DEFAULT_PARTNER, fmt0, fmt1, huTissue, PRESET_BY_KEY } from './presets'
+import { onBlankSlice, probeHU, viewOnBlankSlice } from './probe'
 import { useHover, useLoad, useSlc, type SlabMode } from './state'
 
 const SLAB_LABEL: Record<SlabMode, string> = { none: '', mip: 'MIP', minip: 'MinIP', avg: 'Average' }
@@ -27,6 +28,8 @@ export function ViewChrome(props: { sl: SlotModel; ctrl: SliceController | null;
   const [L, R, T, B] = sl.def.letters
   const pos = sl.u * Math.sign(sl.def.scroll[sl.def.axis]) // position along the LPS axis of the normal
   const preset = win.preset ? PRESET_BY_KEY[win.preset].label : 'Custom'
+  // e.g. the top slice of the 3 mm chest series: the scanner filled it with one value, so there is nothing to see
+  const blank = viewOnBlankSlice(sl, cpuVolume(sl.key))
   return (
     <div
       className={`slc-chrome ${active && multi ? 'active' : ''} ${compact ? 'compact' : ''} ${tiny ? 'tiny' : ''}`}
@@ -66,6 +69,11 @@ export function ViewChrome(props: { sl: SlotModel; ctrl: SliceController | null;
       <span className="slc-ori r">{R}</span>
       <span className="slc-ori t">{T}</span>
       <span className="slc-ori b">{B}</span>
+      {blank && (
+        <div className="slc-blank" role="status">
+          {tiny ? 'No image data' : compact ? 'No image data on this slice' : <>No image data on this slice <span>(the scanner left it blank)</span></>}
+        </div>
+      )}
       {sl.ax.n > 1 && <Scrubber n={sl.n} N={sl.ax.n} label={`${sl.def.label} slice`} onSet={(n) => { set({ active: sl.i }); ctrl?.setSlice(sl.i, n) }} />}
     </div>
   )
@@ -211,8 +219,12 @@ export function StatusBar(props: { manifest: Manifest; calcium: CalciumReport | 
   const cursor = useApp((s) => s.cursor) ?? manifest.worldCenterLPS
   const shown = useLoad((s) => s.shown)
   const labelsReady = useLoad((s) => s.labelsReady)
+  const lesionsReady = useLoad((s) => s.lesionsReady)
   const req = useApp((s) => s.sliceSeries)
   const slab = useSlc((s) => s.slab)
+  const slabMM = useSlc((s) => s.slabMM)
+  // the crosshair readout integrates the slab along the active view's normal, like that view draws it
+  const activePlane = useSlc((s) => slotPlanes(s.layout, s.plane)[s.active] ?? s.plane)
   const classes = useMemo(() => new Map<number, LabelClass>(manifest.labels.classes.map((c) => [c.id, c])), [manifest])
   const cands = useMemo(() => new Map<number, CalciumCandidate>((calcium?.candidates ?? []).map((c) => [c.id, c])), [calcium])
 
@@ -225,18 +237,20 @@ export function StatusBar(props: { manifest: Manifest; calcium: CalciumReport | 
     const les = cpuLesionGrid()
     return {
       slot: 0, p: cursor as Vec3, series: key,
-      hu: meta && vol ? nearest(meta, vol, cursor as Vec3) : null,
+      hu: meta && vol ? probeHU(meta, vol, cursor as Vec3, PLANES[activePlane].scroll, slab, slabMM) : null,
       label: lab ? sampleNearest(manifest.labels, lab, cursor as Vec3) ?? 0 : 0,
       lesion: les && manifest.lesions ? sampleNearest(manifest.lesions, les, cursor as Vec3) ?? 0 : 0,
       mode: 'crosshair' as const,
     }
-    // (labelsReady is a dependency so the readout refreshes once the label grid arrives)
-  }, [hover, cursor, shown, req, manifest, labelsReady])
+    // (labelsReady / lesionsReady are dependencies so the readout refreshes once those grids arrive)
+  }, [hover, cursor, shown, req, manifest, labelsReady, lesionsReady, activePlane, slab, slabMM])
 
   const glError = useLoad((s) => s.glError)
   const cls = info.label ? classes.get(info.label) : undefined
   const cand = info.lesion ? cands.get(info.lesion) : undefined
   const lesCls = info.lesion ? manifest.lesions?.classes.find((c) => c.id === info.lesion) : undefined
+  const infoMeta = info.hu === null ? manifest.volumes.find((v) => v.key === info.series) : undefined
+  const noData = !!infoMeta && onBlankSlice(infoMeta, cpuVolume(info.series), info.p)
   if (glError) return <div className="slc-status"><span className="muted">Slice viewer unavailable on this device.</span></div>
   return (
     <div className="slc-status" aria-live="off">
@@ -245,10 +259,10 @@ export function StatusBar(props: { manifest: Manifest; calcium: CalciumReport | 
       </span>
       <span className="slc-st-struct" title="AI anatomy label at this point (TotalSegmentator family of models)">
         <span className="sw" style={{ background: cls?.color ?? 'transparent', borderColor: cls ? 'transparent' : 'var(--line-2)' }} />
-        {cls ? cls.display : <span className="faint">{labelsReady ? 'no label' : 'labels loading…'}</span>}
+        {cls ? <span className="nm">{cls.display}</span> : <span className="faint">{labelsReady ? 'no label' : 'labels loading…'}</span>}
       </span>
       <span className="slc-st-hu" title="CT density in Hounsfield units (HU): air −1000, fat ≈ −100, water 0, blood ≈ 40, bone 400+">
-        {info.hu === null ? <span className="faint">— HU</span> : <>
+        {info.hu === null ? <span className="faint">{noData ? 'no image data' : '— HU'}</span> : <>
           <b>{fmt0(info.hu)}</b> HU{slab !== 'none' && <span className="faint"> ({SLAB_LABEL[slab]})</span>}
           <span className="muted"> · {huTissue(info.hu)}</span>
         </>}
@@ -279,7 +293,7 @@ export function Hint(props: { rect: { x: number; y: number; w: number; h: number
   }, [])
   if (interacted || gone || r.w < 200) return null
   return (
-    <div className="slc-hint" role="note" style={{ left: r.x + r.w / 2, top: r.y + r.h - (r.h > 420 ? 104 : 92), maxWidth: r.w - 24 }}>
+    <div className="slc-hint" role="note" style={{ left: r.x + r.w / 2, top: r.y + r.h - (r.h > 420 ? 64 : 52), maxWidth: r.w - 24 }}>
       {coarse ? (
         <>Drag to aim the crosshair · pinch to zoom · slide the bar on the right through the slices · double-tap to reset</>
       ) : (

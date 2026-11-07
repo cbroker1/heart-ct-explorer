@@ -31,6 +31,7 @@ uniform mat4 uVolM;
 uniform mat4 uLabM;
 uniform mat4 uLesM;
 uniform ivec3 uVolDims;
+uniform vec2 uVolK;         // k range holding image data (blank padding slices at the stack ends lie outside)
 uniform ivec3 uLabDims;
 uniform ivec3 uLesDims;
 
@@ -62,14 +63,15 @@ float vox(ivec3 c) { return float(texelFetch(uVol, c, 0).r); }
 
 float sampleHU(vec3 p, out bool inside) {
   vec3 g = (uVolM * vec4(p, 1.0)).xyz;
-  vec3 dimsF = vec3(uVolDims);
-  inside = all(greaterThanEqual(g, vec3(-0.5))) && all(lessThan(g, dimsF - 0.5));
+  vec3 lo = vec3(0.0, 0.0, uVolK.x);
+  vec3 hi = vec3(vec2(uVolDims.xy) - 1.0, uVolK.y);
+  inside = all(greaterThanEqual(g, lo - 0.5)) && all(lessThan(g, hi + 0.5));
   if (!inside) return -1024.0;
-  vec3 gc = clamp(g, vec3(0.0), dimsF - 1.0);
+  vec3 gc = clamp(g, lo, hi);
   vec3 f = floor(gc);
   vec3 t = gc - f;
   ivec3 a = ivec3(f);
-  ivec3 b = min(a + 1, uVolDims - 1);
+  ivec3 b = min(a + 1, ivec3(hi));
   float c000 = vox(a);
   float c100 = vox(ivec3(b.x, a.y, a.z));
   float c010 = vox(ivec3(a.x, b.y, a.z));

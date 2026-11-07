@@ -15,6 +15,7 @@ finding is downgraded to that median.
 from __future__ import annotations
 
 import json
+import re
 import statistics
 from pathlib import Path
 
@@ -27,6 +28,41 @@ OUT_IMG = WEB_PUBLIC / "read"
 WINDOW_BY_SYSTEM = {"lung_nodules": "lung", "lung_parenchyma": "lung", "bones": "bone", "heart": "mediastinum",
                     "vessels": "mediastinum", "mediastinum": "mediastinum", "abdomen_chestwall": "soft", "technique": "soft"}
 SERIES_KEYS = {"calcium", "axial_st", "axial_lung", "thin_lung", "axial_lung_mip", "cr_vessel_suppress", "cor_st", "sag_st"}
+
+
+# ---- text hygiene: the report is public and patient-facing --------------------------------------
+_PNG_PAREN = re.compile(r"\s*\([^()]*\.(?:png|npy|csv)[^()]*\)")
+_FIG = re.compile(r"\s*(?:See\s+)?(?:Figures?|FIG)[:\s_]\S*\.(?:png|npy)\.?", re.I)
+_FILE = re.compile(r"\s*\S+\.(?:png|npy|npz|csv|py)\b")
+_PATH = re.compile(r"/(?:home|Users|tmp)/\S+")
+_CODE = [(re.compile(r"rt\.structure_volumes\(\)"), "AI segmentation volumes"),
+         (re.compile(r"rt\.diameters\([^)]*\)"), "AI mask cross-section"),
+         (re.compile(r"\s*Tool caveat:[^\n]*?(?:\.\s|$)"), " "),
+         (re.compile(r"\batlas_0(\d)\b"), r"artifact-atlas figure \1")]
+
+
+def clean_text(t: str, replacements=()) -> str:
+    for a, b in replacements:
+        t = t.replace(a, b)
+    for rx, rep in _CODE:
+        t = rx.sub(rep, t)
+    t = _PATH.sub("", t)
+    t = _PNG_PAREN.sub("", t)
+    t = _FIG.sub("", t)
+    t = _FILE.sub("", t)
+    t = re.sub(r"\s+([,.;:])", r"\1", t)
+    t = re.sub(r"[ \t]{2,}", " ", t)
+    return t.strip()
+
+
+def clean_tree(o, replacements=(), skip_keys=("src", "images", "link")):
+    if isinstance(o, str):
+        return clean_text(o, replacements)
+    if isinstance(o, list):
+        return [clean_tree(x, replacements, skip_keys) for x in o]
+    if isinstance(o, dict):
+        return {k: (v if k in skip_keys else clean_tree(v, replacements, skip_keys)) for k, v in o.items()}
+    return o
 
 
 def export_image(src: str, name: str, max_side: int = 1100) -> str | None:
@@ -100,13 +136,19 @@ def main():
         max_sev = max([f["severity"] for f in findings if f["category"] != "artifact"] + [0])
         status = "attention" if max_sev >= 2 else ("minor" if max_sev == 1 else "normal")
         checked = list(s.get("checked", [])) + notes
+        co = syn.get("checkedOverrides", {}).get(key, {})
+        for c in checked:
+            for prefix, result in co.items():
+                if c["item"].startswith(prefix):
+                    c["result"] = result
         for t in dismissed:
             checked.append({"item": f"Considered and dismissed by the skeptic panel: {t}", "result": "not a real finding"})
         imgs = []
         for j, src in enumerate(s.get("bestImages", [])[:4]):
             rel = export_image(src, f"{key}_overview_{j}")
             if rel:
-                imgs.append({"src": rel, "caption": Path(src).stem.replace("_", " ")})
+                caps = syn.get("imageCaptions", {})
+                imgs.append({"src": rel, "caption": caps.get(Path(src).stem, Path(src).stem.replace("_", " "))})
         sys_over = syn.get("systemOverrides", {}).get(key, {})
         systems_out.append({
             "key": key, "title": s.get("title", key), "status": sys_over.get("status", status),
@@ -119,6 +161,8 @@ def main():
         "findingsExamined": len(verifs),
         "skepticVotes": sum(len(v.get("votes", [])) for v in verifs),
         "dismissed": sum(1 for v in verifs if not v.get("survives", True)),
+        "merged": sum(1 for s in wf["systems"] for v in s.get("verification", [])
+                      if v.get("survives", True) and syn.get("findingOverrides", {}).get(f"{s.get('key') or s.get('system')}-{v['idx']}", {}).get("dropReason")),
         "calciumAdjudicators": len(wf.get("calcium", [])),
         "imagesRendered": syn.get("imagesRendered"),
         "agents": syn.get("agents"),
@@ -132,6 +176,7 @@ def main():
         "calcium": syn["calcium"], "limitations": syn["limitations"], "method": syn["method"],
         "disclaimer": syn.get("disclaimer", "Not a medical device. For curiosity and education. The official radiologist report is what counts."),
     }
+    report = clean_tree(report, [tuple(x) for x in syn.get("textReplacements", [])])
     write_json(WEB_PUBLIC / "read.json", report)
     n = sum(len(s["findings"]) for s in systems_out)
     print(f"read.json: {len(systems_out)} systems, {n} findings, images in {OUT_IMG}")

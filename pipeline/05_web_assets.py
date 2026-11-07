@@ -25,11 +25,11 @@ VOL_DIR = WEB_PUBLIC / "vol"
 VOLUMES = [
     # key, label, blurb, group, window
     ("calcium", "Calcium score", "The heart-only, ECG-gated scan used for calcium scoring: 3 mm slices every 1.5 mm, 0.31 mm pixels.", "heart", (200, 600)),
-    ("axial_st", "Chest · soft tissue", "Whole-chest axial slices (3 mm) with a smooth soft-tissue kernel: best for heart, vessels, mediastinum.", "chest", (40, 400)),
+    ("axial_st", "Chest · soft tissue", "Axial slices across the whole scanned slab (3 mm, 39 cm field of view) with a smooth soft-tissue kernel: best for heart, vessels, mediastinum.", "chest", (40, 400)),
     ("axial_lung", "Chest · lung", "Same slices, sharp lung kernel: crisp lung detail.", "lung", (-600, 1500)),
     ("thin_lung", "Thin lung (1.5 mm)", "Thin 1.5 mm slices every 0.75 mm: the sharpest 3D detail; the 3D model was built from this.", "lung", (-600, 1500)),
     ("axial_lung_mip", "Lung MIP (10 mm)", "Maximum-intensity projection slabs: vessels look like branching tubes, nodules like dots.", "lung", (-600, 1200)),
-    ("cr_vessel_suppress", "AI vessel-suppressed", "Riverain ClearRead CT: AI digitally erased the blood vessels so lung nodules can't hide. It found none.", "ai", (-600, 1200)),
+    ("cr_vessel_suppress", "AI vessel-suppressed", "Riverain ClearRead CT software digitally removes the blood vessels so small lung nodules are easier to spot. It flagged none; the AI second read found one ~3 mm speck, too small to need follow-up.", "ai", (-600, 1200)),
     ("cor_st", "Coronal (radiologist)", "The scanner's own coronal soft-tissue reformats (4 mm), downsampled 2x for the web.", "chest", (40, 400)),
     ("sag_st", "Sagittal (radiologist)", "The scanner's own sagittal soft-tissue reformats (4 mm), downsampled 2x for the web.", "chest", (40, 400)),
 ]
@@ -131,8 +131,10 @@ def main():
         lab[hm] = nid
         classes.append({"id": nid, "name": "heart", "display": "Heart (other)", "color": heart_s.color, "group": "heart",
                         "volumeML": round(float(hm.sum() * vox_ml), 1), "source": "total"})
-    for c in classes:  # actual painted volume after priority overwrite
-        c["volumeML"] = round(float((lab == c["id"]).sum() * vox_ml), 1)
+    # volumeML = the whole structure's AI volume (same number as the 3D model and the reports), even where a
+    # more specific label is painted on top in the merged grid; paintedML = what is visible in that grid.
+    for c in classes:
+        c["paintedML"] = round(float((lab == c["id"]).sum() * vox_ml), 1)
     labels_meta = write_grid(lab, ref, "vol/labels.u8.gz", "uint8", shuffle=False)
     labels_meta["classes"] = classes
     print(f"  labels: {len(classes)} classes, {labels_meta['bytes'] / 1e6:.1f} MB")
@@ -189,6 +191,7 @@ def main():
     (WEB_PUBLIC / "mesh").mkdir(exist_ok=True)
     glb = DERIVED / "meshes" / "anatomy.glb"
     shutil.copy(glb, WEB_PUBLIC / "mesh" / "anatomy.glb")
+    shutil.copy(DERIVED / "meshes" / "heart.glb", WEB_PUBLIC / "mesh" / "heart.glb")
     stl_files = {}
     for s in meshes["stl"]:
         shutil.copy(DERIVED / "meshes" / s["file"], WEB_PUBLIC / "mesh" / s["file"])
@@ -233,6 +236,7 @@ def main():
         "renderLabels": rlabels_meta,
         "heartRender": heart_meta,
         "meshes": {"file": "mesh/anatomy.glb", "bytes": (WEB_PUBLIC / "mesh" / "anatomy.glb").stat().st_size,
+                   "heartFile": "mesh/heart.glb", "heartBytes": (WEB_PUBLIC / "mesh" / "heart.glb").stat().st_size,
                    "nodes": meshes["nodes"]},
         "files": files,
     }

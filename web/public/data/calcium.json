@@ -194,7 +194,7 @@
           "peak": 147.0
         }
       ],
-      "chamber": "heart_ventricle_right",
+      "chamber": "outside",
       "ruleClass": "noise",
       "ruleReasons": [
         "faint (<180 HU) and present on a single 3 mm slice only"
@@ -404,7 +404,7 @@
           "peak": 172.0
         }
       ],
-      "chamber": "heart_ventricle_right",
+      "chamber": "outside",
       "ruleClass": "noise",
       "ruleReasons": [
         "faint (<180 HU) and present on a single 3 mm slice only"
@@ -913,7 +913,7 @@
           "verdict": "noise-artifact",
           "artery": "",
           "confidence": 0.9,
-          "note": "s16, 152 HU, 1.04 mm2, peak at LPS (41.7,-212.0,1707.25). There are sub-1 mm2 specks at the same spot on s15/s17. It sits on the inferior LV-apex surface just above the diaphragm, a place where the distal LAD or PDA could run. Only 3.6 SD above the local mean (local SD ~29 HU in this band). It is a compact grain identical to the surrounding mottled noise. Invisible at W200/600. The axial_st s8 counterpart is a 157 HU speck. Liver/spleen noise blobs at the same z reach 192-234 HU. Files: cand13_zoom_axial_5slices_3windows_cor_sag.png, cand13_context_wide.png."
+          "note": "s16, 152 HU, 1.04 mm2, peak at LPS (41.7,-212.0,1707.25). There are sub-1 mm2 specks at the same spot on s15/s17. It sits on the inferior LV-apex surface just above the diaphragm, a place where the distal LAD or PDA could run. Only 3.6 SD above the local mean (local SD ~29 HU in this band). It is a compact grain identical to the surrounding mottled noise. Invisible at W200/600. The axial_st s8 counterpart is a 157 HU speck. Liver/spleen noise blobs at the same z reach 192-234 HU."
         },
         {
           "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
@@ -1457,7 +1457,7 @@
           "verdict": "noise-artifact",
           "artery": "",
           "confidence": 0.93,
-          "note": "s25-27, peak 159 HU at LPS (3.2,-173.9,1723.75), 12.6 mm2 summed. 3.2 mm deep in the inferior septum/LV. The local mean is ~89 HU because of the regional artifact, so the peak is only ~2.1 SD above it. Three-slice persistence is common for pure noise here (47 liver noise groups span 3 slices). File: cand20_zoom_axial_5slices_3windows_cor_sag.png."
+          "note": "s25-27, peak 159 HU at LPS (3.2,-173.9,1723.75), 12.6 mm2 summed. 3.2 mm deep in the inferior septum/LV. The local mean is ~89 HU because of the regional artifact, so the peak is only ~2.1 SD above it. Three-slice persistence is common for pure noise here (47 liver noise groups span 3 slices)."
         },
         {
           "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
@@ -1618,7 +1618,7 @@
           "verdict": "noise-artifact",
           "artery": "",
           "confidence": 0.85,
-          "note": "Calcium s25-27 (z 1720.75-1723.75), peak 174 HU at LPS (4.75,-163.09,1722.25) on s26, 21.5 mm2 summed (8.5 and 9.2 mm2 on s26/s27). Same structure as the AXIAL ST 203 HU blob. It is a thin linear band, about 8-10 x 1 mm, lying 0.5-1.5 mm inside the posterior-inferior LV myocardium where the heart touches lung. It is at the posterior end of the posterior interventricular groove (crux/PDA territory), but it is not in the groove fat. It runs roughly perpendicular to the groove, so it does not follow a PDA course. Its long axis (123-131 deg; elongation 5-10) parallels the band's streak orientation (105-114 deg) and several pure-streak outlines right next to it. It lies in the table-step artifact band, where the inferior LV wall's regional mean is 96-99 HU (vs 52-55 HU at s32-35) and the local SD is 22-36 HU. Against that background the peak is only ~1.7-2.5 SD above its local surroundings. No discrete focus at W200/600, and it never reaches 200 HU on the scoring series. Coronal/sagittal reformats show it as one of several red specks in a horizontal band at the heart-lung edge. Residual doubt: it is the top outlier in all three reconstructions (174 calcium / 203 axial_st / 165 smoothed thin), so a tiny distal PDA or posterolateral plaque cannot be fully excluded. If counted it would add about 10.8 Agatston (calcium series, weight 1 x 21.5 x 0.5). Files: cand22_zoom_axial_5slices_3windows_cor_sag.png, cand22_calcium_s24-28_crop40.png, cand22_calcium_cor_sag_wide60.png, cand22_thinlung_smoothed_zstack.png, s8blob_axialst_s13_203HU_eq_cand22.png."
+          "note": "Calcium s25-27 (z 1720.75-1723.75), peak 174 HU at LPS (4.75,-163.09,1722.25) on s26, 21.5 mm2 summed (8.5 and 9.2 mm2 on s26/s27). Same structure as the AXIAL ST 203 HU blob. It is a thin linear band, about 8-10 x 1 mm, lying 0.5-1.5 mm inside the posterior-inferior LV myocardium where the heart touches lung. It is at the posterior end of the posterior interventricular groove (crux/PDA territory), but it is not in the groove fat. It runs roughly perpendicular to the groove, so it does not follow a PDA course. Its long axis (123-131 deg; elongation 5-10) parallels the band's streak orientation (105-114 deg) and several pure-streak outlines right next to it. It lies in the table-step artifact band, where the inferior LV wall's regional mean is 96-99 HU (vs 52-55 HU at s32-35) and the local SD is 22-36 HU. Against that background the peak is only ~1.7-2.5 SD above its local surroundings. No discrete focus at W200/600, and it never reaches 200 HU on the scoring series. Coronal/sagittal reformats show it as one of several red specks in a horizontal band at the heart-lung edge. Residual doubt: it is the top outlier in all three reconstructions (174 calcium / 203 axial_st / 165 smoothed thin), so a tiny distal PDA or posterolateral plaque cannot be fully excluded. If counted it would add about 10.8 Agatston (calcium series, weight 1 x 21.5 x 0.5)."
         },
         {
           "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
@@ -1688,7 +1688,7 @@
           "verdict": "noise-artifact",
           "artery": "",
           "confidence": 0.95,
-          "note": "s25, 149 HU, 1.42 mm2, LPS (2.6,-165.9,1720.75). At the posterior heart tip on the lung interface, 3 mm from #22, and part of the same streak family. Single slice. File: cand23_zoom_axial_5slices_3windows_cor_sag.png."
+          "note": "s25, 149 HU, 1.42 mm2, LPS (2.6,-165.9,1720.75). At the posterior heart tip on the lung interface, 3 mm from #22, and part of the same streak family. Single slice."
         },
         {
           "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
@@ -1918,7 +1918,7 @@
           "verdict": "noise-artifact",
           "artery": "",
           "confidence": 0.9,
-          "note": "s26-29, peak 167 HU at LPS (1.05,-178.8,1723.75), 7.77 mm2 summed. A compact speck 5-6 mm deep in the mid-myocardium of the inferior LV wall/septum, where no coronary runs. If it were real it would be papillary or myocardial, which is not coronary anyway. Local mean is ~78-83 HU and the peak is only 2.4-2.7 SD above it. The 4-slice persistence matches pure noise in this exam: 31 liver noise groups span 4-8 slices and 2 spleen groups span 4. The smoothed thin series shows no distinct focus (132 HU vs a regional 98 HU). axial_st s13 shows only a 169 HU, 2.2 mm2 speck. In the native COR/SAG ST it is one of many specks inside a horizontal bright stripe at the step boundary. File: cand26_zoom_axial_5slices_3windows_cor_sag.png."
+          "note": "s26-29, peak 167 HU at LPS (1.05,-178.8,1723.75), 7.77 mm2 summed. A compact speck 5-6 mm deep in the mid-myocardium of the inferior LV wall/septum, where no coronary runs. If it were real it would be papillary or myocardial, which is not coronary anyway. Local mean is ~78-83 HU and the peak is only 2.4-2.7 SD above it. The 4-slice persistence matches pure noise in this exam: 31 liver noise groups span 4-8 slices and 2 spleen groups span 4. The smoothed thin series shows no distinct focus (132 HU vs a regional 98 HU). axial_st s13 shows only a 169 HU, 2.2 mm2 speck. In the native COR/SAG ST it is one of many specks inside a horizontal bright stripe at the step boundary."
         },
         {
           "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
@@ -2227,7 +2227,7 @@
           "verdict": "noise-artifact",
           "artery": "",
           "confidence": 0.94,
-          "note": "s26-27, peak 150 HU at LPS (-2.33,-168.0,1723.75), 2.18 mm2 summed (1.0-1.1 mm2 per slice). At the myocardial edge of the posterior interventricular-groove fat line (PDA territory). It is a tiny speck identical to dozens around it, invisible at W200/600, and only 1.6-1.8 SD above the local mean. Absent on s25/s28. The native COR/SAG ST show nothing distinct. Files: cand30_zoom_axial_5slices_3windows_cor_sag.png, cands_22_26_30_32_native_corst_sagst_crop40.png."
+          "note": "s26-27, peak 150 HU at LPS (-2.33,-168.0,1723.75), 2.18 mm2 summed (1.0-1.1 mm2 per slice). At the myocardial edge of the posterior interventricular-groove fat line (PDA territory). It is a tiny speck identical to dozens around it, invisible at W200/600, and only 1.6-1.8 SD above the local mean. Absent on s25/s28. The native COR/SAG ST show nothing distinct."
         },
         {
           "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
@@ -2372,7 +2372,7 @@
           "verdict": "noise-artifact",
           "artery": "",
           "confidence": 0.93,
-          "note": "s27-28, peak 155 HU at LPS (-2.33,-177.6,1723.75), 5.21 mm2. Lies 1.9-2.7 mm inside the inferior septal myocardium beside the groove fat, not in fat and with no vessel around it. An elongated vertical speck (~4:1) that matches the streak texture. 2.0-2.2 SD above a local mean of ~76 HU. Nothing at W200/600. The native COR/SAG ST show only a band of similar specks. File: cand32_zoom_axial_5slices_3windows_cor_sag.png."
+          "note": "s27-28, peak 155 HU at LPS (-2.33,-177.6,1723.75), 5.21 mm2. Lies 1.9-2.7 mm inside the inferior septal myocardium beside the groove fat, not in fat and with no vessel around it. An elongated vertical speck (~4:1) that matches the streak texture. 2.0-2.2 SD above a local mean of ~76 HU. Nothing at W200/600. The native COR/SAG ST show only a band of similar specks."
         },
         {
           "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
@@ -2589,7 +2589,7 @@
           "verdict": "noise-artifact",
           "artery": "",
           "confidence": 0.94,
-          "note": "s27, 156 HU, 1.61 mm2, LPS (2.6,-164.6,1723.75). At the posterior tip, 2.6 mm from #22, at the end of a long streak outline. Single slice. File: cand35_zoom_axial_5slices_3windows_cor_sag.png."
+          "note": "s27, 156 HU, 1.61 mm2, LPS (2.6,-164.6,1723.75). At the posterior tip, 2.6 mm from #22, at the end of a long streak outline. Single slice."
         },
         {
           "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
@@ -2948,7 +2948,7 @@
           "verdict": "noise-artifact",
           "artery": "",
           "confidence": 0.94,
-          "note": "s29, 149 HU, 1.33 mm2, LPS (-9.7,-170.8,1726.75). On the RV inferior-wall edge beside the posterior IV groove fat. Single slice, absent on the overlapping s28/s30 even though those share half of its data. File: cand40_zoom_axial_5slices_3windows_cor_sag.png."
+          "note": "s29, 149 HU, 1.33 mm2, LPS (-9.7,-170.8,1726.75). On the RV inferior-wall edge beside the posterior IV groove fat. Single slice, absent on the overlapping s28/s30 even though those share half of its data."
         },
         {
           "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
@@ -3018,7 +3018,7 @@
           "verdict": "noise-artifact",
           "artery": "",
           "confidence": 0.95,
-          "note": "s29, 140 HU, 1.61 mm2, LPS (5.4,-163.7,1726.75). Posterior heart tip near the lung, single slice. File: cand41_zoom_axial_5slices_3windows_cor_sag.png."
+          "note": "s29, 140 HU, 1.61 mm2, LPS (5.4,-163.7,1726.75). Posterior heart tip near the lung, single slice."
         },
         {
           "reviewer": "calcium_cal_blind (blind sweeper: full 91-slice sweep, coronary territories, thick-slab MIPs, then candidate adjudication)",
@@ -3122,7 +3122,7 @@
         "lens": "blind sweeper",
         "agatstonEstimate": 0,
         "confidenceZero": 0.94,
-        "summary": "Blind sweep result: no coronary artery calcium; Agatston 0 (probability about 0.94 that the true score is 0).\n\nI swept all 91 calcium slices without looking at the candidate list. Specks of 130 HU or more and at least 1 mm2 appear only in two places:\n- The noisiest inferior slices (k10-18, liver/diaphragm/apex, slice SD 26-32 HU).\n- A horizontal band at z about 1719-1728 (k24-29) in the posterior-inferior LV.\n\nFrom k30 to k90 there is not one such speck anywhere in the pericardium. That range covers the LM, proximal-mid LAD and diagonals, the whole LCX/OM groove, proximal-mid RCA, aortic root and valve, mitral annulus, and ascending aorta. The highest value anywhere in the heart on the calcium series is 177 HU, and nothing reaches 200.\n\nCoronary territory checks:\n- I identified the RCA as a soft-tissue dot in the right AV-groove fat at about LPS (-46,-219), k32-49. Its raw maximum is 88 HU or less.\n- The anterior IV groove (LAD), the left AV groove (LCX), the LM region behind the root, the crux/PDA region and the apex are all free of bright foci on zoomed views and on 9-10 mm bone-removed slab MIPs.\n- A fat-adjacent check at 110 HU or more, and at 100 HU or more inside the dark band, found only sub-threshold noise specks.\n\nThe band is a step-and-shoot (table-step) boundary artifact. The scan has 4 steps of 38.4 mm, and the boundary is near z 1718. The posterior LV reads +40-50 HU in a 9 mm z-band, with a dark band just below at k19-22. The sagittal/coronal reformats show a horizontal stripe across the heart that ignores anatomy. A sign-flip test shows the bright specks lie within the noise distribution: mirrored negative excursions reach 185 HU, versus 167 HU for positive ones, in the same tissue.\n\nCandidates:\n- #22, #30 and #32 are noise/artifact. #22 is a radial streak at the LV-lung edge, #30 sits on the myocardial edge of the crux fat, and #32 is intramyocardial. None of them lies within a vessel in fat.\n- The open 203 HU blob on axial_st (S8 k13) is #22 seen on that series. Only 1 pixel reaches 200 HU.\n- Even if all three were wrongly counted, the score would be about 14, which is minimal.\n\nOther findings in my lens:\n- No aortic-valve or mitral-annular calcification, and no calcification of the ascending or descending aortic wall.\n- The ascending aorta measures about 34-36 mm, consistent with the radiologist's 36.1 mm caliper. This is upper-normal for a 37-year-old man, with no action at standard thresholds (severity 0-1).\n- The heart lies fully inside the 158 mm calcium FOV.\n- Image noise is adequate for calcium scoring: mid-heart SD is about 16 HU.\n\nFor the patient: a calcium score of 0 at 37 is the expected, reassuring result. It means no detectable calcified plaque. It does not rule out soft (non-calcified) plaque, so standard risk-factor care still applies."
+        "summary": "Blind sweep result: no coronary artery calcium; Agatston 0 (probability about 0.94 that the true score is 0).\n\nI swept all 91 calcium slices without looking at the candidate list. Specks of 130 HU or more and at least 1 mm2 appear only in two places:\n- The noisiest inferior slices (k10-18, liver/diaphragm/apex, slice SD 26-32 HU).\n- A horizontal band at z about 1719-1728 (k24-29) in the posterior-inferior LV.\n\nFrom k30 to k90 there is not one such speck anywhere in the pericardium. That range covers the LM, proximal-mid LAD and diagonals, the whole LCX/OM groove, proximal-mid RCA, aortic root and valve, mitral annulus, and ascending aorta. The highest value anywhere in the heart on the calcium series is 177 HU, and nothing reaches 200.\n\nCoronary territory checks:\n- I identified the RCA as a soft-tissue dot in the right AV-groove fat at about LPS (-46,-219), k32-49. Its raw maximum is 88 HU or less.\n- The anterior IV groove (LAD), the left AV groove (LCX), the LM region behind the root, the crux/PDA region and the apex are all free of bright foci on zoomed views and on 9-10 mm bone-removed slab MIPs.\n- A fat-adjacent check at 110 HU or more, and at 100 HU or more inside the dark band, found only sub-threshold noise specks.\n\nThe band is a step-and-shoot (table-step) boundary artifact. The scan has 4 table steps of about 34 mm (38.4 mm detector width), and the boundary is near z 1718. The posterior LV reads +40-50 HU in a 9 mm z-band, with a dark band just below at k19-22. The sagittal/coronal reformats show a horizontal stripe across the heart that ignores anatomy. A sign-flip test shows the bright specks lie within the noise distribution: mirrored negative excursions reach 185 HU, versus 167 HU for positive ones, in the same tissue.\n\nCandidates:\n- #22, #30 and #32 are noise/artifact. #22 is a radial streak at the LV-lung edge, #30 sits on the myocardial edge of the crux fat, and #32 is intramyocardial. None of them lies within a vessel in fat.\n- The open 203 HU blob on axial_st (S8 k13) is #22 seen on that series. Only 1 pixel reaches 200 HU.\n- Even if all three were wrongly counted, the score would be about 14, which is minimal.\n\nOther findings in my lens:\n- No aortic-valve or mitral-annular calcification, and no calcification of the ascending or descending aortic wall.\n- At the levels this reviewer looked at, the ascending aorta measured about 34-36 mm, in line with the radiologist's 36.1 mm caliper; the AI second read found 37-38 mm at its widest point (upper-normal, below 40 mm). This is upper-normal for a 37-year-old man, with no action at standard thresholds (severity 0-1).\n- The heart lies fully inside the 158 mm calcium FOV.\n- Image noise is adequate for calcium scoring: mid-heart SD is about 16 HU.\n\nFor the patient: a calcium score of 0 at 37 is the expected, reassuring result. It means no detectable calcified plaque. It does not rule out soft (non-calcified) plaque, so standard risk-factor care still applies."
       },
       {
         "key": "cal_cross",
@@ -3132,7 +3132,7 @@
         "summary": "Agatston estimate 0; probability that the true score is 0 is about 0.90.\n\nThe axial_st 203 HU open item is not a new finding. It is candidate #22 seen through a sharper kernel. Br40d reads about 24 HU higher than Sa36d at points 3 mm from lung, which explains the 203 versus 174.\n\nAll 65 blobs and all 41 candidates, #22, #30 and #32 included, are explained by noise sitting on top of a table-step shading artifact. On axial_st, blood in the LV swings from 25 HU at z=1716 to 70 HU at z=1725 (calcium series about 28 to 68 HU). A wedge about 40 mm long in the posteroinferior LV reads 80-100 HU at z=1722. The calibrated noise model predicts 61 +/- 4 chance blobs at 130 HU (65 observed), 21 at 140 HU (20 observed) and 5.8 at 150 HU (2 observed); a naive stationary model predicts about 0. A 3D simulation with the measured inter-slice correlation (0.76 at 1.5 mm) reproduces the candidate count, the slice spans and #22's size (13% of noise-only scans have a candidate this large). Agreement between reconstructions does not help here, because noise peaks in all of them come from the same photons and track each other within about 8 HU.\n\nThe residual risk is a faint real plaque at #22, near the PDA or posterolateral territory (about 6%), or at #30 (about 3%). If #22 were counted, the score would be about 11; with all three, about 14.\n\nThe upper heart, the aortic root and coronary origins, and the valves are clean. The only real calcification found was normal costal cartilage. The main caveat is that the artifact band lowers calcium sensitivity in the posteroinferior heart at z 1719-1729."
       }
     ],
-    "consensus": "3 independent AI reviewers adjudicated the 41 candidates; coronary lesions after majority vote: 0. Additional lesions proposed by reviewers outside the candidate list: 4 (called coronary: 0).",
+    "consensus": "3 independent AI reviewers judged all 41 candidates: none is coronary calcium. They also noted a few calcified costal cartilages in the chest wall, outside the heart (normal, not scored).",
     "missedLesions": [
       {
         "description": "Small calcification in the right costal cartilage at the sternocostal junction, just to the right of the sternal body (anterior chest wall, outside the heart, not vascular)",
@@ -3148,8 +3148,7 @@
         "areaMM2": 1.6,
         "artery": "",
         "evidence": [
-          "/home/cbroker/Documents/2026/heart-exam/medicom_exams_2026-11-06_121707/heart-ct-explorer/data/derived/read/calcium_cal_candidates/parasternal_foci_costal_vs_IMA.png",
-          "Also on calcium s69-71 at peak 339 HU. It lies inside the cartilage plane, not deep to it where the internal mammary vessels run (parasternal_IMA_trace_axialst.png)."
+          "Also on calcium s69-71 at peak 339 HU. It lies inside the cartilage plane, not deep to it where the internal mammary vessels run."
         ]
       },
       {
@@ -3166,7 +3165,6 @@
         "areaMM2": 5.1,
         "artery": "",
         "evidence": [
-          "/home/cbroker/Documents/2026/heart-exam/medicom_exams_2026-11-06_121707/heart-ct-explorer/data/derived/read/calcium_cal_candidates/parasternal_foci_costal_vs_IMA.png",
           "Seen on axial_st s37-39 (peak ~391 HU) along the inner margin of the cartilage, continuous with the rib end. It is not a separate round vessel dot."
         ]
       },
@@ -3183,10 +3181,7 @@
         ],
         "peakHU": 380,
         "areaMM2": 3.3,
-        "evidence": [
-          "/home/cbroker/Documents/2026/heart-exam/medicom_exams_2026-11-06_121707/heart-ct-explorer/data/derived/read/calcium_cal_blind/mip_sagittal_10mm_slabs_boneremoved.png",
-          "/home/cbroker/Documents/2026/heart-exam/medicom_exams_2026-11-06_121707/heart-ct-explorer/data/derived/read/calcium_cal_blind/sweep_calcium_axial_k60-71_thr130red_200yellow.png"
-        ]
+        "evidence": []
       },
       {
         "description": "Calcified or ossified right 2nd costosternal cartilage at the right sternal margin (anterior chest wall), not covered by the AI bone mask. Picked up only by a wider search; outside the heart and pericardium.",
@@ -3203,8 +3198,7 @@
         "artery": "",
         "evidence": [
           "calcium slices 88-90: peaks 292/524/459 HU, areas 1.8/3.2/7.8 mm2; axial_st slice 44 peak 306 HU",
-          "cor_st and sag_st reformats: dense oval contiguous with the sternum and anterior chest wall at the top of the coverage (z 1815-1818)",
-          "images: /home/cbroker/Documents/2026/heart-exam/medicom_exams_2026-11-06_121707/heart-ct-explorer/data/derived/read/calcium_cal_cross/missedA_ca86-90_crop40.png, missedA_axst43-45_crop60.png, missedA_sag_crop60.png, missedA_cor_crop60.png"
+          "cor_st and sag_st reformats: dense oval contiguous with the sternum and anterior chest wall at the top of the coverage (z 1815-1818)"
         ]
       }
     ],
@@ -3217,7 +3211,7 @@
         ],
         "peakHU": 203,
         "verdict": "noise-artifact: same structure as calcium candidate #22, not calcium",
-        "note": "I repeated the search on AXIAL ST (pericardium + heart masks on the axial_st grid, 5 mm margin, bone + 2 mm excluded). It finds 78 blobs >= 130 HU and >= 1 mm2; the top peaks are 203, 179, 172, 172, 171. The 203 HU blob is on slice 13 (z 1722.25, 3 mm non-overlapping Br40d): 14.9 mm2, mean 150 HU, centroid LPS (6.84,-165.27,1722.25). That is exactly calcium #22. It is elongated along the posterior-inferior heart-lung interface and along the streak direction, running ~10 mm from the LV tip, with parallel streak outlines beside it. The adjacent non-overlapping slices s12/s14 reach only 132/149 HU at that spot. It is brighter than on the calcium series because Br40d is a sharper kernel (blood SD 20.3 vs 17.9 HU). In this exam's axial_st, pure-noise blobs in control tissue reach 207 HU (spleen), 225-243 HU (paraspinal muscle) and 332 HU (liver at the scan edge), so 203 HU is within the noise range. It lies in the table-step band, where the inferior LV wall reads ~40 HU too bright. If someone scored it on axial_st it would be about 30 (weight 2 x 14.9 mm2), but axial_st is not the calcium-scoring series. Figure: /home/cbroker/Documents/2026/heart-exam/medicom_exams_2026-11-06_121707/heart-ct-explorer/data/derived/read/calcium_cal_candidates/s8blob_axialst_s13_203HU_eq_cand22.png"
+        "note": "I repeated the search on AXIAL ST (pericardium + heart masks on the axial_st grid, 5 mm margin, bone + 2 mm excluded). It finds 78 blobs >= 130 HU and >= 1 mm2; the top peaks are 203, 179, 172, 172, 171. The 203 HU blob is on slice 13 (z 1722.25, 3 mm non-overlapping Br40d): 14.9 mm2, mean 150 HU, centroid LPS (6.84,-165.27,1722.25). That is exactly calcium #22. It is elongated along the posterior-inferior heart-lung interface and along the streak direction, running ~10 mm from the LV tip, with parallel streak outlines beside it. The adjacent non-overlapping slices s12/s14 reach only 132/149 HU at that spot. It is brighter than on the calcium series because Br40d is a sharper kernel (blood SD 20.3 vs 17.9 HU). In this exam's axial_st, pure-noise blobs in control tissue reach 207 HU (spleen), 225-243 HU (paraspinal muscle) and 332 HU (liver at the scan edge), so 203 HU is within the noise range. It lies in the table-step band, where the inferior LV wall reads ~40 HU too bright. If someone scored it on axial_st it would be about 30 (weight 2 x 14.9 mm2), but axial_st is not the calcium-scoring series."
       },
       {
         "lps": [

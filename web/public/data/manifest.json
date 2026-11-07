@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated": "2026-11-07T02:27:35",
+  "generated": "2026-11-07T03:35:23",
   "title": "Heart CT Explorer",
   "exam": {
     "Modality": "CT",
@@ -106,7 +106,7 @@
       "key": "axial_st",
       "label": "Chest \u00b7 soft tissue",
       "description": "AXIAL ST WO",
-      "blurb": "Whole-chest axial slices (3 mm) with a smooth soft-tissue kernel: best for heart, vessels, mediastinum.",
+      "blurb": "Axial slices across the whole scanned slab (3 mm, 39 cm field of view) with a smooth soft-tissue kernel: best for heart, vessels, mediastinum.",
       "kernel": "Br40d",
       "sliceThickness": 3.0,
       "kvp": 120.0,
@@ -286,7 +286,7 @@
       "key": "cr_vessel_suppress",
       "label": "AI vessel-suppressed",
       "description": "CR Vessel Suppress",
-      "blurb": "Riverain ClearRead CT: AI digitally erased the blood vessels so lung nodules can't hide. It found none.",
+      "blurb": "Riverain ClearRead CT software digitally removes the blood vessels so small lung nodules are easier to spot. It flagged none; the AI second read found one ~3 mm speck, too small to need follow-up.",
       "kernel": "",
       "sliceThickness": 1.5,
       "kvp": 120.0,
@@ -389,7 +389,7 @@
   ],
   "labels": {
     "file": "vol/labels.u8.gz",
-    "bytes": 796852,
+    "bytes": 796185,
     "rawBytes": 47972352,
     "dtype": "uint8",
     "shuffle": false,
@@ -423,11 +423,12 @@
       {
         "id": 1,
         "name": "body_trunc",
-        "display": "Skin & soft tissue",
+        "display": "Body (skin to skin)",
         "color": "#d9a58f",
         "group": "body",
-        "volumeML": 5138.2,
-        "source": "body"
+        "volumeML": 10808.0,
+        "source": "body",
+        "paintedML": 5153.4
       },
       {
         "id": 2,
@@ -435,8 +436,9 @@
         "display": "Left upper lobe",
         "color": "#7fd3ff",
         "group": "lungs",
-        "volumeML": 667.2,
-        "source": "total"
+        "volumeML": 710.6,
+        "source": "total",
+        "paintedML": 667.8
       },
       {
         "id": 3,
@@ -444,8 +446,9 @@
         "display": "Left lower lobe",
         "color": "#5ab7f0",
         "group": "lungs",
-        "volumeML": 921.7,
-        "source": "total"
+        "volumeML": 978.4,
+        "source": "total",
+        "paintedML": 922.5
       },
       {
         "id": 4,
@@ -453,8 +456,9 @@
         "display": "Right upper lobe",
         "color": "#8ee6c8",
         "group": "lungs",
-        "volumeML": 386.9,
-        "source": "total"
+        "volumeML": 410.3,
+        "source": "total",
+        "paintedML": 386.9
       },
       {
         "id": 5,
@@ -462,8 +466,9 @@
         "display": "Right middle lobe",
         "color": "#b8ec8c",
         "group": "lungs",
-        "volumeML": 436.6,
-        "source": "total"
+        "volumeML": 460.8,
+        "source": "total",
+        "paintedML": 436.9
       },
       {
         "id": 6,
@@ -471,17 +476,19 @@
         "display": "Right lower lobe",
         "color": "#66cfb0",
         "group": "lungs",
-        "volumeML": 874.8,
-        "source": "total"
+        "volumeML": 925.5,
+        "source": "total",
+        "paintedML": 875.8
       },
       {
         "id": 7,
         "name": "pericardium",
-        "display": "Pericardial sac & fat",
+        "display": "Pericardial sac (whole)",
         "color": "#ffd27a",
         "group": "heart",
-        "volumeML": 107.1,
-        "source": "cav"
+        "volumeML": 572.1,
+        "source": "cav",
+        "paintedML": 116.8
       },
       {
         "id": 8,
@@ -490,7 +497,8 @@
         "color": "#9b3f30",
         "group": "abdomen",
         "volumeML": 504.4,
-        "source": "total"
+        "source": "total",
+        "paintedML": 504.4
       },
       {
         "id": 9,
@@ -499,7 +507,8 @@
         "color": "#7a3069",
         "group": "abdomen",
         "volumeML": 75.8,
-        "source": "total"
+        "source": "total",
+        "paintedML": 75.8
       },
       {
         "id": 10,
@@ -508,7 +517,8 @@
         "color": "#e2a96b",
         "group": "abdomen",
         "volumeML": 79.8,
-        "source": "total"
+        "source": "total",
+        "paintedML": 79.8
       },
       {
         "id": 11,
@@ -517,7 +527,8 @@
         "color": "#c79a63",
         "group": "abdomen",
         "volumeML": 10.9,
-        "source": "total"
+        "source": "total",
+        "paintedML": 10.9
       },
       {
         "id": 12,
@@ -526,7 +537,8 @@
         "color": "#b5544a",
         "group": "muscle",
         "volumeML": 90.1,
-        "source": "total"
+        "source": "total",
+        "paintedML": 90.1
       },
       {
         "id": 13,
@@ -535,7 +547,8 @@
         "color": "#b5544a",
         "group": "muscle",
         "volumeML": 91.0,
-        "source": "total"
+        "source": "total",
+        "paintedML": 91.0
       },
       {
         "id": 14,
@@ -543,8 +556,9 @@
         "display": "Esophagus",
         "color": "#e7a77a",
         "group": "airways",
-        "volumeML": 17.0,
-        "source": "total"
+        "volumeML": 17.6,
+        "source": "total",
+        "paintedML": 17.2
       },
       {
         "id": 15,
@@ -553,7 +567,8 @@
         "color": "#b8323f",
         "group": "heart",
         "volumeML": 95.5,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 95.5
       },
       {
         "id": 16,
@@ -562,7 +577,8 @@
         "color": "#ff5d6c",
         "group": "heart",
         "volumeML": 83.7,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 83.7
       },
       {
         "id": 17,
@@ -571,7 +587,8 @@
         "color": "#5f80ff",
         "group": "heart",
         "volumeML": 128.8,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 128.8
       },
       {
         "id": 18,
@@ -580,7 +597,8 @@
         "color": "#ff8f7d",
         "group": "heart",
         "volumeML": 40.2,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 40.2
       },
       {
         "id": 19,
@@ -588,8 +606,9 @@
         "display": "Right atrium",
         "color": "#82a6ff",
         "group": "heart",
-        "volumeML": 52.4,
-        "source": "v1"
+        "volumeML": 57.6,
+        "source": "v1",
+        "paintedML": 52.4
       },
       {
         "id": 20,
@@ -598,7 +617,8 @@
         "color": "#ffae8f",
         "group": "heart",
         "volumeML": 3.4,
-        "source": "total"
+        "source": "total",
+        "paintedML": 3.4
       },
       {
         "id": 21,
@@ -607,7 +627,8 @@
         "color": "#ff2d3f",
         "group": "vessels",
         "volumeML": 110.6,
-        "source": "total"
+        "source": "total",
+        "paintedML": 110.6
       },
       {
         "id": 22,
@@ -616,7 +637,8 @@
         "color": "#3e6bff",
         "group": "vessels",
         "volumeML": 48.3,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 48.3
       },
       {
         "id": 23,
@@ -624,8 +646,9 @@
         "display": "Pulmonary veins",
         "color": "#ff7759",
         "group": "vessels",
-        "volumeML": 19.6,
-        "source": "total"
+        "volumeML": 19.5,
+        "source": "total",
+        "paintedML": 19.5
       },
       {
         "id": 24,
@@ -634,7 +657,8 @@
         "color": "#4f72d8",
         "group": "vessels",
         "volumeML": 7.7,
-        "source": "total"
+        "source": "total",
+        "paintedML": 7.7
       },
       {
         "id": 25,
@@ -643,7 +667,8 @@
         "color": "#4f72d8",
         "group": "vessels",
         "volumeML": 16.3,
-        "source": "total"
+        "source": "total",
+        "paintedML": 16.3
       },
       {
         "id": 26,
@@ -651,8 +676,9 @@
         "display": "Lung arteries",
         "color": "#5a86ff",
         "group": "vessels",
-        "volumeML": 118.4,
-        "source": "lv"
+        "volumeML": 105.8,
+        "source": "lv",
+        "paintedML": 105.8
       },
       {
         "id": 27,
@@ -660,8 +686,9 @@
         "display": "Lung veins",
         "color": "#ff6e6e",
         "group": "vessels",
-        "volumeML": 111.6,
-        "source": "lv"
+        "volumeML": 96.6,
+        "source": "lv",
+        "paintedML": 96.6
       },
       {
         "id": 28,
@@ -670,7 +697,8 @@
         "color": "#a8dcff",
         "group": "airways",
         "volumeML": 12.3,
-        "source": "total"
+        "source": "total",
+        "paintedML": 12.3
       },
       {
         "id": 29,
@@ -679,7 +707,8 @@
         "color": "#c9eeff",
         "group": "airways",
         "volumeML": 22.5,
-        "source": "lv"
+        "source": "lv",
+        "paintedML": 22.5
       },
       {
         "id": 30,
@@ -688,7 +717,8 @@
         "color": "#bfe3dc",
         "group": "bones",
         "volumeML": 91.8,
-        "source": "total"
+        "source": "total",
+        "paintedML": 91.8
       },
       {
         "id": 31,
@@ -697,7 +727,8 @@
         "color": "#f3e8d0",
         "group": "bones",
         "volumeML": 31.6,
-        "source": "total"
+        "source": "total",
+        "paintedML": 31.6
       },
       {
         "id": 32,
@@ -706,7 +737,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 25.2,
-        "source": "total"
+        "source": "total",
+        "paintedML": 25.2
       },
       {
         "id": 33,
@@ -715,7 +747,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 26.1,
-        "source": "total"
+        "source": "total",
+        "paintedML": 26.1
       },
       {
         "id": 34,
@@ -724,7 +757,8 @@
         "color": "#f0e6d2",
         "group": "bones",
         "volumeML": 0.7,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 0.7
       },
       {
         "id": 35,
@@ -733,7 +767,8 @@
         "color": "#f0e6d2",
         "group": "bones",
         "volumeML": 16.0,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 16.0
       },
       {
         "id": 36,
@@ -742,7 +777,8 @@
         "color": "#f0e6d2",
         "group": "bones",
         "volumeML": 23.1,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 23.1
       },
       {
         "id": 37,
@@ -751,7 +787,8 @@
         "color": "#f0e6d2",
         "group": "bones",
         "volumeML": 25.9,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 25.9
       },
       {
         "id": 38,
@@ -760,7 +797,8 @@
         "color": "#f0e6d2",
         "group": "bones",
         "volumeML": 26.1,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 26.1
       },
       {
         "id": 39,
@@ -769,7 +807,8 @@
         "color": "#f0e6d2",
         "group": "bones",
         "volumeML": 30.4,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 30.4
       },
       {
         "id": 40,
@@ -778,7 +817,8 @@
         "color": "#f0e6d2",
         "group": "bones",
         "volumeML": 31.2,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 31.2
       },
       {
         "id": 41,
@@ -787,7 +827,8 @@
         "color": "#f0e6d2",
         "group": "bones",
         "volumeML": 0.9,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 0.9
       },
       {
         "id": 42,
@@ -796,7 +837,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 4.4,
-        "source": "total"
+        "source": "total",
+        "paintedML": 4.4
       },
       {
         "id": 43,
@@ -805,7 +847,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 9.5,
-        "source": "total"
+        "source": "total",
+        "paintedML": 9.5
       },
       {
         "id": 44,
@@ -814,7 +857,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 11.3,
-        "source": "total"
+        "source": "total",
+        "paintedML": 11.3
       },
       {
         "id": 45,
@@ -823,7 +867,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 16.2,
-        "source": "total"
+        "source": "total",
+        "paintedML": 16.2
       },
       {
         "id": 46,
@@ -832,7 +877,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 17.6,
-        "source": "total"
+        "source": "total",
+        "paintedML": 17.6
       },
       {
         "id": 47,
@@ -841,7 +887,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 12.9,
-        "source": "total"
+        "source": "total",
+        "paintedML": 12.9
       },
       {
         "id": 48,
@@ -850,7 +897,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 10.0,
-        "source": "total"
+        "source": "total",
+        "paintedML": 10.0
       },
       {
         "id": 49,
@@ -859,7 +907,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 5.9,
-        "source": "total"
+        "source": "total",
+        "paintedML": 5.9
       },
       {
         "id": 50,
@@ -868,7 +917,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 3.7,
-        "source": "total"
+        "source": "total",
+        "paintedML": 3.7
       },
       {
         "id": 51,
@@ -877,7 +927,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 4.2,
-        "source": "total"
+        "source": "total",
+        "paintedML": 4.2
       },
       {
         "id": 52,
@@ -886,7 +937,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 9.5,
-        "source": "total"
+        "source": "total",
+        "paintedML": 9.5
       },
       {
         "id": 53,
@@ -895,7 +947,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 12.5,
-        "source": "total"
+        "source": "total",
+        "paintedML": 12.5
       },
       {
         "id": 54,
@@ -904,7 +957,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 19.3,
-        "source": "total"
+        "source": "total",
+        "paintedML": 19.3
       },
       {
         "id": 55,
@@ -913,7 +967,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 16.5,
-        "source": "total"
+        "source": "total",
+        "paintedML": 16.5
       },
       {
         "id": 56,
@@ -922,7 +977,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 12.2,
-        "source": "total"
+        "source": "total",
+        "paintedML": 12.2
       },
       {
         "id": 57,
@@ -931,7 +987,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 8.3,
-        "source": "total"
+        "source": "total",
+        "paintedML": 8.3
       },
       {
         "id": 58,
@@ -940,7 +997,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 2.8,
-        "source": "total"
+        "source": "total",
+        "paintedML": 2.8
       },
       {
         "id": 59,
@@ -949,7 +1007,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 0.7,
-        "source": "total"
+        "source": "total",
+        "paintedML": 0.7
       },
       {
         "id": 60,
@@ -958,7 +1017,8 @@
         "color": "#ffe27a",
         "group": "bones",
         "volumeML": 28.7,
-        "source": "total"
+        "source": "total",
+        "paintedML": 28.7
       }
     ]
   },
@@ -1321,7 +1381,7 @@
   },
   "renderLabels": {
     "file": "vol/render_labels.u8.gz",
-    "bytes": 469987,
+    "bytes": 469896,
     "rawBytes": 11993088,
     "dtype": "uint8",
     "shuffle": false,
@@ -1355,11 +1415,12 @@
       {
         "id": 1,
         "name": "body_trunc",
-        "display": "Skin & soft tissue",
+        "display": "Body (skin to skin)",
         "color": "#d9a58f",
         "group": "body",
-        "volumeML": 5138.2,
-        "source": "body"
+        "volumeML": 10808.0,
+        "source": "body",
+        "paintedML": 5153.4
       },
       {
         "id": 2,
@@ -1367,8 +1428,9 @@
         "display": "Left upper lobe",
         "color": "#7fd3ff",
         "group": "lungs",
-        "volumeML": 667.2,
-        "source": "total"
+        "volumeML": 710.6,
+        "source": "total",
+        "paintedML": 667.8
       },
       {
         "id": 3,
@@ -1376,8 +1438,9 @@
         "display": "Left lower lobe",
         "color": "#5ab7f0",
         "group": "lungs",
-        "volumeML": 921.7,
-        "source": "total"
+        "volumeML": 978.4,
+        "source": "total",
+        "paintedML": 922.5
       },
       {
         "id": 4,
@@ -1385,8 +1448,9 @@
         "display": "Right upper lobe",
         "color": "#8ee6c8",
         "group": "lungs",
-        "volumeML": 386.9,
-        "source": "total"
+        "volumeML": 410.3,
+        "source": "total",
+        "paintedML": 386.9
       },
       {
         "id": 5,
@@ -1394,8 +1458,9 @@
         "display": "Right middle lobe",
         "color": "#b8ec8c",
         "group": "lungs",
-        "volumeML": 436.6,
-        "source": "total"
+        "volumeML": 460.8,
+        "source": "total",
+        "paintedML": 436.9
       },
       {
         "id": 6,
@@ -1403,17 +1468,19 @@
         "display": "Right lower lobe",
         "color": "#66cfb0",
         "group": "lungs",
-        "volumeML": 874.8,
-        "source": "total"
+        "volumeML": 925.5,
+        "source": "total",
+        "paintedML": 875.8
       },
       {
         "id": 7,
         "name": "pericardium",
-        "display": "Pericardial sac & fat",
+        "display": "Pericardial sac (whole)",
         "color": "#ffd27a",
         "group": "heart",
-        "volumeML": 107.1,
-        "source": "cav"
+        "volumeML": 572.1,
+        "source": "cav",
+        "paintedML": 116.8
       },
       {
         "id": 8,
@@ -1422,7 +1489,8 @@
         "color": "#9b3f30",
         "group": "abdomen",
         "volumeML": 504.4,
-        "source": "total"
+        "source": "total",
+        "paintedML": 504.4
       },
       {
         "id": 9,
@@ -1431,7 +1499,8 @@
         "color": "#7a3069",
         "group": "abdomen",
         "volumeML": 75.8,
-        "source": "total"
+        "source": "total",
+        "paintedML": 75.8
       },
       {
         "id": 10,
@@ -1440,7 +1509,8 @@
         "color": "#e2a96b",
         "group": "abdomen",
         "volumeML": 79.8,
-        "source": "total"
+        "source": "total",
+        "paintedML": 79.8
       },
       {
         "id": 11,
@@ -1449,7 +1519,8 @@
         "color": "#c79a63",
         "group": "abdomen",
         "volumeML": 10.9,
-        "source": "total"
+        "source": "total",
+        "paintedML": 10.9
       },
       {
         "id": 12,
@@ -1458,7 +1529,8 @@
         "color": "#b5544a",
         "group": "muscle",
         "volumeML": 90.1,
-        "source": "total"
+        "source": "total",
+        "paintedML": 90.1
       },
       {
         "id": 13,
@@ -1467,7 +1539,8 @@
         "color": "#b5544a",
         "group": "muscle",
         "volumeML": 91.0,
-        "source": "total"
+        "source": "total",
+        "paintedML": 91.0
       },
       {
         "id": 14,
@@ -1475,8 +1548,9 @@
         "display": "Esophagus",
         "color": "#e7a77a",
         "group": "airways",
-        "volumeML": 17.0,
-        "source": "total"
+        "volumeML": 17.6,
+        "source": "total",
+        "paintedML": 17.2
       },
       {
         "id": 15,
@@ -1485,7 +1559,8 @@
         "color": "#b8323f",
         "group": "heart",
         "volumeML": 95.5,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 95.5
       },
       {
         "id": 16,
@@ -1494,7 +1569,8 @@
         "color": "#ff5d6c",
         "group": "heart",
         "volumeML": 83.7,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 83.7
       },
       {
         "id": 17,
@@ -1503,7 +1579,8 @@
         "color": "#5f80ff",
         "group": "heart",
         "volumeML": 128.8,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 128.8
       },
       {
         "id": 18,
@@ -1512,7 +1589,8 @@
         "color": "#ff8f7d",
         "group": "heart",
         "volumeML": 40.2,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 40.2
       },
       {
         "id": 19,
@@ -1520,8 +1598,9 @@
         "display": "Right atrium",
         "color": "#82a6ff",
         "group": "heart",
-        "volumeML": 52.4,
-        "source": "v1"
+        "volumeML": 57.6,
+        "source": "v1",
+        "paintedML": 52.4
       },
       {
         "id": 20,
@@ -1530,7 +1609,8 @@
         "color": "#ffae8f",
         "group": "heart",
         "volumeML": 3.4,
-        "source": "total"
+        "source": "total",
+        "paintedML": 3.4
       },
       {
         "id": 21,
@@ -1539,7 +1619,8 @@
         "color": "#ff2d3f",
         "group": "vessels",
         "volumeML": 110.6,
-        "source": "total"
+        "source": "total",
+        "paintedML": 110.6
       },
       {
         "id": 22,
@@ -1548,7 +1629,8 @@
         "color": "#3e6bff",
         "group": "vessels",
         "volumeML": 48.3,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 48.3
       },
       {
         "id": 23,
@@ -1556,8 +1638,9 @@
         "display": "Pulmonary veins",
         "color": "#ff7759",
         "group": "vessels",
-        "volumeML": 19.6,
-        "source": "total"
+        "volumeML": 19.5,
+        "source": "total",
+        "paintedML": 19.5
       },
       {
         "id": 24,
@@ -1566,7 +1649,8 @@
         "color": "#4f72d8",
         "group": "vessels",
         "volumeML": 7.7,
-        "source": "total"
+        "source": "total",
+        "paintedML": 7.7
       },
       {
         "id": 25,
@@ -1575,7 +1659,8 @@
         "color": "#4f72d8",
         "group": "vessels",
         "volumeML": 16.3,
-        "source": "total"
+        "source": "total",
+        "paintedML": 16.3
       },
       {
         "id": 26,
@@ -1583,8 +1668,9 @@
         "display": "Lung arteries",
         "color": "#5a86ff",
         "group": "vessels",
-        "volumeML": 118.4,
-        "source": "lv"
+        "volumeML": 105.8,
+        "source": "lv",
+        "paintedML": 105.8
       },
       {
         "id": 27,
@@ -1592,8 +1678,9 @@
         "display": "Lung veins",
         "color": "#ff6e6e",
         "group": "vessels",
-        "volumeML": 111.6,
-        "source": "lv"
+        "volumeML": 96.6,
+        "source": "lv",
+        "paintedML": 96.6
       },
       {
         "id": 28,
@@ -1602,7 +1689,8 @@
         "color": "#a8dcff",
         "group": "airways",
         "volumeML": 12.3,
-        "source": "total"
+        "source": "total",
+        "paintedML": 12.3
       },
       {
         "id": 29,
@@ -1611,7 +1699,8 @@
         "color": "#c9eeff",
         "group": "airways",
         "volumeML": 22.5,
-        "source": "lv"
+        "source": "lv",
+        "paintedML": 22.5
       },
       {
         "id": 30,
@@ -1620,7 +1709,8 @@
         "color": "#bfe3dc",
         "group": "bones",
         "volumeML": 91.8,
-        "source": "total"
+        "source": "total",
+        "paintedML": 91.8
       },
       {
         "id": 31,
@@ -1629,7 +1719,8 @@
         "color": "#f3e8d0",
         "group": "bones",
         "volumeML": 31.6,
-        "source": "total"
+        "source": "total",
+        "paintedML": 31.6
       },
       {
         "id": 32,
@@ -1638,7 +1729,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 25.2,
-        "source": "total"
+        "source": "total",
+        "paintedML": 25.2
       },
       {
         "id": 33,
@@ -1647,7 +1739,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 26.1,
-        "source": "total"
+        "source": "total",
+        "paintedML": 26.1
       },
       {
         "id": 34,
@@ -1656,7 +1749,8 @@
         "color": "#f0e6d2",
         "group": "bones",
         "volumeML": 0.7,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 0.7
       },
       {
         "id": 35,
@@ -1665,7 +1759,8 @@
         "color": "#f0e6d2",
         "group": "bones",
         "volumeML": 16.0,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 16.0
       },
       {
         "id": 36,
@@ -1674,7 +1769,8 @@
         "color": "#f0e6d2",
         "group": "bones",
         "volumeML": 23.1,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 23.1
       },
       {
         "id": 37,
@@ -1683,7 +1779,8 @@
         "color": "#f0e6d2",
         "group": "bones",
         "volumeML": 25.9,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 25.9
       },
       {
         "id": 38,
@@ -1692,7 +1789,8 @@
         "color": "#f0e6d2",
         "group": "bones",
         "volumeML": 26.1,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 26.1
       },
       {
         "id": 39,
@@ -1701,7 +1799,8 @@
         "color": "#f0e6d2",
         "group": "bones",
         "volumeML": 30.4,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 30.4
       },
       {
         "id": 40,
@@ -1710,7 +1809,8 @@
         "color": "#f0e6d2",
         "group": "bones",
         "volumeML": 31.2,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 31.2
       },
       {
         "id": 41,
@@ -1719,7 +1819,8 @@
         "color": "#f0e6d2",
         "group": "bones",
         "volumeML": 0.9,
-        "source": "v1"
+        "source": "v1",
+        "paintedML": 0.9
       },
       {
         "id": 42,
@@ -1728,7 +1829,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 4.4,
-        "source": "total"
+        "source": "total",
+        "paintedML": 4.4
       },
       {
         "id": 43,
@@ -1737,7 +1839,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 9.5,
-        "source": "total"
+        "source": "total",
+        "paintedML": 9.5
       },
       {
         "id": 44,
@@ -1746,7 +1849,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 11.3,
-        "source": "total"
+        "source": "total",
+        "paintedML": 11.3
       },
       {
         "id": 45,
@@ -1755,7 +1859,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 16.2,
-        "source": "total"
+        "source": "total",
+        "paintedML": 16.2
       },
       {
         "id": 46,
@@ -1764,7 +1869,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 17.6,
-        "source": "total"
+        "source": "total",
+        "paintedML": 17.6
       },
       {
         "id": 47,
@@ -1773,7 +1879,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 12.9,
-        "source": "total"
+        "source": "total",
+        "paintedML": 12.9
       },
       {
         "id": 48,
@@ -1782,7 +1889,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 10.0,
-        "source": "total"
+        "source": "total",
+        "paintedML": 10.0
       },
       {
         "id": 49,
@@ -1791,7 +1899,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 5.9,
-        "source": "total"
+        "source": "total",
+        "paintedML": 5.9
       },
       {
         "id": 50,
@@ -1800,7 +1909,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 3.7,
-        "source": "total"
+        "source": "total",
+        "paintedML": 3.7
       },
       {
         "id": 51,
@@ -1809,7 +1919,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 4.2,
-        "source": "total"
+        "source": "total",
+        "paintedML": 4.2
       },
       {
         "id": 52,
@@ -1818,7 +1929,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 9.5,
-        "source": "total"
+        "source": "total",
+        "paintedML": 9.5
       },
       {
         "id": 53,
@@ -1827,7 +1939,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 12.5,
-        "source": "total"
+        "source": "total",
+        "paintedML": 12.5
       },
       {
         "id": 54,
@@ -1836,7 +1949,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 19.3,
-        "source": "total"
+        "source": "total",
+        "paintedML": 19.3
       },
       {
         "id": 55,
@@ -1845,7 +1959,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 16.5,
-        "source": "total"
+        "source": "total",
+        "paintedML": 16.5
       },
       {
         "id": 56,
@@ -1854,7 +1969,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 12.2,
-        "source": "total"
+        "source": "total",
+        "paintedML": 12.2
       },
       {
         "id": 57,
@@ -1863,7 +1979,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 8.3,
-        "source": "total"
+        "source": "total",
+        "paintedML": 8.3
       },
       {
         "id": 58,
@@ -1872,7 +1989,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 2.8,
-        "source": "total"
+        "source": "total",
+        "paintedML": 2.8
       },
       {
         "id": 59,
@@ -1881,7 +1999,8 @@
         "color": "#eadfca",
         "group": "bones",
         "volumeML": 0.7,
-        "source": "total"
+        "source": "total",
+        "paintedML": 0.7
       },
       {
         "id": 60,
@@ -1890,7 +2009,8 @@
         "color": "#ffe27a",
         "group": "bones",
         "volumeML": 28.7,
-        "source": "total"
+        "source": "total",
+        "paintedML": 28.7
       }
     ]
   },
@@ -1931,11 +2051,13 @@
   },
   "meshes": {
     "file": "mesh/anatomy.glb",
-    "bytes": 6968764,
+    "bytes": 6966188,
+    "heartFile": "mesh/heart.glb",
+    "heartBytes": 1282380,
     "nodes": [
       {
         "name": "body_trunc",
-        "display": "Skin & soft tissue",
+        "display": "Body (skin to skin)",
         "color": "#d9a58f",
         "group": "body",
         "triangles": 60000,
@@ -2001,7 +2123,7 @@
       },
       {
         "name": "pericardium",
-        "display": "Pericardial sac & fat",
+        "display": "Pericardial sac (whole)",
         "color": "#ffd27a",
         "group": "heart",
         "triangles": 29234,
@@ -2191,8 +2313,8 @@
         "display": "Pulmonary veins",
         "color": "#ff7759",
         "group": "vessels",
-        "triangles": 13242,
-        "volumeML": 19.6,
+        "triangles": 13126,
+        "volumeML": 19.5,
         "defaultVisible": true,
         "defaultOpacity": 1.0,
         "source": "total"
@@ -2224,8 +2346,8 @@
         "display": "Lung arteries",
         "color": "#5a86ff",
         "group": "vessels",
-        "triangles": 60000,
-        "volumeML": 118.4,
+        "triangles": 59998,
+        "volumeML": 105.8,
         "defaultVisible": true,
         "defaultOpacity": 1.0,
         "source": "lv"
@@ -2236,7 +2358,7 @@
         "color": "#ff6e6e",
         "group": "vessels",
         "triangles": 60000,
-        "volumeML": 111.6,
+        "volumeML": 96.6,
         "defaultVisible": true,
         "defaultOpacity": 1.0,
         "source": "lv"

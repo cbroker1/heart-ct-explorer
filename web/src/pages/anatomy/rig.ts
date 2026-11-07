@@ -1,7 +1,7 @@
 /** Imperative bridge between the DOM UI and the R3F scene: camera moves, fitting, screenshots. */
 import * as THREE from 'three'
 import type { CameraControls } from '@react-three/drei'
-import { EXTRA_DIRS, HEART_PARTS, VIEWS, type CameraView } from './meta'
+import { EXTRA_DIRS, GREAT_VESSELS, HEART_PARTS, PRESETS, VIEWS, type CameraView } from './meta'
 import { currentBox, type Structure } from './meshes'
 import { useAnat } from './state'
 
@@ -51,8 +51,12 @@ function basis(dir: THREE.Vector3) {
  */
 export function fitStructures(list: Structure[], dir: THREE.Vector3, cam: THREE.PerspectiveCamera, pad = 1.05) {
   const { fwd, right, up } = basis(dir)
-  const tanV = Math.tan(THREE.MathUtils.degToRad(cam.fov / 2))
-  const tanH = tanV * Math.max(cam.aspect, 0.2)
+  const tanV0 = Math.tan(THREE.MathUtils.degToRad(cam.fov / 2))
+  const tanH = tanV0 * Math.max(cam.aspect, 0.2)
+  // On phones the preset chips and the view buttons cover ~44 px at the top and at the bottom of the
+  // picture: frame vertically between them.
+  const h = rig.gl?.domElement.clientHeight ?? 0
+  const tanV = tanV0 * (h > 240 && window.matchMedia('(max-width: 820px)').matches ? (h - 88) / h : 1)
   const pts: number[] = []
   // Frame the layout the scene is heading to (the explode slider animates toward its value).
   const e = useAnat.getState().explode
@@ -93,7 +97,8 @@ export function fitStructures(list: Structure[], dir: THREE.Vector3, cam: THREE.
 export function flyTo(list: Structure[], dir?: THREE.Vector3, transition = true, pad = 1.05) {
   const { controls, camera } = rig
   if (!controls || !camera || !list.length) return
-  const d = (dir ?? camera.position.clone().sub(controls.getTarget(new THREE.Vector3()))).normalize()
+  // Current direction from the orbit itself (camera.position would include the focal offset).
+  const d = (dir ?? controls.getPosition(new THREE.Vector3(), true).sub(controls.getTarget(new THREE.Vector3(), true))).normalize()
   const fit = fitStructures(list, d, camera, pad)
   if (!fit) return
   const p = fit.target.clone().addScaledVector(d, Math.max(fit.distance, 40))
@@ -110,12 +115,42 @@ export function flyToStructure(s: Structure) {
 
 export function setView(view: CameraView, transition = true) {
   const dir = viewDir(view)
+  const portrait = (rig.camera?.aspect ?? 1.5) < 1
   if (view === 'heart') {
-    flyTo(rig.structures.filter((s) => HEART_PARTS.includes(s.name)), dir, transition, 1.2)
+    // A bit more air on portrait phones, where the width is the tight side.
+    flyTo(rig.structures.filter((s) => HEART_PARTS.includes(s.name)), dir, transition, portrait ? 1.3 : 1.2)
     return
+  }
+  if (view === 'chest') {
+    // Hero framing on the heart and great vessels; the ghosted ribcage and lungs fill the space around
+    // them (on a portrait phone the ribcage may run off the sides so the heart stays big).
+    const hero = rig.structures.filter((s) => HEART_PARTS.includes(s.name) || GREAT_VESSELS.includes(s.name))
+    if (hero.length) {
+      flyTo(hero, dir, transition, portrait ? 1.5 : 1.62)
+      return
+    }
   }
   // A little air around the model for the overlays (preset chips on top, view buttons below).
   flyTo(framedStructures(), dir, transition, 1.12)
+}
+
+/** The view of the active preset ('home' once the user has customised the layers). */
+export function presetView(): CameraView {
+  const key = useAnat.getState().preset
+  return PRESETS.find((p) => p.key === key)?.view ?? 'home'
+}
+
+/**
+ * Slide the picture `left`/`up` by that many screen pixels without moving the orbit centre
+ * (camera-controls focal offset). Used while the selection card covers part of a small 3D view.
+ */
+export function shiftView(left: number, up: number) {
+  const { controls, camera, gl } = rig
+  if (!controls || !camera || !gl) return
+  // World size of one pixel at the distance the camera is heading to (a fly-to may be in progress).
+  const dist = controls.getPosition(new THREE.Vector3(), true).distanceTo(controls.getTarget(new THREE.Vector3(), true))
+  const mmPerPx = (2 * dist * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2))) / (gl.domElement.clientHeight || 1)
+  void controls.setFocalOffset(left * mmPerPx, up * mmPerPx, 0, !rig.reducedMotion)
 }
 
 /** Download a PNG of the current 3D view (without the gizmo), on the page's dark background. */

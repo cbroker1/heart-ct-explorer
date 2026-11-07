@@ -14,7 +14,7 @@ import { isGlassy, makeFresnelMaterial } from './materials'
 import { disposeStructures, getStructures, makeHelper, type Structure } from './meshes'
 import { shellOrder } from './meta'
 import { LabelProjector } from './labels'
-import { flyTo, flyToStructure, framedStructures, rig, setView, viewDir } from './rig'
+import { flyTo, flyToStructure, framedStructures, presetView, rig, setView, viewDir } from './rig'
 import { effectiveOpacity, useAnat, type HoverInfo } from './state'
 
 const damp = (a: number, b: number, rate: number, dt: number) => {
@@ -124,7 +124,8 @@ function CameraRig() {
 
 // ------------------------------------------------------------------ structures
 const hoverRimMat = makeFresnelMaterial(new THREE.Color('#38d6ff'), { pow: 2.4, gain: 0.42, base: 0.015 })
-const selRimMat = makeFresnelMaterial(new THREE.Color('#7fe3ff'), { pow: 2.4, gain: 0.7, base: 0.02 })
+// Selection: a glowing silhouette that leaves the structure's own colour readable inside it.
+const selRimMat = makeFresnelMaterial(new THREE.Color('#7fe3ff'), { pow: 3.4, gain: 0.6, base: 0.012 })
 const INTRO_ORDER: Record<string, number> = { bones: 0, lungs: 1, airways: 2, vessels: 3, heart: 4, abdomen: 2, muscle: 1, body: 0 }
 
 function StructuresView({ structures }: { structures: Structure[] }) {
@@ -189,7 +190,7 @@ function StructuresView({ structures }: { structures: Structure[] }) {
       s.anim.glow = damp(s.anim.glow, sel ? 0.1 + 0.05 * Math.sin(t * 3.4) : hov ? 0.2 : 0, 12, dt)
       m.emissiveIntensity = s.anim.glow
     })
-    selRimMat.uniforms.uGain.value = 0.62 + 0.22 * Math.sin(t * 3.4)
+    selRimMat.uniforms.uGain.value = 0.55 + 0.17 * Math.sin(t * 3.4)
   })
 
   return (
@@ -252,13 +253,15 @@ function Intro({ structures }: { structures: Structure[] }) {
       const aspectOk = !!el && el.clientHeight > 0 && !!rig.camera && Math.abs(rig.camera.aspect - el.clientWidth / el.clientHeight) < 0.01
       if ((!rig.controls || !rig.camera || !aspectOk) && tries++ < 120) { raf = requestAnimationFrame(go); return }
       if (!rig.controls || !rig.camera) return
-      if (rig.reducedMotion) setView('home', false)
+      // Land on the active preset's own view (the default Chest preset has a hero framing on the heart).
+      const view = presetView()
+      if (rig.reducedMotion) setView(view, false)
       else {
-        const dir = viewDir('home').applyAxisAngle(new THREE.Vector3(0, 1, 0), -0.95)
+        const dir = viewDir(view).applyAxisAngle(new THREE.Vector3(0, 1, 0), -0.95)
         dir.y += 0.35
         flyTo(framedStructures(), dir.normalize(), false, 2.1)
         rig.controls.smoothTime = 0.95
-        setView('home', true)
+        setView(view, true)
         timer = window.setTimeout(() => { if (rig.controls) rig.controls.smoothTime = 0.4 }, 2600)
       }
       useAnat.getState().set({ ready: true })

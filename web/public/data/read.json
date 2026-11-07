@@ -5,6 +5,7 @@
     "findingsExamined": 7,
     "skepticVotes": 21,
     "dismissed": 2,
+    "merged": 1,
     "calciumAdjudicators": 3,
     "imagesRendered": 1037,
     "agents": 32,
@@ -31,12 +32,12 @@
     {
       "n": 4,
       "severity": 1,
-      "text": "One tiny (\u22483 mm) solid micronodule in the left lower lobe, plus one or two even fainter specks that may be vessels seen end-on. Far below the 6 mm Fleischner threshold, so no follow-up is recommended for a low-risk person. Below the size the hospital's ClearRead AI reports."
+      "text": "One tiny (\u22483 mm) solid micronodule in the left lower lobe, plus one or two even fainter specks that may be vessels seen end-on. Far below the 6 mm Fleischner threshold, so no follow-up is recommended for a low-risk person. The hospital's ClearRead software flagged none; its report notes that additional small nodules may be present."
     },
     {
       "n": 5,
       "severity": 1,
-      "text": "Small Schmorl's nodes (disc imprints) in the T9 and T11 vertebrae, with borderline, sub-fracture (<20%) front-wedging of T9. Common and benign; only relevant if you have persistent mid-back pain."
+      "text": "Small Schmorl's nodes (disc imprints) in the T9 and T11 vertebrae. T9 is slightly front-wedged (\u224816-24% depending on the plane, right around the 20% cut-off for a mild compression deformity); with no acute signs it is most likely developmental or an old minor injury. Only relevant if you have persistent mid-back pain."
     },
     {
       "n": 6,
@@ -44,7 +45,7 @@
       "text": "Everything else checked is normal: pulmonary artery (\u224826 mm; PA:aorta \u22480.7), descending aorta, lymph nodes (none enlarged), lungs and airways (no emphysema on the reliable reconstruction, no inflammation or scarring), pleura, esophagus (no hiatal hernia), liver (\u224865 HU, no fatty liver), spleen, bone density (\u2248210 HU, healthy) and chest wall."
     }
   ],
-  "technique": "Non-contrast, low-dose cardiac CT (Siemens SOMATOM X.ceed, 5 Nov 2026), 'calcium scoring only' protocol. Prospectively ECG-triggered sequential (step-and-shoot) acquisition in 4 table steps of ~34 mm, joined at z \u2248 1717, 1751 and 1785 mm. 120 kV-equivalent, 0.25 s rotation, CTDIvol 2.1 mGy, DLP 31.4 mGy\u00b7cm, effective dose \u22480.44-0.82 mSv (about 2-3 months of natural background). Heart rate 82-88 bpm; images reconstructed at 76% of the R-R interval (diastole). Reviewed reconstructions: calcium series (3 mm / 1.5 mm, Sa36d), axial soft tissue and lung (3 mm), thin lung (1.5 mm / 0.75 mm), 10 mm lung MIP, ClearRead vessel-suppressed, and coronal/sagittal soft-tissue reformats.",
+  "technique": "Non-contrast, low-dose cardiac CT (Siemens SOMATOM X.ceed, 5 Nov 2026), 'calcium scoring only' protocol. Prospectively ECG-triggered sequential (step-and-shoot) acquisition in 4 table steps of ~34 mm, joined at z \u2248 1717, 1751 and 1785 mm. 120 kV-equivalent, 0.25 s rotation, CTDIvol 2.1 mGy, DLP 31.4 mGy\u00b7cm, effective dose \u22480.44-0.82 mSv (about 2-3 months of natural background). Heart rate 82-88 bpm; images reconstructed at 76% of the R-R interval (diastole). Reviewed reconstructions: calcium series (3 mm / 1.5 mm, Sa36d), axial soft tissue and lung (3 mm), thin lung (1.5 mm / 0.75 mm), 10 mm lung MIP, ClearRead vessel-suppressed, and coronal/sagittal soft-tissue reformats. Slice numbers in this report (k or #) count from 0 at the bottom (or patient-left / front) of each series; the slice viewer counts from 1 at the top, e.g. axial_st k33 = viewer slice 13 of 46.",
   "coverage": "13.8 cm of the chest, from about 8 mm above the carina down to about the T12 vertebra. Covered: the whole heart and pericardium, the ascending and descending aorta, the pulmonary arteries, roughly the lower 80% of the lungs, the mid/lower thoracic spine (\u2248T6-T11), ribs 4-11 partially, the liver dome, the top of the spleen and stomach. Not covered: the lung apices, aortic arch, upper mediastinum, thyroid, kidneys, adrenal glands and most of the abdomen, so nothing can be said about those.",
   "systems": [
     {
@@ -55,7 +56,7 @@
       "checked": [
         {
           "item": "Cardiothoracic ratio (axial, widest cardiac level)",
-          "result": "Normal: 0.39 at axial_st k=17 (z=1734.2), heart transverse 108.0 mm / inner thoracic 279.6 mm. Range 0.38-0.39 over k=15-18 (z 1728-1737); about 0.40 if the pericardial fat is included. Calipers visually verified (CTR_measurement_axial_st_k17.png). The AI 'heart' mask spills into the hilar pulmonary veins at z 1776 (spurious 115 mm width), so that level was excluded."
+          "result": "Normal: 0.39 at axial_st k=17 (z=1734.2), heart transverse 108.0 mm / inner thoracic 279.6 mm. Range 0.38-0.39 over k=15-18 (z 1728-1737); about 0.40 if the pericardial fat is included. Calipers visually verified. The AI 'heart' mask spills into the hilar pulmonary veins at z 1776 (spurious 115 mm width), so that level was excluded."
         },
         {
           "item": "Overall heart size / volume",
@@ -87,11 +88,11 @@
         },
         {
           "item": "Epicardial/pericardial fat",
-          "result": "Normal and modest: about 76 mL (74-79 mL across axial_st/calcium/thin_lung) of fat (-190 to -30 HU) inside the AI pericardial sac, excluding the heart and great vessels. Mean -83 to -88 HU. Normal distribution in the AV grooves, interventricular grooves and over the RV (epicardial_fat_overlay_axial_st.png). With a 3 mm margin outside the sac (some paracardial fat): 102-107 mL."
+          "result": "Normal and modest: about 76 mL (74-79 mL across axial_st/calcium/thin_lung) of fat (-190 to -30 HU) inside the AI pericardial sac, excluding the heart and great vessels. Mean -83 to -88 HU. Normal distribution in the AV grooves, interventricular grooves and over the RV. With a 3 mm margin outside the sac (some paracardial fat): 102-107 mL."
         },
         {
           "item": "Myocardium: focal fat (old infarct, RV fatty infiltration)",
-          "result": "None. A search for fat-density voxels at least 3 mm deep inside the heart masks found only mask-boundary epicardial fat (LV lateral border, right AV groove, AIVG, inferior surface), each checked visually (intracardiac_fat_candidates.png)."
+          "result": "None. A search for fat-density voxels at least 3 mm deep inside the heart masks found only mask-boundary epicardial fat (LV lateral border, right AV groove, AIVG, inferior surface), each checked visually."
         },
         {
           "item": "Myocardium: calcification / LV apical aneurysm / gross wall thickening",
@@ -107,7 +108,7 @@
         },
         {
           "item": "Incidental coronary calcium (scored by a separate team)",
-          "result": "None convincing; agrees with the pipeline Agatston 0. The pipeline 'review' candidates #22/#30/#32 at (6.6,-165.7,1722.6), (-2.1,-167.9,1723.0) and (-2.4,-176.6,1724.2) lie in the inferior LV wall inside the banding-artifact slab. About 0.9% of LV voxels there exceed 130 HU (0% at z 1740), and peaks are 150-174 HU on the sharp calcium kernel with no discrete focus, so they are most consistent with noise (calcium_review_candidates_z1723.png)."
+          "result": "None convincing; agrees with the pipeline Agatston 0. The pipeline 'review' candidates #22/#30/#32 at (6.6,-165.7,1722.6), (-2.1,-167.9,1723.0) and (-2.4,-176.6,1724.2) lie in the inferior LV wall inside the banding-artifact slab. About 0.9% of LV voxels there exceed 130 HU (0% at z 1740), and peaks are 150-174 HU on the sharp calcium kernel with no discrete focus, so they are most consistent with noise."
         },
         {
           "item": "Blood-pool attenuation (anemia hint) and aortic ring sign",
@@ -138,7 +139,7 @@
         {
           "name": "Cardiothoracic ratio (axial CT)",
           "value": "0.39 (0.38-0.39 over z 1728-1737; \u22480.40 incl. pericardial fat)",
-          "method": "axial_st k=17 (z=1734.2): max transverse heart width 108.0 mm (TS heart mask, visually verified) / inner thoracic width 279.6 mm (inner rib margins). Figure: CTR_measurement_axial_st_k17.png",
+          "method": "axial_st k=17 (z=1734.2): max transverse heart width 108.0 mm (TS heart mask, visually verified) / inner thoracic width 279.6 mm (inner rib margins). Figure:",
           "reference": "< 0.50 normal"
         },
         {
@@ -204,7 +205,7 @@
         {
           "name": "Left atrial AP diameter",
           "value": "36-37 mm (AI-mask max 31.5 mm)",
-          "method": "calcium series k=50/54 (z=1758.25/1764.25), x=-15, posterior aortic-root wall to posterior LA wall, smoothed. Figure: LA_AP_diameter_final.png",
+          "method": "calcium series k=50/54 (z=1758.25/1764.25), x=-15, posterior aortic-root wall to posterior LA wall, smoothed. Figure:",
           "reference": "< 40 mm (ASE men 30-40 mm)"
         },
         {
@@ -307,19 +308,19 @@
       "images": [
         {
           "src": "read/heart_overview_0.webp",
-          "caption": "heart overview 4panel"
+          "caption": "The heart in four views (soft-tissue window)"
         },
         {
           "src": "read/heart_overview_1.webp",
-          "caption": "CTR measurement axial st k17"
+          "caption": "Cardiothoracic ratio 0.39: heart width vs chest width"
         },
         {
           "src": "read/heart_overview_2.webp",
-          "caption": "epicardial fat overlay axial st"
+          "caption": "Epicardial fat (yellow) around the heart, \u224876 mL"
         },
         {
           "src": "read/heart_overview_3.webp",
-          "caption": "artifact stepbanding coronal sagittal"
+          "caption": "Table-step banding across the lower heart (an artifact, not disease)"
         }
       ]
     },
@@ -335,7 +336,7 @@
         },
         {
           "item": "Verification of radiologist caliper 36.1 mm (axial_st k33, z=1782.25)",
-          "result": "Confirmed within normal measurement variability. My shortest axial chord at k33 is 36.2 mm and the circle-equivalent is 37.3 mm (ellipse 37.9 x 36.9). Same level on calcium k66 gives 37.0 mm, thin_lung 37.3 mm, and the double-oblique 37.0 mm. Sagittal AP at z 1782 is 37.0 mm. His value matches the short axis at a level about 6 mm below the true maximum."
+          "result": "Confirmed within normal measurement variability. My shortest axial chord at k33 is 36.2 mm and the circle-equivalent is 37.3 mm (ellipse 37.9 x 36.9). Same level on calcium k66 gives 37.0 mm, thin_lung 37.3 mm, and the double-oblique 37.0 mm. Sagittal AP at z 1782 is 37.0 mm. The radiologist's value matches the short axis at a level about 6 mm below the true maximum."
         },
         {
           "item": "Ascending aorta measured on other series/planes",
@@ -552,13 +553,13 @@
         {
           "id": "vessels-0",
           "title": "Ascending aorta high-normal size (about 37-38 mm), not dilated",
-          "description": "The ascending aorta measures 37-38 mm outer-to-outer at its widest point, at the mid-ascending level where the right PA crosses behind it. The double-oblique perpendicular circle-equivalent is 38.0 mm (ellipse 38.8 x 37.1) with the 0 HU edge, and 39.0 mm with the -25 HU edge. Axial, sagittal and coronal measurements on axial_st, calcium, thin_lung, sag_st and cor_st all fall within 36-39.5 mm. At the radiologist's level (axial_st k33) my short axis is 36.2 mm, matching his 36.1 mm caliper; the true maximum is about 1-2 mm larger and about 6 mm higher. The contour is smooth and round, with no calcification or wall abnormality. The root and sinuses cannot be reliably measured without contrast, and BSA indexing is not possible because height and weight are not available. In context: large non-contrast cardiac-CT reference cohorts (Framingham; Wolak et al. 2008) report mean ascending aortic diameters of about 32-34 mm in adult men. Upper limits of normal are roughly 38-41 mm overall and somewhat lower in men under about 45, because the aorta widens with age. So 36-38 mm is at the upper end of normal for a 37-year-old man (roughly the top 5-15%, depending on body size). It is below the common 40 mm cutoff for 'dilated' and far below the \u226545 mm aneurysm and ~50-55 mm intervention thresholds.",
+          "description": "The ascending aorta measures 37-38 mm outer-to-outer at its widest point, at the mid-ascending level where the right PA crosses behind it. The double-oblique perpendicular circle-equivalent is 38.0 mm (ellipse 38.8 x 37.1) with the 0 HU edge, and 39.0 mm with the -25 HU edge. Axial, sagittal and coronal measurements on axial_st, calcium, thin_lung, sag_st and cor_st all fall within 36-39.5 mm. At the radiologist's level (axial_st k33) my short axis is 36.2 mm, matching the radiologist's 36.1 mm caliper; the true maximum is about 1-2 mm larger and about 6 mm higher. The contour is smooth and round, with no calcification or wall abnormality. The root and sinuses cannot be reliably measured without contrast, and BSA indexing is not possible because height and weight are not available. In context: large non-contrast cardiac-CT reference cohorts (Framingham; Wolak et al. 2008) report mean ascending aortic diameters of about 32-34 mm in adult men. Upper limits of normal are roughly 38-41 mm overall and somewhat lower in men under about 45, because the aorta widens with age. So 36-38 mm is at the upper end of normal for a 37-year-old man (around or a little above the 90th percentile in non-contrast CT cohorts, depending on body size; height and weight are unknown). It is below the common 40 mm cutoff for 'dilated' and far below the \u226545 mm aneurysm and ~50-55 mm intervention thresholds.",
           "plainEnglish": "The main artery leaving your heart measures about 37-38 mm across at its widest, which matches the radiologist's 36 mm reading. That is at the upper end of normal for a man your age but below the 40 mm level where doctors start calling it enlarged, so it is not a problem in itself. It's a useful baseline number to share with your doctor, especially if anyone in your family has had an aortic aneurysm or dissection, or if you've been told you have a heart murmur or high blood pressure.",
           "location": "Mid ascending aorta at the level of the right pulmonary artery crossing (z 1785-1791); radiologist's caliper slice z 1782.25",
           "category": "normal-variant",
           "severity": 1,
           "confidence": 0.85,
-          "recommendation": "Guidelines do not call for imaging follow-up below 40 mm. Share the number with his doctor as a baseline and keep blood pressure well controlled. If there is a family history of aortic aneurysm or dissection or sudden unexplained death, a heart murmur, or Marfan-type features, a transthoracic echocardiogram would be reasonable: a bicuspid aortic valve is the most common cause of a large ascending aorta in young men, and an echo also measures the aortic root, which this scan cannot. Otherwise his doctor may choose to re-measure in several years.",
+          "recommendation": "Guidelines do not call for imaging follow-up below 40 mm. Share the number with your doctor as a baseline and keep your blood pressure well controlled. If anyone in your family has had an aortic aneurysm, a dissection or a sudden unexplained death, or if you have been told you have a heart murmur or Marfan-type features, a heart ultrasound (echocardiogram) would be reasonable: a bicuspid aortic valve is the most common cause of a larger ascending aorta in young men, and an echo also measures the aortic root, which this scan cannot. Otherwise your doctor may simply re-measure it in a few years.",
           "measurements": "Double-oblique max circle-equivalent 38.0 mm (38.8 x 37.1) at z 1788; 39.0 mm with -25 HU edge. At z 1782.25 (axial_st k33): shortest chord 36.2, circle-equivalent 37.3, double-oblique 37.0 mm (radiologist 36.1). Overall range across methods 36-39.5 mm. Proximal tubular segment about 36 mm; root not measurable.",
           "verification": {
             "status": "confirmed",
@@ -571,7 +572,7 @@
               {
                 "lens": "criteria",
                 "refuted": false,
-                "note": "I could not refute this finding. I re-measured it with my own code: first-descent edges at the local half-maximum, robust ellipse and circle fits, and visual QA of every slice used. I used my own centerline and three geometries (axial, double-oblique, and sagittal chords perpendicular to the vessel axis) on calcium, axial_st and sag_st. All agree that the ascending aorta is largest at the RPA level (z 1785-1791):\n- 37.8-38.3 mm with half-max or 0 HU edges.\n- 38.5-39.3 mm with generous edges (-25 HU, or half-max out to the lung).\n- Double-oblique at z 1788.25: 38.8 x 37.4 mm, circle-equivalent 38.1; short axis about 37.4 mm.\n\nAt the radiologist's slice (axial_st k33, z 1782.25) I get a 36.6-37.0 mm short axis and 37.0-37.4 mm circle-equivalent. His 36.1 mm is within normal reader-to-reader variation (about \u00b12 mm), and his slice sits about 4-6 mm below the standard RPA level, where the vessel is about 1 mm wider. Above z 1795 the true perpendicular diameter tapers (36 mm at 1800, about 32-35 mm by 1806-1810). Axial and plain AP chords there read 39-40 mm, but only because the vessel tilts 10-33\u00b0 backward into the arch.\n\n**Measurement:** A physically unbiased edge probably gives about 38.5 mm. The reviewer's headline \"37-38 mm\" is slightly low, but they disclosed 39.0 mm for the -25 HU edge. No method reaches 40 mm.\n\n**Criteria:** These are diastolic (76% R-R), non-contrast, outer-wall-to-outer-wall numbers, so the right comparison is the non-contrast cardiac-CT cohorts (Framingham, Wolak 2008, Mao 2008, Heinz Nixdorf Recall). Those report men's means of roughly 32-36 mm with an SD of about 3-4 mm, rising about 1 mm per decade. These cohort figures are recalled from memory and approximate. On that basis, about 38-38.5 mm puts a 37-year-old man of average size at roughly the 90th-96th percentile (top 5-10%). That is slightly narrower than the reviewer's \"top 5-15%\". If he is small (BSA under about 1.8 m\u00b2) it could be above the age- and size-specific upper limit. Height and weight are unknown, so it can't be indexed.\n\nThe aorta is below the 40 mm adult \"dilated\" convention and far below aneurysm and surgery thresholds, and no guideline surveillance applies under 40 mm. Severity 1 and the \"high-normal / normal-variant\" label are appropriate. I'd describe it as \"borderline high-normal for age\" rather than comfortably normal.\n\n**Caveats for any future comparison:**\n- A systolic-gated or ungated CT angiogram may read 1-3 mm larger in a young, compliant aorta; it could reach about 40 mm with no real growth.\n- An echocardiogram (leading or inner edge) usually reads 2-4 mm smaller.\n- Compare at the RPA level using the same method and cardiac phase.\n\n**Other checks:**\n- The root and sinuses can't be measured without contrast; I agree. Sagittal and coronal views show no disproportionate sinus bulge or tulip-bulb (Marfan-type) shape.\n- The contour is smooth and round, with no motion-related double contour.\n- Wall calcification: none meaningful. One equivocal sub-millimetre faint dot sits at the right-lateral outer wall at z 1788-1791, LPS about (-44.3, -188.6, 1789): peak 145-147 HU on calcium, 172 HU on axial_st, under 1 mm\u00b2 above 130 HU, so not Agatston-scorable. The lumen control produced no blob above 130 HU. It is clinically irrelevant and is distinct from the reviewer's separate paracaval calcified focus about 10 mm away.\n\nThe recommendation is reasonable as written: share the number as a baseline, and consider an echo if there is a family history, a murmur or Marfan-type features, since an echo also measures the root and shows the valve."
+                "note": "I could not refute this finding. I re-measured it with my own code: first-descent edges at the local half-maximum, robust ellipse and circle fits, and visual QA of every slice used. I used my own centerline and three geometries (axial, double-oblique, and sagittal chords perpendicular to the vessel axis) on calcium, axial_st and sag_st. All agree that the ascending aorta is largest at the RPA level (z 1785-1791):\n- 37.8-38.3 mm with half-max or 0 HU edges.\n- 38.5-39.3 mm with generous edges (-25 HU, or half-max out to the lung).\n- Double-oblique at z 1788.25: 38.8 x 37.4 mm, circle-equivalent 38.1; short axis about 37.4 mm.\n\nAt the radiologist's slice (axial_st k33, z 1782.25) I get a 36.6-37.0 mm short axis and 37.0-37.4 mm circle-equivalent. The radiologist's 36.1 mm is within normal reader-to-reader variation (about \u00b12 mm), and that slice sits about 4-6 mm below the standard RPA level, where the vessel is about 1 mm wider. Above z 1795 the true perpendicular diameter tapers (36 mm at 1800, about 32-35 mm by 1806-1810). Axial and plain AP chords there read 39-40 mm, but only because the vessel tilts 10-33\u00b0 backward into the arch.\n\n**Measurement:** A physically unbiased edge probably gives about 38.5 mm. The reviewer's headline \"37-38 mm\" is slightly low, but they disclosed 39.0 mm for the -25 HU edge. No method reaches 40 mm.\n\n**Criteria:** These are diastolic (76% R-R), non-contrast, outer-wall-to-outer-wall numbers, so the right comparison is the non-contrast cardiac-CT cohorts (Framingham, Wolak 2008, Mao 2008, Heinz Nixdorf Recall). Those report men's means of roughly 32-36 mm with an SD of about 3-4 mm, rising about 1 mm per decade. These cohort figures are recalled from memory and approximate. On that basis, about 38-38.5 mm puts a 37-year-old man of average size at roughly the 90th-96th percentile (top 5-10%). That is slightly narrower than the reviewer's \"top 5-15%\". If he is small (BSA under about 1.8 m\u00b2) it could be above the age- and size-specific upper limit. Height and weight are unknown, so it can't be indexed.\n\nThe aorta is below the 40 mm adult \"dilated\" convention and far below aneurysm and surgery thresholds, and no guideline surveillance applies under 40 mm. Severity 1 and the \"high-normal / normal-variant\" label are appropriate. I'd describe it as \"borderline high-normal for age\" rather than comfortably normal.\n\n**Caveats for any future comparison:**\n- A systolic-gated or ungated CT angiogram may read 1-3 mm larger in a young, compliant aorta; it could reach about 40 mm with no real growth.\n- An echocardiogram (leading or inner edge) usually reads 2-4 mm smaller.\n- Compare at the RPA level using the same method and cardiac phase.\n\n**Other checks:**\n- The root and sinuses can't be measured without contrast; I agree. Sagittal and coronal views show no disproportionate sinus bulge or tulip-bulb (Marfan-type) shape.\n- The contour is smooth and round, with no motion-related double contour.\n- Wall calcification: none meaningful. One equivocal sub-millimetre faint dot sits at the right-lateral outer wall at z 1788-1791, LPS about (-44.3, -188.6, 1789): peak 145-147 HU on calcium, 172 HU on axial_st, under 1 mm\u00b2 above 130 HU, so not Agatston-scorable. The lumen control produced no blob above 130 HU. It is clinically irrelevant and is distinct from the reviewer's separate paracaval calcified focus about 10 mm away.\n\nThe recommendation is reasonable as written: share the number as a baseline, and consider an echo if there is a family history, a murmur or Marfan-type features, since an echo also measures the root and shows the valve."
               },
               {
                 "lens": "relevance",
@@ -589,14 +590,14 @@
         },
         {
           "id": "vessels-1",
-          "title": "Tiny (~3 mm) calcified focus at right paramediastinal/hilar border, lateral to the SVC",
+          "title": "Tiny (~3 mm) dense dot at the right mediastinal border (probably a small calcified node)",
           "description": "A well-defined, round, roughly 3 mm (2-4 mm) hyperdense focus sits at the right lateral mediastinal border, where the lung meets the mediastinum. It lies just lateral to and separate from the SVC (thin fat gap), in front of the right PA/right hilum, and abuts the medial right upper lobe. It is seen on axial_st k35-37 (peak 190 HU, mean about 150 HU in a 1.5 mm ROI, against blood at 58 \u00b1 18 HU) and on calcium k71-72 (131-139 HU on the smooth Sa36d kernel). Because a small soft-tissue nodule next to lung would read lower, not higher, from partial volume, this indicates real calcification. The very high values on thin_lung (about 1000 HU) are not used, since that kernel's noise SD is about 257 HU. It is not part of the aortic or SVC wall. The most likely explanation is a calcified granuloma or a small calcified hilar lymph node (an old healed granulomatous infection); pericardial calcification is less likely.",
-          "plainEnglish": "There is a tiny speck of calcium, about 3 mm, next to the large vein on the right side of the chest. This is almost always an old, healed scar, such as a lymph node or small lung spot that calcified after a past and often unnoticed infection. It is harmless and needs no follow-up.",
+          "plainEnglish": "There is a tiny dense dot, about 3 mm, beside the large vein on the right side of the chest. It may be a small lymph node that calcified after an old, often unnoticed infection, or a small node that just looks dense with this image filter. Either way it is harmless and needs no follow-up.",
           "location": "Right paramediastinal / anterior right hilar border, lateral to the SVC, anterior to the right pulmonary artery",
           "category": "benign-incidental",
           "severity": 0,
           "confidence": 0.75,
-          "recommendation": "No follow-up needed: a small calcified focus has a benign pattern. The lung and mediastinum reviewers should be aware of it so it is not double-counted; the ClearRead CAD likely ignored it because it is calcified and juxtamediastinal.",
+          "recommendation": "No follow-up needed: a tiny dense dot like this has a benign pattern.",
           "measurements": "About 3 mm in-plane (3.4 mm at >130 HU on axial_st; 2.2 x 1.8 mm at >100 HU on calcium series); seen on 3 axial_st slices (z 1788-1794). Peak 190 HU (axial_st k36), 139 HU (calcium k71-72).",
           "verification": {
             "status": "unverified",
@@ -612,19 +613,19 @@
       "images": [
         {
           "src": "read/vessels_overview_0.webp",
-          "caption": "AscAo summary axial doubleoblique sagittal"
+          "caption": "Ascending aorta: 36 mm at the radiologist's level, 38 mm at its widest"
         },
         {
           "src": "read/vessels_overview_1.webp",
-          "caption": "AscAo diameter vs level plot"
+          "caption": "Ascending-aorta diameter at each height"
         },
         {
           "src": "read/vessels_overview_2.webp",
-          "caption": "PA summary axial MPA oblique coronal RPA"
+          "caption": "Main pulmonary artery \u224826 mm (normal < 29 mm)"
         },
         {
           "src": "read/vessels_overview_3.webp",
-          "caption": "DescAo edges axial st every4"
+          "caption": "Descending aorta, measured every 12 mm (normal taper)"
         }
       ]
     },
@@ -632,11 +633,11 @@
       "key": "lung_nodules",
       "title": "Lung nodules",
       "status": "minor",
-      "summary": "Within the imaged lung (from the posterior costophrenic recesses up to ~5-8 mm above the carina; the apices are not imaged) there is no pulmonary nodule of 4 mm or larger, no lung or hilar mass, and no ground-glass, part-solid, juxtapleural or perifissural nodule. One tiny (~3 mm) solid, smooth, non-calcified micronodule in the left lower lobe base was confirmed by the skeptic panel. One or two even fainter ~2 mm dots may be micronodules or vessels seen end-on. All are far below the Fleischner 2017 follow-up threshold (6 mm), so no follow-up is needed for a low-risk 37-year-old. The large round shapes at the lung bases on 3 mm and MIP images are partial volume of the diaphragm domes, not lesions. This agrees with ClearRead CAD (0 reportable nodules); these specks are below the size CAD is designed to flag.",
+      "summary": "Within the imaged lung (from the posterior costophrenic recesses up to about 8 mm above the carina; the apices are not imaged) there is no pulmonary nodule of 4 mm or larger, no lung or hilar mass, and no ground-glass, part-solid, juxtapleural or perifissural nodule. One tiny (~3 mm) solid, smooth, non-calcified micronodule in the left lower lobe base was confirmed by the skeptic panel. One or two even fainter ~2 mm dots may be micronodules or vessels seen end-on. All are far below the Fleischner 2017 follow-up threshold (6 mm), so no follow-up is needed for a low-risk 37-year-old. The large round shapes at the lung bases on 3 mm and MIP images are partial volume of the diaphragm domes, not lesions. This agrees with ClearRead CAD (0 reportable nodules); these specks are below the size CAD is designed to flag.",
       "checked": [
         {
           "item": "10 mm MIP slabs (axial_lung_mip), 17 slabs every 8 mm covering z 1682-1818, both lungs at ~4.8 px/mm",
-          "result": "No nodule >=4 mm or mass. Dots are craniocaudal vessels seen end-on, apart from the three tiny micronodules below."
+          "result": "No nodule >=4 mm or mass. Dots are craniocaudal vessels seen end-on, apart from one tiny ~3 mm micronodule and up to two fainter ~2 mm specks described below."
         },
         {
           "item": "All 45 non-empty 3 mm axial lung-kernel slices (axial_lung k0-44), slice by slice",
@@ -695,7 +696,7 @@
           "result": "No nodule; normal vessels."
         },
         {
-          "item": "Juxtacardiac, paravertebral and azygoesophageal lung",
+          "item": "Juxtacardiac, paravertebral and azygesophageal lung",
           "result": "No nodule. Dots tracked through slices are continuous vertical vessels."
         },
         {
@@ -708,7 +709,7 @@
         },
         {
           "item": "Concordance with ClearRead CT CAD (0 nodules)",
-          "result": "Concordant for actionable nodules. The three micronodules are 2-3 mm, below typical CAD reporting thresholds."
+          "result": "Concordant for actionable nodules. The one ~3 mm micronodule and up to two fainter ~2 mm specks are below the size this CAD report flags (its report notes that additional small nodules may be present)."
         }
       ],
       "measurements": [
@@ -768,7 +769,7 @@
         },
         {
           "name": "Craniocaudal lung coverage",
-          "value": "z 1682.5-1819.0 mm (136.5 mm); carina at z ~1814, so the top of the scan is ~5 mm above the carina",
+          "value": "z 1682.5-1819.0 mm (136.5 mm); carina at z ~1814, so the top of the scan is about 8 mm above the carina",
           "method": "Thin_lung axial review of airway bifurcation",
           "reference": "A full chest CT covers apices to costophrenic angles (~25-30 cm)"
         },
@@ -880,19 +881,19 @@
       "images": [
         {
           "src": "read/lung_nodules_overview_0.webp",
-          "caption": "micronodules L0 L7 L10 zoom"
+          "caption": "The ~3 mm micronodule (top row) and two fainter specks, in three planes and series"
         },
         {
           "src": "read/lung_nodules_overview_1.webp",
-          "caption": "global crvs coronal MIP annotated"
+          "caption": "Vessel-suppressed lungs, coronal projection: no nodule \u2265 4 mm"
         },
         {
           "src": "read/lung_nodules_overview_2.webp",
-          "caption": "left dome partial volume check"
+          "caption": "A 'round lesion' that is really the top of the diaphragm (partial volume)"
         },
         {
           "src": "read/lung_nodules_overview_3.webp",
-          "caption": "coverage coronal through carina"
+          "caption": "Scan coverage: from about 8 mm above the carina down"
         }
       ]
     },
@@ -952,7 +953,7 @@
         },
         {
           "item": "Trachea - patency, shape, saber-sheath",
-          "result": "Only the last ~5-6 mm above the carina is imaged (thin_lung #175-182, axial_st #44). Lumen clear and oval: 21.6 mm (LR) x 19.4 mm (AP), area 329 mm2 at z 1819.0, tracheal index 1.12, so no saber-sheath deformity and no narrowing. Cartilage not calcified (max 168 HU, bone window)."
+          "result": "Only the last ~8 mm of trachea above the carina is imaged (thin_lung #175-182, axial_st #44). Lumen clear and oval: 21.6 mm (LR) x 19.4 mm (AP), area 329 mm2 at z 1819.0, tracheal index 1.12, so no saber-sheath deformity and no narrowing. Cartilage not calcified (max 168 HU, bone window)."
         },
         {
           "item": "Carina and main bronchi",
@@ -1004,7 +1005,7 @@
         },
         {
           "item": "Diaphragm contour",
-          "result": "Smooth domes; right apex ~z 1728-1730 mm (liver top 1727.5), left ~z 1719-1720 mm, so the right is ~1 cm higher (normal). No eventration or focal bulge. Oesophagus passes normally through the hiatus with a subdiaphragmatic stomach; no hiatal hernia in this limited view. Dome tops are artificially flattened by the step-junction artifact."
+          "result": "Smooth domes; right apex ~z 1728-1730 mm (liver top 1727.5), left ~z 1719-1720 mm, so the right is ~1 cm higher (normal). No eventration or focal bulge. Esophagus passes normally through the hiatus with a subdiaphragmatic stomach; no hiatal hernia in this limited view. Dome tops are artificially flattened by the step-junction artifact."
         },
         {
           "item": "Image quality / artifacts",
@@ -1081,7 +1082,7 @@
         {
           "name": "Lobe volumes within the scan (TotalSegmentator v2)",
           "value": "RUL 410 mL (truncated) | RML 461 mL | RLL 926 mL | LUL 711 mL (truncated) | LLL 978 mL; right 1.80 L, left 1.69 L, total 3.49 L (ClearRead: R 1.9 L, L 1.8 L)",
-          "method": "rt.structure_volumes()",
+          "method": "AI segmentation volumes",
           "reference": "Not comparable with total-lung or lobar reference values, because the apices and upper parts of the upper lobes lie outside the scan"
         },
         {
@@ -1102,7 +1103,7 @@
           "id": "lung_parenchyma-0",
           "title": "Sequential step-junction artifact at the diaphragm domes mimicking focal lucency",
           "description": "On sagittal and coronal soft-kernel reformats, a perfectly straight horizontal dark band runs across both lung bases along the tops of the hemidiaphragms at z ~1716-1719 mm, and the dome tops look artificially flattened. On axial slices it shows as a dark halo around the tangentially cut domes. The band coincides with a table-step junction of the 4-step prospectively ECG-triggered acquisition (stack banding is also visible through the heart). It produces the lowest regional lung densities in the exam (8-mm regional means -946 to -960 HU in the anterior RML at axial_st #12-13, versus a minimum of -938 HU elsewhere) and the larger LAA-950 'clusters': a connected ~32 cm3 non-dependent anterior RML cluster and a 1.3 cm3 cluster at the medial LLL base, LPS (44.7, -180.6, 1715), axial_st #9-11. RML LAA-950 is 20.7% within slices #9-15 versus 5.0% in all other RML slices. It has no wall and no lobular or segmental margin, vessels pass through it normally, and it follows the acquisition plane rather than anatomy. It is therefore an artifact, not emphysema, air trapping or a bulla.",
-          "plainEnglish": "This kind of heart scan is taken in four 'steps', one heartbeat apart. Where two steps meet, right at the top of the diaphragm, the picture has a thin dark seam. A computer program could read it as a patch of over-inflated or damaged lung, but it is a technical artifact, not a lung problem.",
+          "plainEnglish": "This kind of heart scan is taken in four 'steps', fired on every second heartbeat. Where two steps meet, right at the top of the diaphragm, the picture has a thin dark seam. A computer program could read it as a patch of over-inflated or damaged lung, but it is a technical artifact, not a lung problem.",
           "location": "Both lung bases immediately above the hemidiaphragm domes; most conspicuous in the anterior right middle lobe and medial left lower lobe base",
           "category": "artifact",
           "severity": 0,
@@ -1166,19 +1167,19 @@
       "images": [
         {
           "src": "read/lung_parenchyma_overview_0.webp",
-          "caption": "overview representative axial lung"
+          "caption": "Representative lung windows: clear lungs"
         },
         {
           "src": "read/lung_parenchyma_overview_1.webp",
-          "caption": "laa950 kernel noise comparison"
+          "caption": "Why the sharp lung images fake 'emphysema': image noise by reconstruction"
         },
         {
           "src": "read/lung_parenchyma_overview_2.webp",
-          "caption": "lll lucency sag cor"
+          "caption": "Apparent lucency at the lung base is a step-junction artifact"
         },
         {
           "src": "read/lung_parenchyma_overview_3.webp",
-          "caption": "airway central axial thin lung zoom"
+          "caption": "Central airways: open, thin-walled"
         }
       ]
     },
@@ -1186,11 +1187,11 @@
       "key": "mediastinum",
       "title": "Mediastinum, hila & esophagus",
       "status": "normal",
-      "summary": "Within the limits of this non-contrast, low-dose, partial-coverage calcium-score CT, the mediastinum, hila and esophagus look normal. No lymph node reaches the enlargement threshold: the few discrete nodes I could see are about 6 mm or less in short axis (subcarinal about 10 x 6 mm, left tracheobronchial 7 x 6 mm, paraesophageal 9 x 6 mm), and none is calcified. The prevascular space contains normal fatty-involuted thymus (mean -78 to -94 HU) with no mass, and there is no mediastinal cyst, lipomatosis or free air. The esophagus is collapsed and normal in caliber, with a smooth symmetric wall (5-6 mm only at the distal sphincter segment) and only a normal trace of intraluminal air. There is no air-fluid level, and the GE junction sits at or below the diaphragmatic hiatus, so there is no hiatal hernia. The trachea is midline, the descending aorta is on the left (consistent with a left arch, which is above the scan), the azygos vein is normal (8-10 mm) and the azygoesophageal recess is normally concave. Note that the scan starts only about 8 mm above the carina, not about 3 cm as stated in the task, so the upper mediastinum, aortic arch and most paratracheal stations were not imaged.",
+      "summary": "Within the limits of this non-contrast, low-dose, partial-coverage calcium-score CT, the mediastinum, hila and esophagus look normal. No lymph node reaches the enlargement threshold: the few discrete nodes I could see are about 6 mm or less in short axis (subcarinal about 10 x 6 mm, left tracheobronchial 7 x 6 mm, paraesophageal 9 x 6 mm), and none is calcified. The prevascular space contains normal fatty-involuted thymus (mean -78 to -94 HU) with no mass, and there is no mediastinal cyst, lipomatosis or free air. The esophagus is collapsed and normal in caliber, with a smooth symmetric wall (5-6 mm only at the distal sphincter segment) and only a normal trace of intraluminal air. There is no air-fluid level, and the GE junction sits at or below the diaphragmatic hiatus, so there is no hiatal hernia. The trachea is midline, the descending aorta is on the left (consistent with a left arch, which is above the scan), the azygos vein is normal (8-10 mm) and the azygesophageal recess is normally concave. The scan starts only about 8 mm above the carina, so the upper mediastinum, aortic arch and most paratracheal stations were not imaged.",
       "checked": [
         {
           "item": "Coverage / carina level",
-          "result": "The carina (airway split on thin_lung) is at LPS z of about 1810.5 mm and the scan top is z 1819.0, so only about 8 mm of distal trachea is imaged, not the ~3 cm stated in the task. The aortic arch, upper paratracheal (2R/2L, upper 4R/4L), thyroid, upper thymus and supraclavicular regions are not covered. axial_st #44 (z 1815.25) is just above the carina, and axial_st #45 is empty padding."
+          "result": "The carina (airway split on thin_lung) is at LPS z of about 1810.5 mm and the scan top is z 1819.0, so only about 8 mm of distal trachea is imaged. The aortic arch, upper paratracheal (2R/2L, upper 4R/4L), thyroid, upper thymus and supraclavicular regions are not covered. axial_st #44 (z 1815.25) is just above the carina, and axial_st #45 is empty padding."
         },
         {
           "item": "Lower paratracheal / tracheobronchial nodes (4R/10R, 4L/10L) - imaged portion only",
@@ -1273,8 +1274,8 @@
           "result": "Left-sided arch inferred from the descending aorta running left of the spine through all covered levels. The arch itself is above the scan."
         },
         {
-          "item": "Azygos vein and azygoesophageal recess",
-          "result": "The azygos measures 8-10 mm through the mid-thorax and the arch is about 9 mm, both normal. The azygoesophageal recess is concave with lung extending medially on lung window (axial_lung #40-#12), with no convex bulge."
+          "item": "Azygos vein and azygesophageal recess",
+          "result": "The azygos measures 8-10 mm through the mid-thorax and the arch is about 9 mm, both normal. The azygesophageal recess is concave with lung extending medially on lung window (axial_lung #40-#12), with no convex bulge."
         },
         {
           "item": "SVC",
@@ -1290,7 +1291,7 @@
           "name": "Carina z-level vs top of coverage",
           "value": "Carina z ~1810.5 mm; scan top z 1819.0 mm (~8 mm of trachea above the carina imaged)",
           "method": "Connected-component split of lung_airways on thin_lung slices (one lumen at z 1811.5, two at z 1810.0), confirmed on coronal lung window",
-          "reference": "Task header assumed ~3 cm above the carina; actual coverage is less"
+          "reference": "Coverage starts about 8 mm above the carina"
         },
         {
           "name": "Subcarinal (station 7) node",
@@ -1373,7 +1374,7 @@
         {
           "name": "SVC caliber",
           "value": "Equivalent diameter 15.4 mm (12.9 x 19.9 mm) at axial_st #44",
-          "method": "rt.diameters(superior_vena_cava)",
+          "method": "AI mask cross-section",
           "reference": "Normal about 15-25 mm"
         },
         {
@@ -1387,19 +1388,19 @@
       "images": [
         {
           "src": "read/mediastinum_overview_0.webp",
-          "caption": "40 KEY mediastinum labeled levels"
+          "caption": "Mediastinum at key levels, labelled"
         },
         {
           "src": "read/mediastinum_overview_1.webp",
-          "caption": "32 subcarinal calcium series Sa36d"
+          "caption": "Subcarinal node \u22486 mm short axis (normal)"
         },
         {
           "src": "read/mediastinum_overview_2.webp",
-          "caption": "28 esophagus straightened CPR"
+          "caption": "The esophagus, straightened: normal calibre and wall"
         },
         {
           "src": "read/mediastinum_overview_3.webp",
-          "caption": "13 gej cor st y-166 to -148"
+          "caption": "Gastro-esophageal junction: no hiatal hernia"
         }
       ]
     },
@@ -1471,7 +1472,7 @@
         },
         {
           "item": "Left ribs 7 and 8",
-          "result": "Probable old healed fractures with ~2 mm inferior-cortex step-off (see findings)."
+          "result": "Apparent ~2 mm step in the lower cortex of both ribs at the same height, just above the \u22481751 mm table-step join. The skeptic panel (2 of 3) traced it to a seam artifact: not a fracture."
         },
         {
           "item": "Rib variants (bifid, fused, cervical rib)",
@@ -1511,7 +1512,7 @@
         },
         {
           "item": "Step-and-shoot seams / artifacts",
-          "result": "Thin-series acquisition boundaries at z~1705.4, 1740.0, 1774.4 mm (DICOM AcquisitionTime); no misregistration affecting bone; rib findings lie mid-stack and Schmorl's nodes are seen on both sides of the seams. Top slice (index 45, z=1818.25) of axial_st/axial_lung is blank padding."
+          "result": "Image-based table-step joins at z \u22481717, 1751 and 1785 mm. The apparent rib 'step-offs' sit just above the 1751 mm join (seam artifact). The Schmorl's nodes are seen on both sides of the joins, so they are real. Top slice of axial_st/axial_lung (z=1818.25) is blank scanner padding."
         },
         {
           "item": "Topograms (AP and lateral scouts)",
@@ -1635,12 +1636,12 @@
           "id": "bones-1",
           "title": "T9 inferior-endplate Schmorl's node with borderline (<20%) anterior wedging",
           "description": "Corticated, dome-shaped central depression of the T9 (presumed) inferior endplate, ~9 mm transverse x 12 mm AP x 6 mm deep (apex z~1744.5), with a sclerotic rim and a ~3 mm dense ossific/calcific fleck at its anterior margin in the anterior annulus (z~1736.5-1738.8). Seen on sag_st #94-#99, cor_st #96-#98, axial_st #18-#20 and thin_lung #77-#80. T9 anterior height 16.7-17.5 mm vs posterior 20-21 mm (Ha/Hp 0.82-0.84 across sagittal planes, ~16-18% anterior reduction, wedge ~5.8 deg; neighbours T8 0.91, T10 0.95). This is below the 20% Genant threshold (grade 0 / borderline); the anterior cortex is smooth without buckling and there is no fracture line. Most consistent with a chronic Schmorl's node (intravertebral disc herniation) with mild developmental/physiologic wedging; a remote minor endplate injury cannot be fully excluded, but nothing looks acute.",
-          "plainEnglish": "In one mid-back vertebra (T9) the disc has made a small dent in the bone's lower surface, called a Schmorl's node. These are very common and usually cause no symptoms. The same vertebra is slightly lower at the front than at the back, but by less than the amount doctors use to call it a compression fracture.",
+          "plainEnglish": "In one mid-back vertebra (T9) the disc has made a small dent in the bone's lower surface, called a Schmorl's node. These are very common and usually cause no symptoms. The same vertebra is slightly lower at the front than at the back, right around the 20% line radiologists use for a mild compression deformity; with an old-looking node and no signs of a recent injury, it is most likely developmental or an old minor injury.",
           "location": "T9 vertebral body, inferior endplate, central (presumed level)",
           "category": "benign-incidental",
           "severity": 1,
           "confidence": 0.8,
-          "recommendation": "No action needed. Only relevant if he has persistent mid-back pain, in which case his doctor can correlate.",
+          "recommendation": "No action needed. Only relevant if you have persistent mid-back pain, in which case your doctor can correlate.",
           "measurements": "Node ~9 x 12 x 6 mm; T9 Ha/Hm/Hp 16.7/15.1/20.5 mm (Ha/Hp 0.82; 0.82-0.84 across planes); wedge ~5.8 deg; anterior fleck ~3 mm.",
           "verification": {
             "status": "confirmed",
@@ -1648,7 +1649,7 @@
               {
                 "lens": "artifact",
                 "refuted": false,
-                "note": "I could not refute this. The T9 (presumed) inferior-endplate lesion is a real, old-looking Schmorl's node. It is not an artifact or a normal variant.\n\n1. **Seen in every reconstruction.** It shows up in five separate reconstructions with the same 3D shape: sag_st #94-#99, cor_st #95-#98, axial_st #18-#20, thin_lung #74-#81 plus my own thin_lung sagittal/coronal reformats, and the calcium series.\n2. **Its shape.** It is one central, steep-walled, tented dip in the endplate that opens into the T9-10 disc. The apex is at about LPS (-15.5, -113.5, 1743-1744.5).\n3. **Contents and rim.** On axial_st #19 it is a ring with a sclerotic (dense) rim, and its contents measure about 95 HU, which is disc-like. That rules out fat and gas.\n\n**Artifact checks:**\n- **Table-step seams.** I estimated the seams at about z 1716, 1750.5 and 1785, from periodic dips in image noise and a visible line near 1717. The node lies entirely within one step (1716-1750.5). It also shows on in-plane axial images, which a step artifact cannot produce.\n- **No misregistration at the seam.** The 1750.5 seam passes through the T9 body, but the front and back cortex edges move by 0.5 mm or less across it.\n- **Normal variants ruled out.**\n  - It is not a vessel seen end-on: it is corticated, connects to the disc, and is away from the basivertebral foramen.\n  - It is not a Cupid's bow: it is single, central and thoracic.\n  - It is not the normal shallow central dip of the endplate: it is 5-6 mm deep with a sclerotic ring.\n- **Nothing acute.** The T10 superior endplate opposite it is smooth. The disc is no narrower than at T8-9. There is no soft-tissue swelling beside the spine. So there are no signs of disc infection (discitis) or an acute fracture.\n\n**Anterior fleck:** this is also real. It appears in all five series at peak 700-1200 HU, centred at about (-14, -121.5, 1735.5-1739). It sits about 6 mm behind the front cortex, at the front lip of the node, and hangs 1-2 mm into the disc. This fits a small bony or calcified fragment at the mouth of the node, and it is benign. \"Inner anterior annulus / node lip\" describes its position more accurately than \"anterior annulus\".\n\n**Wedging:** I reproduced the reviewer's numbers independently, and they are not caused by the seam. T9 front/back height ratio is 0.81-0.84, against 0.90-0.93 at T8 and about 1.0 at T10. An 18% front-to-back difference at a mid-thoracic level is within the normal range of physiological wedging. It is below the Genant grade 1 threshold, so it is grade 0. I would call it mild physiologic or developmental wedging rather than a \"borderline\" deformity. The middle height is lower only because of the node itself.\n\n**Level:** the T9 label matches the TotalSegmentator labels. This limited scan has no T1 or L5 to count from, so the level is uncertain by one either way.\n\n**Overall:** benign and incidental, no action needed. I would raise the confidence that the node is real from 0.8 to about 0.9 or higher."
+                "note": "I could not refute this. The T9 (presumed) inferior-endplate lesion is a real, old-looking Schmorl's node. It is not an artifact or a normal variant.\n\n1. **Seen in every reconstruction.** It shows up in five separate reconstructions with the same 3D shape: sag_st #94-#99, cor_st #95-#98, axial_st #18-#20, thin_lung #74-#81 plus my own thin_lung sagittal/coronal reformats, and the calcium series.\n2. **Its shape.** It is one central, steep-walled, tented dip in the endplate that opens into the T9-10 disc. The apex is at about LPS (-15.5, -113.5, 1743-1744.5).\n3. **Contents and rim.** On axial_st #19 it is a ring with a sclerotic (dense) rim, and its contents measure about 95 HU, which is disc-like. That rules out fat and gas.\n\n**Artifact checks:**\n- **Table-step seams.** I estimated the seams at about z 1716, 1750.5 and 1785, from periodic dips in image noise and a visible line near 1717. The node lies entirely within one step (1716-1750.5). It also shows on in-plane axial images, which a step artifact cannot produce.\n- **No misregistration at the seam.** The 1750.5 seam passes through the T9 body, but the front and back cortex edges move by 0.5 mm or less across it.\n- **Normal variants ruled out.**\n - It is not a vessel seen end-on: it is corticated, connects to the disc, and is away from the basivertebral foramen.\n - It is not a Cupid's bow: it is single, central and thoracic.\n - It is not the normal shallow central dip of the endplate: it is 5-6 mm deep with a sclerotic ring.\n- **Nothing acute.** The T10 superior endplate opposite it is smooth. The disc is no narrower than at T8-9. There is no soft-tissue swelling beside the spine. So there are no signs of disc infection (discitis) or an acute fracture.\n\n**Anterior fleck:** this is also real. It appears in all five series at peak 700-1200 HU, centred at about (-14, -121.5, 1735.5-1739). It sits about 6 mm behind the front cortex, at the front lip of the node, and hangs 1-2 mm into the disc. This fits a small bony or calcified fragment at the mouth of the node, and it is benign. \"Inner anterior annulus / node lip\" describes its position more accurately than \"anterior annulus\".\n\n**Wedging:** I reproduced the reviewer's numbers independently, and they are not caused by the seam. T9 front/back height ratio is 0.81-0.84, against 0.90-0.93 at T8 and about 1.0 at T10. An 18% front-to-back difference at a mid-thoracic level is within the normal range of physiological wedging. It is below the Genant grade 1 threshold, so it is grade 0. I would call it mild physiologic or developmental wedging rather than a \"borderline\" deformity. The middle height is lower only because of the node itself.\n\n**Level:** the T9 label matches the TotalSegmentator labels. This limited scan has no T1 or L5 to count from, so the level is uncertain by one either way.\n\n**Overall:** benign and incidental, no action needed. I would raise the confidence that the node is real from 0.8 to about 0.9 or higher."
               },
               {
                 "lens": "criteria",
@@ -1658,7 +1659,7 @@
               {
                 "lens": "relevance",
                 "refuted": false,
-                "note": "NOT REFUTED. The finding is real, the \"benign-incidental, severity 1, no action\" call is proportionate, and I'd keep it. One wording change: the wedging is a little worse than the reviewer stated. It straddles the 20% threshold rather than sitting below it, but that doesn't change what anyone should do.\n\n1) The node is real. I confirmed it on my own renders in all three planes: native sag_st #95-#98, cor_st #96-#98, axial_st #19 (z=1740.25) and thin_lung 3-slice averages at z 1738.75-1743.25. It is a corticated, sclerotic-rimmed, tent-shaped central depression of the T9 inferior endplate. Apex is at about LPS (-15.5, -113.5, 1744); the opening runs from y -120 to -109 (about 11 mm AP, about 9 mm transverse) and it is about 5-6 mm deep. The content is 76 HU, which is disc-like. It does not look like infection, a tumor or a Cupid's-bow variant. Disc heights are preserved.\n\n2) The fleck is real. It is a 2-3 mm dense density (about 660 HU on axial_st #18, z=1737.25) at the anterior lip of the node, about 4-5 mm behind the anterior cortex (y about -121). It projects about 1.5 mm into the disc. It is not a separated vertebral corner.\n\n3) Nothing looks acute. The anterior cortex is smooth with a rounded corner, and there is no step-off, buckling or fracture line (high-zoom sag #93-#99). Bone density is normal: trabecular HU is 211 at T8, 194 at T9 and 227 at T10, so this is not a fragility fracture.\n\n4) The level is reasonable. TotalSegmentator v1 and v2 both label this vertebra T9. Neither T1 nor T12/L1 is fully in the field of view, so a \u00b11-level uncertainty remains and \"presumed T9\" is the right wording.\n\n5) Wedging. My corner-based heights (endplate cortex centres, 1.5 mm inset) give T9 Ha/Hp 0.76-0.78 and a wedge of 9-10\u00b0. With a 3 mm inset it is 0.80-0.82. T8 measures 0.88-0.93 and T10 0.91-1.03. T9's anterior height is also about 20% below the average of its neighbours' anterior heights. So it is mildly more wedged than the reviewer's 0.82-0.84 and 5.8\u00b0; the angle depends on method (line-fit versus corner-to-corner). Better wording: \"borderline-to-mild (about 18-24%, at most Genant grade 1), chronic-appearing.\"\n\n6) Would a radiologist report it? On a calcium-score CT, an experienced radiologist would often leave out a lone Schmorl's node. At most they would write one line, such as \"chronic-appearing mild anterior wedging of T9 with Schmorl's node.\" The main value of recording it is so a future scan isn't misread as a new fracture. It needs no bone density scan (DXA) and no follow-up imaging. It is only worth raising with his doctor if he has persistent mid-back pain or a history of significant trauma.\n\nTool caveat: rt.render(..., plane='sagittal') on sag_st and cor_st cuts the wrong axis. I used the native slices instead (v.hu[k])."
+                "note": "NOT REFUTED. The finding is real, the \"benign-incidental, severity 1, no action\" call is proportionate, and I'd keep it. One wording change: the wedging is a little worse than the reviewer stated. It straddles the 20% threshold rather than sitting below it, but that doesn't change what anyone should do.\n\n1) The node is real. I confirmed it on my own renders in all three planes: native sag_st #95-#98, cor_st #96-#98, axial_st #19 (z=1740.25) and thin_lung 3-slice averages at z 1738.75-1743.25. It is a corticated, sclerotic-rimmed, tent-shaped central depression of the T9 inferior endplate. Apex is at about LPS (-15.5, -113.5, 1744); the opening runs from y -120 to -109 (about 11 mm AP, about 9 mm transverse) and it is about 5-6 mm deep. The content is 76 HU, which is disc-like. It does not look like infection, a tumor or a Cupid's-bow variant. Disc heights are preserved.\n\n2) The fleck is real. It is a 2-3 mm dense density (about 660 HU on axial_st #18, z=1737.25) at the anterior lip of the node, about 4-5 mm behind the anterior cortex (y about -121). It projects about 1.5 mm into the disc. It is not a separated vertebral corner.\n\n3) Nothing looks acute. The anterior cortex is smooth with a rounded corner, and there is no step-off, buckling or fracture line (high-zoom sag #93-#99). Bone density is normal: trabecular HU is 211 at T8, 194 at T9 and 227 at T10, so this is not a fragility fracture.\n\n4) The level is reasonable. TotalSegmentator v1 and v2 both label this vertebra T9. Neither T1 nor T12/L1 is fully in the field of view, so a \u00b11-level uncertainty remains and \"presumed T9\" is the right wording.\n\n5) Wedging. My corner-based heights (endplate cortex centres, 1.5 mm inset) give T9 Ha/Hp 0.76-0.78 and a wedge of 9-10\u00b0. With a 3 mm inset it is 0.80-0.82. T8 measures 0.88-0.93 and T10 0.91-1.03. T9's anterior height is also about 20% below the average of its neighbours' anterior heights. So it is mildly more wedged than the reviewer's 0.82-0.84 and 5.8\u00b0; the angle depends on method (line-fit versus corner-to-corner). Better wording: \"borderline-to-mild (about 18-24%, at most Genant grade 1), chronic-appearing.\"\n\n6) Would a radiologist report it? On a calcium-score CT, an experienced radiologist would often leave out a lone Schmorl's node. At most they would write one line, such as \"chronic-appearing mild anterior wedging of T9 with Schmorl's node.\" The main value of recording it is so a future scan isn't misread as a new fracture. It needs no bone density scan (DXA) and no follow-up imaging. It is only worth raising with his doctor if he has persistent mid-back pain or a history of significant trauma. I used the native slices instead (v.hu[k])."
               }
             ]
           },
@@ -1714,19 +1715,19 @@
       "images": [
         {
           "src": "read/bones_overview_0.webp",
-          "caption": "KEY left rib7 rib8 probable healed fractures"
+          "caption": "Apparent rib 'step-offs': traced by the skeptics to a table-seam artifact"
         },
         {
           "src": "read/bones_overview_1.webp",
-          "caption": "KEY spine sagittal levels schmorl nodes"
+          "caption": "Thoracic spine with small Schmorl's nodes at T9 and T11"
         },
         {
           "src": "read/bones_overview_2.webp",
-          "caption": "bone density ROIs T7-T11 axial st"
+          "caption": "Bone-density sample regions in T7-T11 (\u2248210 HU, healthy)"
         },
         {
           "src": "read/bones_overview_3.webp",
-          "caption": "haller index measurement check"
+          "caption": "Haller index \u22482.1: no pectus deformity"
         }
       ]
     },
@@ -1742,11 +1743,11 @@
         },
         {
           "item": "Liver attenuation / steatosis",
-          "result": "Normal. Eroded (5 mm) mask mean 64.7 HU on axial_st; 5 ROIs (7 mm spheres avoiding vessels) mean 65.6 HU (range 55.7 at the dome, where hepatic veins converge, to 72.4). Liver minus spleen +5.6 (mask) / +11.1 HU (ROI); L/S ratio 1.09-1.20. No steatosis (thresholds: <40 HU or L-S < -10 HU). No hyperattenuation (>75 HU) to suggest iron or amiodarone. See FIG_liver_spleen_attenuation.png."
+          "result": "Normal. Eroded (5 mm) mask mean 64.7 HU on axial_st; 5 ROIs (7 mm spheres avoiding vessels) mean 65.6 HU (range 55.7 at the dome, where hepatic veins converge, to 72.4). Liver minus spleen +5.6 (mask) / +11.1 HU (ROI); L/S ratio 1.09-1.20. No steatosis (thresholds: <40 HU or L-S < -10 HU). No hyperattenuation (>75 HU) to suggest iron or amiodarone."
         },
         {
           "item": "Liver focal lesions (cyst, hemangioma, calcified granuloma)",
-          "result": "None seen. Semi-automated search on a denoised axial_st (hypodense <30/<40 HU and hyperdense >110 HU within an eroded liver mask) plus a raw >200 HU cluster search. All candidates proved on visual review to be fissural/periportal fat, dome partial volume or noise at the edge slice (abd_candidates_a/b.png). Slice-by-slice denoised liver-window review (abd_st_den_liverwin_*.png) is homogeneous. Detection limit is roughly lesions >=1 cm with >=30-40 HU contrast at this dose."
+          "result": "None seen. Semi-automated search on a denoised axial_st (hypodense <30/<40 HU and hyperdense >110 HU within an eroded liver mask) plus a raw >200 HU cluster search. All candidates proved on visual review to be fissural/periportal fat, dome partial volume or noise at the edge slice. Slice-by-slice denoised liver-window review is homogeneous. Detection limit is roughly lesions >=1 cm with >=30-40 HU contrast at this dose."
         },
         {
           "item": "Liver contour / perihepatic space",
@@ -1758,7 +1759,7 @@
         },
         {
           "item": "Splenules (accessory spleen)",
-          "result": "None in the covered left upper quadrant. All automated soft-tissue candidates were colon wall, the spleen tip/diaphragm, the crus/GE junction or the left lateral liver segment (abd_splenule_candidates_check.png)."
+          "result": "None in the covered left upper quadrant. All automated soft-tissue candidates were colon wall, the spleen tip/diaphragm, the crus/GE junction or the left lateral liver segment."
         },
         {
           "item": "Stomach (distension, wall, contents)",
@@ -1766,7 +1767,7 @@
         },
         {
           "item": "Hiatal hernia",
-          "result": "None. The distal esophagus (normal caliber ~15-17 mm, physiologic intraluminal air dot) runs anterior to the aorta down to the hiatus, with no gastric tissue above the diaphragm on axial, coronal and sagittal views (abd_gej_hiatus_zoom_st_den.png, abd_cor_st_luq_hiatus_montage.png)."
+          "result": "None. The distal esophagus (normal caliber ~15-17 mm, physiologic intraluminal air dot) runs anterior to the aorta down to the hiatus, with no gastric tissue above the diaphragm on axial, coronal and sagittal views."
         },
         {
           "item": "Colon (splenic flexure)",
@@ -1806,23 +1807,23 @@
         },
         {
           "item": "Bochdalek hernia",
-          "result": "None in the covered range: no fat or soft tissue above the posterior diaphragm in either posterior costophrenic recess (diaphragm_posterior_sagittal.png). The lowest posterolateral diaphragm is partly below the scan."
+          "result": "None in the covered range: no fat or soft tissue above the posterior diaphragm in either posterior costophrenic recess. The lowest posterolateral diaphragm is partly below the scan."
         },
         {
           "item": "Morgagni hernia",
-          "result": "None. Only small anterior cardiophrenic fat pads; no omentum or bowel anterior to the heart (diaphragm_anterior_cardiophrenic_and_abdwall.png)."
+          "result": "None. Only small anterior cardiophrenic fat pads; no omentum or bowel anterior to the heart."
         },
         {
           "item": "Breast tissue / gynecomastia",
-          "result": "No gynecomastia. Nipples at R z ~1794-1800 (x ~-122) and L z ~1800-1806 (x ~106). Only a thin subareolar ductal strand / small disc on each side (R about 1.2 x 0.9 cm, L about 1.4 x 1.0 cm in sagittal/axial; the automated transverse width of up to ~2 cm includes the areola). This is below the usual >=2 cm retroareolar glandular-disc criterion, so physiologic (cw_breast_nipple_zoom_axial_sag.png)."
+          "result": "No gynecomastia. Nipples at R z ~1794-1800 (x ~-122) and L z ~1800-1806 (x ~106). Only a thin subareolar ductal strand / small disc on each side (R about 1.2 x 0.9 cm, L about 1.4 x 1.0 cm in sagittal/axial; the automated transverse width of up to ~2 cm includes the areola). This is below the usual >=2 cm retroareolar glandular-disc criterion, so physiologic."
         },
         {
           "item": "Axillary lymph nodes",
-          "result": "Only the lower axillae are covered (z ~1773-1815). No node >=1 cm and no node with a lost fatty hilum; only a few 3-5 mm dots consistent with vessels or tiny nodes (cw_axillae_R_and_L_zoom.png). The upper axillae are out of range, and the body touches the lateral field-of-view edges at these levels."
+          "result": "Only the lower axillae are covered (z ~1773-1815). No node >=1 cm and no node with a lost fatty hilum; only a few 3-5 mm dots consistent with vessels or tiny nodes. The upper axillae are out of range, and the body touches the lateral field-of-view edges at these levels."
         },
         {
           "item": "Subcutaneous lesions (lipoma, sebaceous cyst)",
-          "result": "None. A semi-automated search for soft-tissue islands in the subcutaneous fat plus visual review found only the two nipple-areolar complexes, muscle slips, costal cartilages and the compressed posterior septated fat (cw_subcut_candidates_check.png)."
+          "result": "None. A semi-automated search for soft-tissue islands in the subcutaneous fat plus visual review found only the two nipple-areolar complexes, muscle slips, costal cartilages and the compressed posterior septated fat."
         },
         {
           "item": "Subcutaneous fat attenuation (edema)",
@@ -1846,11 +1847,11 @@
         },
         {
           "item": "Sternum / xiphoid",
-          "result": "Normal sternal body. Long xiphoid with a slightly forked (bifid) tip, a common normal variant (bone_xiphoid_coronal_slab.png). Mild costal-cartilage calcification, normal for age."
+          "result": "Normal sternal body. Long xiphoid with a slightly forked (bifid) tip, a common normal variant. Mild costal-cartilage calcification, normal for age."
         },
         {
           "item": "Thoracic spine (about T6-T12 in range)",
-          "result": "Normal alignment, preserved vertebral body heights, no wedging or compression fracture, disc spaces preserved. Two small chronic Schmorl's nodes (T9 inferior, T11 superior endplates; see findings). No lytic lesion and no bone island (only dense focus >450 HU = rim of the T9 node)."
+          "result": "Normal alignment, no compression fracture, disc spaces preserved. Borderline front-wedging of T9 and two small chronic Schmorl's nodes (T9 lower, T11 upper endplates) are described under Bones. No lytic lesion and no bone island."
         },
         {
           "item": "Scapulae",
@@ -1870,7 +1871,7 @@
         },
         {
           "item": "Subcutaneous and visceral fat (body composition)",
-          "result": "Subcutaneous fat modest (presternal ~11-13 mm, anterior chest 13-22 mm, lateral 13-25 mm, posterior 4-9 mm compressed). Visceral fat moderate, mainly in the left upper quadrant (~97 cm2 at T11). See findings."
+          "result": "Subcutaneous fat modest (presternal ~11-13 mm, anterior chest 13-22 mm, lateral 13-25 mm, posterior 4-9 mm compressed by the table). Visceral fat ~97 cm\u00b2 at T11, a non-standard level, so this is descriptive only; the skeptic panel judged it normal."
         },
         {
           "item": "Two small chronic Schmorl's nodes (T9 inferior endplate, T11 superior endplate)",
@@ -2019,19 +2020,19 @@
       "images": [
         {
           "src": "read/abdomen_chestwall_overview_0.webp",
-          "caption": "FIG liver spleen attenuation"
+          "caption": "Liver \u224865 HU vs spleen \u224859 HU: no fatty liver"
         },
         {
           "src": "read/abdomen_chestwall_overview_1.webp",
-          "caption": "FINDING visceral fat T11 overlay"
+          "caption": "Visceral fat at T11 (judged normal by the skeptics)"
         },
         {
           "src": "read/abdomen_chestwall_overview_2.webp",
-          "caption": "FINDING schmorl nodes T9 T11"
+          "caption": "Schmorl's nodes at T9 and T11 (also under Bones)"
         },
         {
           "src": "read/abdomen_chestwall_overview_3.webp",
-          "caption": "cw breast nipple zoom axial sag"
+          "caption": "Chest wall: no gynecomastia"
         }
       ]
     },
@@ -2039,7 +2040,7 @@
       "key": "technique",
       "title": "Technique, image quality & artifacts",
       "status": "normal",
-      "summary": "This is a technically adequate low-dose, prospectively ECG-triggered calcium-score CT. It was acquired in 4 sequential table steps of about 33.75 mm each, joined at z\u22481717.0, 1750.75 and 1784.5 mm (LPS). Blood-pool noise on the calcium series is about 16 HU in the mid-heart, rising to about 21-31 HU in the lowest step over the upper abdomen. I found no significant cardiac or respiratory motion, no stair-step misregistration between steps, no truncation and no metal. The dominant artifact is banding where the steps join: horizontal CT-number bands, largest just above the lowest join (z\u22481719-1728). There the posterior LV and descending aorta read +15 to +40 HU too high, and the upper spleen pole just below the join reads about 20 HU high. Together with low-dose noise, these bands explain all 41 faint \u2265130 HU 'calcium' specks the pipeline found: every one lies at z 1698-1707 or 1720-1727 and none lies above z 1728. Coverage is limited and slightly different from what the task assumed: the top of the scan is only about 7-8 mm above the carina, not about 3 cm. So the aortic arch, upper mediastinum, lung apices and thyroid are not imaged, and the bottom stops at about T12, missing the kidneys and adrenals. Effective dose is about 0.44-0.82 mSv, roughly 2-3 months of natural background.",
+      "summary": "This is a technically adequate low-dose, prospectively ECG-triggered calcium-score CT. It was acquired in 4 sequential table steps of about 33.75 mm each, joined at z\u22481717.0, 1750.75 and 1784.5 mm (LPS). Blood-pool noise on the calcium series is about 16 HU in the mid-heart, rising to about 21-31 HU in the lowest step over the upper abdomen. I found no significant cardiac or respiratory motion, no stair-step misregistration between steps, no truncation and no metal. The dominant artifact is banding where the steps join: horizontal CT-number bands, largest just above the lowest join (z\u22481719-1728). There the posterior LV and descending aorta read +15 to +40 HU too high, and the upper spleen pole just below the join reads about 20 HU high. Together with low-dose noise, these bands explain all 41 faint \u2265130 HU 'calcium' specks the pipeline found: every one lies at z 1698-1707 or 1720-1727 and none lies above z 1728. Coverage is limited: the top of the scan is only about 8 mm above the carina. So the aortic arch, upper mediastinum, lung apices and thyroid are not imaged, and the bottom stops at about T12, missing the kidneys and adrenals. Effective dose is about 0.44-0.82 mSv, roughly 2-3 months of natural background.",
       "checked": [
         {
           "item": "Series inventory and geometry",
@@ -2055,7 +2056,7 @@
         },
         {
           "item": "Slice-by-slice noise on the calcium series",
-          "result": "Lowest step (z<1717, upper abdomen): descending-aorta SD median 30.8 HU, LV 21.1, liver 31.5. Steps 2-4: descending-aorta SD about 19-20, LV about 16-18, soft-tissue global noise level 15-17. The rise at slices 11-17 (z 1700-1708) reflects higher attenuation in the lowest step (liver, spleen and stomach in the beam), not a step join. The rise at slices 24-29 (z 1719-1727) is the bright band just above join 1 (LV SD 18-22 HU with the mean raised to 62-68 HU). Per-slice table: calcium_series_per_slice_noise_and_steps.csv."
+          "result": "Lowest step (z<1717, upper abdomen): descending-aorta SD median 30.8 HU, LV 21.1, liver 31.5. Steps 2-4: descending-aorta SD about 19-20, LV about 16-18, soft-tissue global noise level 15-17. The rise at slices 11-17 (z 1700-1708) reflects higher attenuation in the lowest step (liver, spleen and stomach in the beam), not a step join. The rise at slices 24-29 (z 1719-1727) is the bright band just above join 1 (LV SD 18-22 HU with the mean raised to 62-68 HU). Per-slice table:."
         },
         {
           "item": "Location of the 4 table steps (z, LPS)",
@@ -2095,7 +2096,7 @@
         },
         {
           "item": "Coverage: top of scan",
-          "result": "z 1819.75 (top slice centre 1819.0). The carina is at z\u22481812 (one airway lumen at z\u22651812.25, two at \u22641811.5), so the scan top is only about 7-8 mm above the carina, not about 3 cm. The ascending and descending aortas are separate on the top slice, so the aortic arch and the origins of its branches are NOT imaged. Also not imaged: upper paratracheal mediastinum, thymus region, thoracic inlet, thyroid and the lung apices (lung is still present at the topogram's top edge, z 1876, so at least 5.7 cm of the upper lungs, roughly 15-20% of lung volume, is missing)."
+          "result": "z 1819.75 (top slice centre 1819.0). The carina is at z\u22481812 (one airway lumen at z\u22651812.25, two at \u22641811.5), so the scan top is only about 8 mm above the carina. The ascending and descending aortas are separate on the top slice, so the aortic arch and the origins of its branches are NOT imaged. Also not imaged: upper paratracheal mediastinum, thymus region, thoracic inlet, thyroid and the lung apices (lung is still present at the topogram's top edge, z 1876, so at least 5.7 cm of the upper lungs, roughly 15-20% of lung volume, is missing)."
         },
         {
           "item": "Coverage: bottom of scan",
@@ -2119,7 +2120,7 @@
         },
         {
           "item": "Topograms",
-          "result": "AP topogram at 100 kV and lateral at 140 kV. The scan range, step joins and landmarks are mapped in atlas_01. The topograms are acquired separately, so the diaphragm position may differ by about 1 cm from the CT."
+          "result": "AP topogram at 100 kV and lateral at 140 kV. The scan range, step joins and landmarks are mapped in artifact-atlas figure 1. The topograms are acquired separately, so the diaphragm position may differ by about 1 cm from the CT."
         },
         {
           "item": "Radiation dose",
@@ -2143,7 +2144,7 @@
           "name": "Carina level",
           "value": "z \u2248 1812 mm; scan top only 7-8 mm above it",
           "method": "Airway lumen count on smoothed thin_lung (one lumen at \u22651812.25, two at \u22641811.5) plus a coronal view",
-          "reference": "The task assumed about 3 cm above the carina"
+          "reference": "Top of scan about 8 mm above the carina"
         },
         {
           "name": "Heart coverage",
@@ -2437,19 +2438,19 @@
       "images": [
         {
           "src": "read/technique_overview_0.webp",
-          "caption": "atlas 01 coverage and table steps topogram"
+          "caption": "Artifact atlas 1: coverage and the 4 table steps on the scout"
         },
         {
           "src": "read/technique_overview_1.webp",
-          "caption": "atlas 02 step boundary banding sagittal"
+          "caption": "Artifact atlas 2: step-boundary banding (sagittal)"
         },
         {
           "src": "read/technique_overview_2.webp",
-          "caption": "atlas 04 band and noise specks calcium axial"
+          "caption": "Artifact atlas 4: the band and the noise specks that mimic calcium"
         },
         {
           "src": "read/technique_overview_3.webp",
-          "caption": "atlas 03 zprofiles noise ct number steps"
+          "caption": "Artifact atlas 3: noise and CT-number shifts per table step"
         }
       ]
     }
@@ -2457,7 +2458,7 @@
   "calcium": {
     "agatston": 0,
     "confidenceZero": 0.9,
-    "summary": "DIY Agatston score 0 (volume 0 mm\u00b3, mass 0 mg). Of 41 candidate specks \u2265130 HU inside the pericardium, none was coronary calcium: all were noise on top of a table-step shading artifact, confined to two z-bands (z 1698-1707 and 1720-1727). Nothing in or around the heart reaches 200 HU. Three independent reviewers (candidate review, blind sweep, cross-reconstruction physics) agreed unanimously; their estimated probability that the true score is 0 was 0.87, 0.94 and 0.90."
+    "summary": "DIY Agatston score 0 (volume 0 mm\u00b3, mass 0 mg). Of 41 candidate specks \u2265130 HU in and around the heart (pericardial sac plus a 5 mm margin), none was coronary calcium: all were noise on top of a table-step shading artifact, confined to two z-bands (z 1698-1707 and 1720-1727). Nothing in or around the heart reaches 200 HU. Three independent reviewers (candidate review, blind sweep, cross-reconstruction physics) agreed unanimously; their estimated probability that the true score is 0 was 0.87, 0.94 and 0.90."
   },
   "limitations": [
     "Limited coverage: the lung apices, aortic arch, upper mediastinum, thyroid, kidneys, adrenals and most of the abdomen were not imaged. A calcium-score scan is not a lung-cancer screening CT or a full chest CT.",

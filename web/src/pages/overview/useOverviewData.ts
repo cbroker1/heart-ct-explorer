@@ -21,6 +21,7 @@ export interface OverviewData {
   /** The real AI second read, only when the pipeline has listed it in manifest.files (never the mock). */
   read: ReadReport | null
   examError: string | null
+  calciumError: boolean
 }
 
 export function useOverviewData(manifest: Manifest): OverviewData {
@@ -28,6 +29,7 @@ export function useOverviewData(manifest: Manifest): OverviewData {
   const [calcium, setCalcium] = useState<CalciumReport | null>(null)
   const [read, setRead] = useState<ReadReport | null>(null)
   const [examError, setExamError] = useState<string | null>(null)
+  const [calciumError, setCalciumError] = useState(false)
 
   useEffect(() => {
     let alive = true
@@ -38,7 +40,7 @@ export function useOverviewData(manifest: Manifest): OverviewData {
     if (files.calcium) {
       cachedJSON<CalciumReport>(files.calcium)
         .then((v) => alive && setCalcium(v))
-        .catch(() => { /* the stat tile shows a dash */ })
+        .catch(() => alive && setCalciumError(true))
     }
     // Only fetch the AI read when the pipeline listed it (avoids a 404 in the console).
     if (files.read) {
@@ -49,7 +51,7 @@ export function useOverviewData(manifest: Manifest): OverviewData {
     return () => { alive = false }
   }, [manifest])
 
-  return { exam, calcium, read, examError }
+  return { exam, calcium, read, examError, calciumError }
 }
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
@@ -74,14 +76,17 @@ export function useManifestFacts(manifest: Manifest) {
     const totalImages = manifest.volumes.reduce((s, v) => s + (v.dims?.[2] ?? 0), 0)
     const seriesCount = manifest.volumes.length
     const structureCount = manifest.labels?.classes?.length ?? 0
-    // Scan length: first-to-last slice centre on the thin series the 3D model was built from.
+    // Scan length on the thin series the 3D model was built from: first-to-last slice centre plus one
+    // slice thickness (half a slice beyond each end), i.e. the full imaged slab (13.8 cm here).
     const thin = manifest.volumes.find((v) => v.key === 'thin_lung') ?? manifest.volumes[0]
-    const slabMM = thin ? (thin.dims[2] - 1) * thin.spacing[2] : null
+    const slabMM = thin ? (thin.dims[2] - 1) * Math.abs(thin.spacing[2]) + (Number(thin.sliceThickness) || 0) : null
+    // Lowest vertebra the AI labelled (the scan's lower edge cuts through it): T12 here. The top of the
+    // scan is described by the carina instead, since only a sliver of T5 is inside it.
     const vertebrae = (manifest.labels?.classes ?? [])
-      .map((c) => /^vertebrae_T(\d+)$/.exec(c.name))
+      .map((c) => /^vertebrae_([TL])(\d+)$/.exec(c.name))
       .filter((m): m is RegExpExecArray => !!m)
-      .map((m) => Number(m[1]))
-    const vertebraRange = vertebrae.length ? [Math.min(...vertebrae), Math.max(...vertebrae)] as const : null
+      .map((m) => ({ name: `${m[1]}${m[2]}`, rank: (m[1] === 'L' ? 100 : 0) + Number(m[2]) }))
+    const lowestVertebra = vertebrae.length ? vertebrae.reduce((a, b) => (b.rank > a.rank ? b : a)).name : null
     return {
       age: Number.isFinite(age) ? age : null,
       monthYear,
@@ -91,12 +96,12 @@ export function useManifestFacts(manifest: Manifest) {
       seriesCount,
       structureCount,
       slabMM,
-      vertebraRange,
+      lowestVertebra,
     }
   }, [manifest])
 }
 
-/** "13.6" for 136.5 mm: truncated, so the label never overstates the scanned length. */
+/** "13.8" for 138.0 mm: truncated, so the label never overstates the scanned length. */
 export function slabCm(mm: number): string {
   return (Math.floor(mm) / 10).toFixed(1)
 }

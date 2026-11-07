@@ -8,7 +8,7 @@
 import * as THREE from 'three'
 import { MeshBVH, CENTER, acceleratedRaycast } from 'three-mesh-bvh'
 import type { MeshNode } from '../../lib/data'
-import { EXPLODE_SCALE } from './meta'
+import { EXPLODE_SCALE, LABELLED } from './meta'
 import { makeFresnelMaterial, makeOrganMaterial, xrayColor, type FresnelMaterial, type OrganMaterial } from './materials'
 
 export interface Structure {
@@ -20,8 +20,10 @@ export interface Structure {
   centroid: THREE.Vector3
   /** World-space bounds (unexploded). */
   box: THREE.Box3
-  /** A surface point close to the centroid, local to the centroid (for floating labels). */
+  /** A surface point close to the centroid, local to the centroid. */
   anchor: THREE.Vector3
+  /** Floating-label anchor candidates spread over the surface (local; [0] = anchor). The label uses the visible one nearest the middle of the visible part. */
+  labelPts: THREE.Vector3[]
   /** Explode offset per unit of the explode slider. */
   explodeDir: THREE.Vector3
   color: THREE.Color
@@ -55,6 +57,30 @@ function pickRaycast(this: THREE.Mesh, raycaster: THREE.Raycaster, intersects: T
     if (!best || h.distance < best.distance) best = h
   }
   if (best) intersects.push(best)
+}
+
+/** Farthest-point sampling of `k` surface points (local coords in `f`), starting from `first`. */
+function spreadPoints(f: Float32Array, n: number, k: number, first: THREE.Vector3): THREE.Vector3[] {
+  const step = Math.max(1, Math.floor(n / 4000))
+  const idx: number[] = []
+  for (let i = 0; i < n; i += step) idx.push(i)
+  const d2 = new Float32Array(idx.length).fill(Infinity)
+  const out = [first.clone()]
+  let last = first
+  for (let c = 1; c < k; c++) {
+    let best = -1, bestD = -1
+    for (let j = 0; j < idx.length; j++) {
+      const i = 3 * idx[j]
+      const dx = f[i] - last.x, dy = f[i + 1] - last.y, dz = f[i + 2] - last.z
+      const d = Math.min(d2[j], dx * dx + dy * dy + dz * dz)
+      d2[j] = d
+      if (d > bestD) { bestD = d; best = i }
+    }
+    if (best < 0 || bestD < 1) break
+    last = new THREE.Vector3(f[best], f[best + 1], f[best + 2])
+    out.push(last)
+  }
+  return out
 }
 
 const SMOOTH_ITERS: Record<string, number> = { heart: 3, vessels: 3, abdomen: 3, lungs: 3, body: 3, muscle: 2, airways: 2, bones: 1 }
@@ -147,11 +173,14 @@ export function buildStructures(scene: THREE.Object3D, nodes: MeshNode[]): Struc
       if (d2 < best) { best = d2; anchor.set(f[3 * k], f[3 * k + 1], f[3 * k + 2]) }
     }
 
+    const labelPts = LABELLED.includes(node.name) ? spreadPoints(f, n, 18, anchor) : [anchor]
+
     const geometry = new THREE.BufferGeometry()
     geometry.setAttribute('position', new THREE.BufferAttribute(f, 3))
     if (index) geometry.setIndex(new THREE.BufferAttribute(index, 1))
+    // The GLB ships smooth normals too, but recomputing + a few 1-ring passes hides the 0.75 mm slice
+    // "terraces" of the marching-cubes surfaces much better (checked against the regenerated GLB).
     geometry.computeVertexNormals()
-    // Soften the 0.75 mm slice "terraces" of the marching-cubes surfaces in the shading only.
     smoothNormals(geometry, SMOOTH_ITERS[node.group] ?? 1, THIN.includes(node.name) ? 1 : undefined)
     geometry.computeBoundingBox()
     geometry.computeBoundingSphere()
@@ -169,7 +198,7 @@ export function buildStructures(scene: THREE.Object3D, nodes: MeshNode[]): Struc
 
     const explodeDir = centroid.clone().multiplyScalar(EXPLODE_SCALE[node.group] ?? 1)
     const s: Structure = {
-      i: out.length, node, name: node.name, geometry, centroid, box, anchor, explodeDir, color, mesh, organ, xray,
+      i: out.length, node, name: node.name, geometry, centroid, box, anchor, labelPts, explodeDir, color, mesh, organ, xray,
       anim: { fade: 0, opacity: 0, glow: 0 }, offset: new THREE.Vector3(),
     }
     mesh.userData.structure = s

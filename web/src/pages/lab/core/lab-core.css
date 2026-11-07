@@ -22,6 +22,7 @@
 .lc-lede { max-width: 760px; color: var(--muted); margin: 0 0 18px; font-size: 15px; }
 .lc-lede b { color: var(--text); font-weight: 650; }
 .lc-k { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; color: var(--muted); }
+.lc-k .lc-note { text-transform: none; letter-spacing: 0; font-weight: 500; font-size: 11.5px; color: var(--faint); }
 .lc-mono { font-family: var(--mono); }
 .lc-err { color: var(--danger); }
 
@@ -152,14 +153,24 @@
   padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255, 255, 255, 0.03);
   color: var(--muted); font: 600 11.5px var(--font);
 }
-.lc-legend button:hover, .lc-legend button.on { color: var(--text); border-color: var(--line-2); }
+.lc-legend button:hover:not(:disabled), .lc-legend button.on { color: var(--text); border-color: var(--line-2); }
+.lc-legend button:disabled { cursor: default; opacity: 0.55; }
+.lc-legend button:focus-visible, .lc-tool:focus-visible, .lc-seg-mini button:focus-visible, .lc-swatch:focus-visible, .lc-jump button:focus-visible, .lc-link:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.lc-wheel-hint {
+  position: absolute; z-index: 5; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  padding: 8px 14px; border-radius: 999px; background: rgba(7, 9, 13, 0.82); border: 1px solid var(--line-2);
+  font: 650 13px var(--font); color: var(--text); white-space: nowrap; pointer-events: none;
+  opacity: 0; transition: opacity 0.25s ease;
+}
+.lc-wheel-hint.on { opacity: 1; }
 .lc-legend i { width: 9px; height: 9px; border-radius: 3px; display: inline-block; }
 .lc-fallback { position: absolute; inset: 0; display: grid; place-items: center; z-index: 2; text-align: center; padding: 24px; }
 
 /* ===================================================================== print shop */
 .lc-print { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px; }
 .lc-print-stage { position: relative; min-height: 440px; overflow: hidden; background: radial-gradient(70% 60% at 50% 35%, rgba(56, 214, 255, 0.10), transparent 70%), linear-gradient(180deg, #0d121b, #080b10); }
-.lc-print-stage canvas { touch-action: pan-y !important; }
+/* OrbitControls sets an inline touch-action:none on R3F's wrapper div: let vertical swipes scroll the page */
+.lc-print-stage canvas, .lc-print-stage .lc-canvas { touch-action: pan-y !important; }
 .lc-print-stage .lc-canvas { position: absolute; inset: 0; }
 .lc-print-hud { position: absolute; left: 12px; right: 12px; top: 12px; z-index: 2; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; pointer-events: none; }
 .lc-print-hud > * { pointer-events: auto; }
@@ -181,7 +192,8 @@
 .lc-dl svg { width: 22px; height: 22px; }
 .lc-dl small { display: block; font: 600 12px var(--font); opacity: 0.85; }
 .lc-dl-alt { display: flex; flex-wrap: wrap; gap: 8px; }
-.lc-dl-alt a { font-size: 12px; }
+.lc-dl-alt a { font-size: 12px; max-width: 100%; white-space: normal; flex-wrap: wrap; row-gap: 0; text-align: left; }
+.lc-dl-alt a .faint { white-space: nowrap; }
 .lc-swatches { display: flex; flex-wrap: wrap; gap: 8px; }
 .lc-swatch {
   appearance: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
@@ -190,7 +202,7 @@
 }
 .lc-swatch i { width: 18px; height: 18px; border-radius: 50%; box-shadow: inset 0 -3px 6px rgba(0, 0, 0, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.35); }
 .lc-swatch.on { color: var(--text); border-color: rgba(255, 255, 255, 0.35); background: rgba(255, 255, 255, 0.07); }
-.lc-tips { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin-top: 16px; }
+.lc-tips { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 12px; margin-top: 16px; }
 .lc-tip { padding: 14px 16px; border-radius: var(--radius); background: var(--panel-2); border: 1px solid var(--line); }
 .lc-tip h4 { margin: 0 0 6px; font-size: 14px; display: flex; align-items: center; gap: 8px; }
 .lc-tip h4 svg { width: 18px; height: 18px; color: var(--cyan); flex: 0 0 auto; }

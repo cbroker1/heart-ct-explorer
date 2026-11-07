@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { dataUrl } from '../../lib/data'
-import { useWidth } from './hooks'
+import { scrollToId, useWidth } from './hooks'
 import { fmtNum, gaussTail, perMillionText, pct, verdict, VERDICT_ORDER, type TopogramMeta } from './model'
 import type { CalciumVM } from './useCalciumData'
 
@@ -81,7 +81,17 @@ function Funnel({ vm }: { vm: CalciumVM }) {
           <div className="cal-ftitle">{report.reviewed ? 'AI adjudication' : 'waiting for AI adjudication'}</div>
           <div className="cal-fdesc">
             {report.reviewed
-              ? <>Independent AI reviewers looked at the borderline candidates (and the rest of the heart) and gave a verdict for each.</>
+              ? vm.votes
+                ? <>
+                    {vm.votes.reviewers} independent AI reviewers each voted on all {vm.votes.candidatesVoted === nC ? nC : vm.votes.candidatesVoted} candidates
+                    {vm.borderline.length ? <>, including the {vm.borderline.length} borderline one{vm.borderline.length === 1 ? '' : 's'}</> : null} ({vm.votes.votes} votes),
+                    and swept the rest of the heart for anything the search missed.{' '}
+                    {vm.votes.noiseVotes === vm.votes.votes
+                      ? <b>Every single vote: noise or artifact.</b>
+                      : <>{vm.votes.coronaryVotes} vote{vm.votes.coronaryVotes === 1 ? '' : 's'} said coronary.</>}{' '}
+                    <button type="button" className="cal-linkbtn" onClick={() => scrollToId('cal-panel')}>Meet the panel ↓</button>
+                  </>
+                : <>Independent AI reviewers looked at the borderline candidates (and the rest of the heart) and gave a verdict for each.</>
               : <>The {vm.pending.length} candidate{vm.pending.length === 1 ? '' : 's'} that survived every rule {vm.pending.length === 1 ? 'goes' : 'go'} to independent AI reviewers. Until they vote, {vm.pending.length === 1 ? 'it is' : 'they are'} <b>not</b> counted.</>}
           </div>
           {report.reviewed && <><SegBar segs={finalSegs} unit={unit} total={nC} /><Legend segs={finalSegs} /></>}

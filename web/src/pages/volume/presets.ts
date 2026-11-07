@@ -194,7 +194,7 @@ export const PRESETS: Preset[] = [
     name: 'Anatomy colours',
     tagline: 'AI segmentation, by organ',
     blurb:
-      'Colours come from the AI segmentation (60 structures), not from density. Solid organs are opaque; the lungs, pericardial sac and skin are glass. ' +
+      'Colours come from the AI segmentation ({n} structures), not from density. Solid organs are opaque; the lungs, pericardial sac and skin are glass. ' +
       'Toggle groups below. Labels are AI estimates on a low-dose scan without contrast.',
     mode: 'label',
     volume: 'chest',
@@ -215,7 +215,7 @@ export const PRESETS: Preset[] = [
     tagline: 'Virtual radiograph you can rotate',
     blurb:
       'A digitally reconstructed radiograph: for every pixel the X-ray attenuation along the ray is summed, exactly like a chest X-ray ' +
-      '(bright = more absorption: bone and heart; dark = air in the lungs). Only the 14 cm slab that was scanned is included. Rotate it for a lateral view.',
+      '(bright = more absorption: bone and heart; dark = air in the lungs). Only the 13.8 cm slab that was scanned is included. Rotate it for a lateral view.',
     mode: 'drr',
     volume: 'chest',
     pivot: 0,

@@ -3,29 +3,55 @@
  * demand (one rAF per change, no continuous loop) and turns pointer/wheel/keyboard/touch input into
  * store updates. React only renders the chrome around it.
  */
-import type { Manifest, Vec3, VolumeMeta } from '../../lib/data'
+import type { Manifest, Vec3 } from '../../lib/data'
 import { loadGrid } from '../../lib/data'
 import { sampleNearest } from '../../lib/coords'
 import type { CalciumReport } from '../../lib/reports'
 import { useApp } from '../../lib/store'
 import { structureIndex } from './finder'
 import {
-  clamp, dist, dot, madd, nearest, slicePos, sliceAt, slotAt, slotToLps, snapToGrid, volumeByKey,
+  clamp, dist, dot, madd, slicePos, sliceAt, slotAt, slotToLps, snapToGrid, volumeByKey,
   type SlotModel, type Xf,
 } from './geom'
 import { modelFromState } from './model'
 import { drawOverlay, type Caliper, type CandidateMark } from './overlay'
+import { blankSlices, probeHU, slabSamples } from './probe'
 import { GLUnavailableError, MprRenderer, UploadCancelled, type ViewDraw } from './renderer'
 import { useHover, useLoad, useSlc, type SlabMode } from './state'
 
 // CPU copies (loadGrid caches the promises too; these give synchronous access for hover probes).
+// Least-recently-used first. Bounded, so browsing every series doesn't pile ~460 MB onto a phone:
+// beyond the budget the oldest series not on screen are dropped (loadGrid's own LRU may still hold them).
 const cpuVolumes = new Map<string, Int16Array>()
+const CPU_BUDGET_BYTES =
+  (typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches ? 160 : 320) * 1024 * 1024
 let cpuLabels: Uint8Array | null = null
 let cpuLesions: Uint8Array | null = null
 
 export function cpuVolume(key: string) { return cpuVolumes.get(key) ?? null }
 export function cpuLabelGrid() { return cpuLabels }
 export function cpuLesionGrid() { return cpuLesions }
+
+/** Mark a CPU copy as just used (moves it to the young end of the LRU). */
+function touchCpu(key: string, data: Int16Array) {
+  cpuVolumes.delete(key)
+  cpuVolumes.set(key, data)
+}
+
+/** Drop the oldest CPU copies beyond the budget, never the ones in `keep`. Returns the dropped keys. */
+function trimCpu(keep: Set<string>): string[] {
+  let total = 0
+  for (const v of cpuVolumes.values()) total += v.byteLength
+  const dropped: string[] = []
+  for (const [k, v] of cpuVolumes) {
+    if (total <= CPU_BUDGET_BYTES) break
+    if (keep.has(k)) continue
+    cpuVolumes.delete(k)
+    total -= v.byteLength
+    dropped.push(k)
+  }
+  return dropped
+}
 
 export interface ExamCaliperJSON {
   label: string
@@ -96,6 +122,8 @@ export class SliceController {
   private wheelAcc = 0
   private lastTap = { t: 0, x: 0, y: 0 }
   private pendingHover: { x: number; y: number } | null = null
+  /** where a mouse/pen pointer rests over the views, so the readout follows slice changes under it */
+  private lastPointer: { x: number; y: number } | null = null
   private hoverLabel = 0
   private hoverLesion = 0
   private cineTimer = 0
@@ -296,7 +324,8 @@ export class SliceController {
     this.loading.set(key, token)
     try {
       let data = cpuVolumes.get(key)
-      if (!data) {
+      if (data) touchCpu(key, data)
+      else {
         setE(key, { phase: 'download', loaded: 0, total: meta.bytes })
         let last = 0
         const arr = await loadGrid(meta, (l, t) => {
@@ -304,9 +333,11 @@ export class SliceController {
           if (now - last > 60 && !this.disposed) { last = now; setE(key, { phase: 'download', loaded: l, total: t }) }
         })
         if (!(arr instanceof Int16Array)) throw new Error(`${key}: expected int16 voxels`)
-        cpuVolumes.set(key, arr)
+        touchCpu(key, arr)
         data = arr
+        this.trimCpuCache()
       }
+      blankSlices(meta, data) // index padding slices once, off the hover path
       if (this.disposed || r !== this.renderer) return
       if (!this.neededKeys().includes(key)) {
         // superseded while downloading: keep the CPU copy, skip the GPU upload
@@ -350,7 +381,29 @@ export class SliceController {
     if (nMain !== prev.main || nPartner !== prev.partner) useLoad.getState().set({ shown: { main: nMain, partner: nPartner } })
     // GPU budget: only the active volume (+ compare partner), plus whatever is on screen while those load.
     const dropped = r.dropVolumesExcept([main, partner, nMain, nPartner])
-    for (const k of dropped) useLoad.getState().setEntry(k, { phase: 'cpu', loaded: 1, total: 1 })
+    for (const k of dropped) {
+      if (cpuVolumes.has(k)) useLoad.getState().setEntry(k, { phase: 'cpu', loaded: 1, total: 1 })
+      else this.forgetEntry(k)
+    }
+  }
+
+  /** Keep the CPU cache within budget; series dropped from it no longer show as "cached". */
+  private trimCpuCache() {
+    const shown = useLoad.getState().shown
+    const keep = new Set<string>(this.neededKeys())
+    if (shown.main) keep.add(shown.main)
+    if (shown.partner) keep.add(shown.partner)
+    for (const k of this.loading.keys()) keep.add(k)
+    for (const k of trimCpu(keep)) {
+      if (!this.renderer?.hasVolume(k)) this.forgetEntry(k)
+    }
+  }
+
+  private forgetEntry(key: string) {
+    const entries = useLoad.getState().entries
+    if (entries[key]?.phase !== 'cpu') return
+    const { [key]: _drop, ...rest } = entries
+    useLoad.getState().set({ entries: rest })
   }
 
   private async loadOverlays() {
@@ -453,6 +506,8 @@ export class SliceController {
       slots = modelFromState(this.manifest)
     }
     this.slots = slots
+    // the slice under a resting pointer may have changed (keys, cine, scrubber): refresh its readout
+    if (this.lastPointer && !this.drag && !this.pinch) this.queueHover(this.lastPointer.x, this.lastPointer.y)
     const r = this.renderer
     if (!r || r.isLost || !slots.length) return
     const slc = useSlc.getState()
@@ -478,7 +533,7 @@ export class SliceController {
       let slabStep = 0
       if (slab) {
         const T = slc.slabMM
-        slabN = clamp(Math.ceil(T / Math.max(0.25, this.normalSpacing(sl.meta, scroll))) + 1, 2, 160)
+        slabN = slabSamples(sl.meta, scroll, T)
         slabStep = T / (slabN - 1)
       }
       return {
@@ -513,16 +568,6 @@ export class SliceController {
       selectedLesion: app.selectedLesion,
       hoverLesion: this.hoverLesion,
     })
-  }
-
-  /** Grid spacing along a direction (for slab sampling density). */
-  private normalSpacing(meta: VolumeMeta, n: Vec3): number {
-    let best = 0, bestDot = 0
-    for (let a = 0; a < 3; a++) {
-      const d = Math.abs(meta.direction[a] * n[0] + meta.direction[3 + a] * n[1] + meta.direction[6 + a] * n[2])
-      if (d > bestDot) { bestDot = d; best = a }
-    }
-    return meta.spacing[best]
   }
 
   private applyFocus(slots: SlotModel[], pf: { p: Vec3; zoom: number | null; fov?: number; onlyIfHidden: boolean }) {
@@ -585,22 +630,7 @@ export class SliceController {
     const vol = cpuVolumes.get(sl.key)
     if (!vol) return null
     const slc = useSlc.getState()
-    if (slc.slab === 'none') return nearest(sl.meta, vol, p)
-    const T = slc.slabMM
-    const n = clamp(Math.ceil(T / Math.max(0.25, this.normalSpacing(sl.meta, sl.def.scroll))) + 1, 2, 160)
-    let acc = slc.slab === 'mip' ? -Infinity : slc.slab === 'minip' ? Infinity : 0
-    let cnt = 0
-    for (let s = 0; s < n; s++) {
-      const o = (s - (n - 1) / 2) * (T / (n - 1))
-      const v = nearest(sl.meta, vol, madd(p, sl.def.scroll, o))
-      if (v === null) continue
-      cnt++
-      if (slc.slab === 'mip') acc = Math.max(acc, v)
-      else if (slc.slab === 'minip') acc = Math.min(acc, v)
-      else acc += v
-    }
-    if (!cnt) return null
-    return slc.slab === 'avg' ? acc / cnt : acc
+    return probeHU(sl.meta, vol, p, sl.def.scroll, slc.slab, slc.slabMM)
   }
 
   private queueHover(x: number, y: number) {
@@ -678,6 +708,7 @@ export class SliceController {
 
   private onPointerMove = (e: PointerEvent) => {
     const { x, y } = this.local(e)
+    if (e.pointerType !== 'touch') this.lastPointer = { x, y }
     const pt = this.pointers.get(e.pointerId)
     if (pt) { pt.x = x; pt.y = y }
     if (this.pinch) { this.updatePinch(); return }
@@ -747,7 +778,9 @@ export class SliceController {
   }
 
   private onPointerLeave = (e: PointerEvent) => {
-    if (!this.drag && !this.pinch && e.pointerType !== 'touch') this.clearHover()
+    if (e.pointerType === 'touch') return
+    this.lastPointer = null
+    if (!this.drag && !this.pinch) this.clearHover()
   }
 
   private startPinch() {

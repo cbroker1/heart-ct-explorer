@@ -99,11 +99,6 @@ export function SectionCards(props: { manifest: Manifest; calcium: CalciumReport
           </a>
         ))}
       </div>
-      {read && (
-        <p className="ovw-read-teaser">
-          <b>AI second read:</b> {read.headline} <a href="#/read">Read it</a>
-        </p>
-      )}
     </section>
   )
 }

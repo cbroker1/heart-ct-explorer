@@ -18,7 +18,7 @@ export type Plane = 'axial' | 'coronal' | 'sagittal'
 
 export const SEVERITIES: Severity[] = [0, 1, 2, 3]
 export const SEV_TONE: Record<Severity, Tone> = { 0: 'green', 1: 'cyan', 2: 'amber', 3: 'red' }
-export const SEV_SHORT: Record<Severity, string> = { 0: 'Nothing to do', 1: 'Good to know', 2: 'Tell your doctor', 3: 'Prompt attention' }
+export const SEV_SHORT: Record<Severity, string> = { 0: 'Nothing to do', 1: 'Good to know', 2: 'Mention to your doctor', 3: 'Prompt attention' }
 
 export interface VerdictMeta { key: VerdictKey; label: string; short: string; tone: Tone; blurb: string }
 export const VERDICTS: VerdictMeta[] = [
@@ -95,6 +95,20 @@ export interface NFinding {
 }
 export interface NChecked { item: string; result: string; kind: 'ok' | 'na' | 'note' }
 export interface NMeasurement { name: string; value: string; reference: string; method: string }
+/** Something a specialist flagged that the skeptic panel then threw out (from `checked`). */
+export interface NDismissed { item: string; result: string; systemKey: string; systemTitle: string; anchor: string }
+/** How the read was produced (read.json `panel`); every count may be missing. */
+export interface NPanel {
+  reviewers: number | null
+  findingsExamined: number | null
+  skepticVotes: number | null
+  dismissed: number | null
+  merged: number | null
+  calciumAdjudicators: number | null
+  imagesRendered: number | null
+  agents: number | null
+  toolCalls: number | null
+}
 export interface NSystem {
   key: string
   anchor: string
@@ -102,6 +116,7 @@ export interface NSystem {
   status: string
   summary: string
   checked: NChecked[]
+  dismissed: NDismissed[]
   measurements: NMeasurement[]
   findings: NFinding[]
   images: NImage[]
@@ -109,6 +124,7 @@ export interface NSystem {
 export interface NReport {
   generated: string
   mock: boolean
+  panel: NPanel | null
   headline: string
   /** null when the report has no recognisable verdict (never guessed). */
   verdict: VerdictKey | null
@@ -122,6 +138,8 @@ export interface NReport {
   disclaimer: string
   /** All findings, flattened in report order. */
   findings: NFinding[]
+  /** Everything the skeptic panel threw out, flattened in report order. */
+  dismissed: NDismissed[]
 }
 
 // ------------------------------------------------------------------ coercion helpers
@@ -179,6 +197,42 @@ function image(v: unknown, fallbackCaption: string): NImage | null {
   const caption = typeof v === 'string' ? fallbackCaption : str(obj(v).caption, fallbackCaption)
   return { src, url: imageUrl(src), caption }
 }
+
+/** Short lowercase words that are real words, not acronyms, at the start of a caption. */
+const CAPTION_WORDS = new Set(['the', 'and', 'for', 'top', 'low', 'mid', 'all', 'two', 'one', 'new', 'old', 'raw', 'end', 'see', 'via', 'per', 'map', 'row', 'set', 'sum', 'max', 'min', 'fat', 'air', 'rib', 'arm', 'leg', 'hip', 'key', 'fig'])
+const CAPTION_INDEX_RE = /^(?:atlas\s+)?\d{1,3}\s+(?=\S)/i
+/**
+ * The reviewers' file-name-style captions ("40 KEY mediastinum labeled levels", "atlas 01 coverage ...")
+ * made readable: a numeric index shared by the whole gallery and KEY/FIG/FINDING markers are dropped,
+ * a leading acronym ("lll", "gej") is upper-cased and the first letter capitalised. Wording is kept.
+ */
+function tidyCaptions(images: NImage[]): NImage[] {
+  const indexed = images.length > 1 && images.every((im) => CAPTION_INDEX_RE.test(im.caption))
+  return images.map((im) => {
+    let t = im.caption.replace(/\s+/g, ' ').trim()
+    if (indexed) t = t.replace(CAPTION_INDEX_RE, '')
+    t = t.replace(/^(?:KEY|FIG|FINDING)(?:\s+|\s*[:_-]\s*)(?=\S)/, '')
+    const lead = /^[a-z]{2,3}\d*(?=\s|$)/.exec(t)
+    if (lead && !CAPTION_WORDS.has(lead[0])) t = lead[0].toUpperCase() + t.slice(lead[0].length)
+    return { ...im, caption: t ? t[0].toUpperCase() + t.slice(1) : t }
+  })
+}
+
+const PANEL_KEYS = ['reviewers', 'findingsExamined', 'skepticVotes', 'dismissed', 'merged', 'calciumAdjudicators', 'imagesRendered', 'agents', 'toolCalls'] as const
+function panel(v: unknown): NPanel | null {
+  if (!isObj(v)) return null
+  const out = {} as NPanel
+  let any = false
+  for (const k of PANEL_KEYS) {
+    const n = num(v[k])
+    out[k] = n !== null && n >= 0 ? Math.round(n) : null
+    if (out[k] !== null) any = true
+  }
+  return any ? out : null
+}
+
+/** `checked` items that record something the skeptic panel threw out. */
+const DISMISSED_RE = /^\s*(?:considered and\s+)?(?:dismissed|rejected|refuted|thrown out)\s+by\s+(?:the\s+)?skeptics?(?:\s+panel)?\s*[:–—-]\s*/i
 
 function lps(v: unknown): Vec3 | null {
   const a = Array.isArray(v) ? v : typeof v === 'string' ? v.split(',') : null
@@ -254,7 +308,8 @@ export function normalizeReport(raw: unknown): NReport {
         category,
         severity: sev(f.severity),
         confidence: conf(f.confidence),
-        recommendation: text(f.recommendation),
+        // A bare "None." adds nothing to the severity ("Nothing to do"), so no recommendation box is shown.
+        recommendation: /^(?:none|n\/a|-+)\.?$/i.test(text(f.recommendation)) ? '' : text(f.recommendation),
         measurements: text(f.measurements),
         status,
         votes,
@@ -267,23 +322,33 @@ export function normalizeReport(raw: unknown): NReport {
       return nf
     })
 
-    const checked: NChecked[] = arr(s.checked).map((c) => {
-      if (typeof c === 'string') return { item: c, result: '', kind: 'note' as const }
+    const checked: NChecked[] = []
+    const dismissed: NDismissed[] = []
+    for (const c of arr(s.checked)) {
       const o = obj(c)
-      const result = text(o.result)
-      return { item: text(o.item) || '(unnamed check)', result, kind: checkedKind(result) }
-    }).filter((c) => c.item)
+      const item = typeof c === 'string' ? c.trim() : text(o.item)
+      const result = typeof c === 'string' ? '' : text(o.result)
+      const d = DISMISSED_RE.exec(item)
+      if (d && item.slice(d[0].length).trim()) {
+        dismissed.push({ item: item.slice(d[0].length).trim(), result, systemKey: key, systemTitle: title, anchor })
+        continue
+      }
+      if (typeof c === 'string') { if (item) checked.push({ item, result: '', kind: 'note' }); continue }
+      checked.push({ item: item || '(unnamed check)', result, kind: checkedKind(result) })
+    }
 
+    // "-" / "n/a" placeholders carry no information, so they are treated as empty.
+    const blank = (t: string) => (/^(?:-+|–|—|n\/?a|none)$/i.test(t) ? '' : t)
     const measurements: NMeasurement[] = arr(s.measurements).filter(isObj).map((m) => ({
       name: text(m.name) || '(unnamed)',
       value: text(m.value),
-      reference: text(m.reference),
-      method: text(m.method),
+      reference: blank(text(m.reference)),
+      method: blank(text(m.method)),
     }))
 
-    const images = arr(s.images).map((im) => image(im, '')).filter((x): x is NImage => !!x)
+    const images = tidyCaptions(arr(s.images).map((im) => image(im, '')).filter((x): x is NImage => !!x))
 
-    return { key, anchor, title, status: str(s.status).toLowerCase() || 'normal', summary: text(s.summary), checked, measurements, findings, images }
+    return { key, anchor, title, status: str(s.status).toLowerCase() || 'normal', summary: text(s.summary), checked, dismissed, measurements, findings, images }
   })
   all.forEach((f, i) => { f.n = i + 1 })
 
@@ -304,6 +369,7 @@ export function normalizeReport(raw: unknown): NReport {
   return {
     generated,
     mock: r.mock === true || generated.toUpperCase() === 'MOCK',
+    panel: panel(r.panel),
     headline: text(r.headline),
     verdict,
     impression,
@@ -315,6 +381,7 @@ export function normalizeReport(raw: unknown): NReport {
     method: text(r.method),
     disclaimer: text(r.disclaimer),
     findings: all,
+    dismissed: systems.flatMap((s) => s.dismissed),
   }
 }
 
@@ -323,10 +390,11 @@ export interface LoadedReport { report: NReport; file: string; isMock: boolean }
 
 const looksLikeReport = (v: unknown) => isObj(v) && (Array.isArray(v.systems) || typeof v.headline === 'string')
 
-/** read.json (listed in the manifest or not), falling back to read.mock.json. */
+/** read.json (the manifest's `files.read` first, then the default name). */
 export async function loadReport(manifest: Manifest): Promise<LoadedReport> {
   const listed = manifest.files?.read
   const tries = [...new Set([listed, 'read.json'].filter((x): x is string => !!x))]
+  let lastError: unknown = null
   for (const file of tries) {
     try {
       const raw = await loadJSON(file)
@@ -334,12 +402,12 @@ export async function loadReport(manifest: Manifest): Promise<LoadedReport> {
         const report = normalizeReport(raw)
         return { report, file, isMock: report.mock }
       }
-    } catch {
-      /* not produced yet: fall through to the mock */
+      lastError = new Error(`${file} does not look like an AI read report.`)
+    } catch (e) {
+      lastError = e
     }
   }
-  const raw = await loadJSON('read.mock.json')
-  return { report: normalizeReport(raw), file: 'read.mock.json', isMock: true }
+  throw lastError ?? new Error('No AI read file is listed.')
 }
 
 // ------------------------------------------------------------------ exam.json (topograms)
@@ -421,7 +489,31 @@ export function formatDicomDate(s: unknown): string {
 }
 
 export const pct = (v: number) => `${Math.round(v * 100)}%`
-export const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`
+/** Thousands separators, matching the English copy ("1,037"). */
+export const fmtInt = (n: number) => Math.round(n).toLocaleString('en-US')
+export const plural = (n: number, one: string, many = `${one}s`) => `${fmtInt(n)} ${n === 1 ? one : many}`
+
+/** Skeptics per examined finding: exact from the panel totals, else the most common vote count. */
+export function skepticsPerFinding(p: NPanel | null, findings: NFinding[]): number | null {
+  if (p?.skepticVotes && p.findingsExamined && p.skepticVotes % p.findingsExamined === 0) return p.skepticVotes / p.findingsExamined
+  return mode(findings.filter((f) => f.votes.length > 0).map((f) => f.votes.length))
+}
+
+/** "8 AI specialists · 1,037 images inspected · 7 findings cross-examined by 3 skeptics each (21 votes) · 2 thrown out" */
+export function describePanel(p: NPanel, systems: number, perFinding: number | null): string {
+  const parts: string[] = []
+  const reviewers = p.reviewers ?? systems
+  if (reviewers) parts.push(plural(reviewers, 'AI specialist'))
+  if (p.imagesRendered) parts.push(`${fmtInt(p.imagesRendered)} images inspected`)
+  if (p.findingsExamined === 0) parts.push('nothing needed cross-examining')
+  else if (p.findingsExamined) {
+    const by = perFinding ? ` by ${plural(perFinding, 'skeptic')}${p.findingsExamined > 1 ? ' each' : ''}` : ' by AI skeptics'
+    const votes = p.skepticVotes ? ` (${plural(p.skepticVotes, 'vote')})` : ''
+    parts.push(`${plural(p.findingsExamined, 'finding')} cross-examined${by}${votes}`)
+    if (p.dismissed !== null) parts.push(`${fmtInt(p.dismissed)} thrown out`)
+  }
+  return parts.join(' · ')
+}
 
 /** The most common value (ties go to the larger value). */
 export function mode(xs: number[]): number | null {

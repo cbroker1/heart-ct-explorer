@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useWidth } from './hooks'
+import { scrollToId, useWidth } from './hooks'
 import {
   CAC_CATEGORIES, cacCategory, fmtNum, fmtScore, groupName, percentileBracket, pct,
 } from './model'
@@ -21,11 +21,13 @@ function CalStat(props: { k: string; v: ReactNode; unit?: string; hint: string; 
 export function StatusChip({ vm }: { vm: CalciumVM }) {
   const { report } = vm
   if (report.reviewed) {
-    const n = report.adjudication?.reviewers?.length
+    const n = vm.reviewers.length || report.adjudication?.reviewers?.length
+    const unanimous = !!vm.votes?.unanimousAll && (n ?? 0) > 1
     return (
-      <span className="chip good cal-status" title="Borderline candidates were judged by independent AI reviewers after the automatic rules.">
+      <span className="chip good cal-status"
+        title={`After the automatic rules, independent AI reviewers voted on every candidate${unanimous ? ', and every vote agreed' : ''}.`}>
         <span className="dot" style={{ background: 'var(--green)' }} />
-        {n ? `Adjudicated by ${n} independent AI reviewer${n === 1 ? '' : 's'}` : 'Adjudicated by AI reviewers'}
+        {n ? `${n} independent AI reviewer${n === 1 ? '' : 's'}${unanimous ? ' · unanimous' : ''}` : 'Adjudicated by AI reviewers'}
       </span>
     )
   }
@@ -85,6 +87,26 @@ function ScoreScale({ score, official, worst }: { score: number; official: numbe
         </div>
       )}
     </div>
+  )
+}
+
+/** "All 3 reviewers independently estimate 0, 87–94% sure it's truly zero. Meet the panel" */
+function PanelLine({ vm }: { vm: CalciumVM }) {
+  const rs = vm.reviewers
+  if (!vm.report.reviewed || !rs.length) return null
+  const ests = rs.map((r) => r.estimate).filter((e): e is number => e !== null)
+  const same = ests.length === rs.length && ests.every((e) => e === ests[0])
+  const confs = rs.map((r) => r.confZero).filter((c): c is number => c !== null)
+  const lo = confs.length ? Math.min(...confs) : null
+  const hi = confs.length ? Math.max(...confs) : null
+  return (
+    <p className="cal-panel-line">
+      {same
+        ? <>{rs.length > 1 ? `All ${rs.length} reviewers` : 'The reviewer'} independently estimate <b>{fmtScore(ests[0])}</b></>
+        : <>Reviewer estimates: <b>{ests.map((e) => fmtScore(e)).join(', ')}</b></>}
+      {lo !== null && hi !== null ? <>, each {Math.round(lo * 100) === Math.round(hi * 100) ? pct(lo) : `${Math.round(lo * 100)}–${pct(hi)}`} sure the true score is 0</> : null}.{' '}
+      <button type="button" className="cal-linkbtn" onClick={() => scrollToId('cal-panel')}>Meet the panel ↓</button>
+    </p>
   )
 }
 
@@ -198,6 +220,7 @@ export default function Hero({ vm, official }: { vm: CalciumVM; official: number
             </div>
           </div>
           <StatusChip vm={vm} />
+          <PanelLine vm={vm} />
           <div className="cal-hero-stats">
             <CalStat k="Volume score" v={fmtNum(t.volume_mm3, 1)} unit="mm³" hint={`calcium volume ≥${method.threshold} HU`}
               title={`Total volume of coronary calcium at or above ${method.threshold} HU, in cubic millimetres`} />

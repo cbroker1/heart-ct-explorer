@@ -6,6 +6,10 @@ import {
   blobsPerSlice, candidateScore, countBy, denseBand, parseSteps, readMethod, sortCandidates, stepSeams,
   type ExamJson, type Method,
 } from './model'
+import {
+  normalizeReport, readCrossCheck, readOutside, readReviewers, voteStats,
+  type CrossCheck, type OutsideFinding, type ReviewerInfo, type VoteStats,
+} from './adjudication'
 
 export interface CalciumVM {
   manifest: Manifest
@@ -29,6 +33,15 @@ export interface CalciumVM {
   maxPeak: number
   sliceZ: (k: number) => number | null
   isMock: string | null
+  /** AI adjudication panel (empty / null when the report is not reviewed yet) */
+  reviewers: ReviewerInfo[]
+  votes: VoteStats | null
+  cross: CrossCheck | null
+  outside: OutsideFinding[]
+  /** candidates no triage rule could dismiss (ruleClass === 'review'), whatever their final verdict */
+  borderline: CalciumCandidate[]
+  /** score if every borderline candidate had been coronary */
+  borderlineWorst: number
 }
 
 type Loaded = { report: CalciumReport; exam: ExamJson | null; mock: string | null }
@@ -52,10 +65,10 @@ async function load(calFile: string, examFile: string | undefined): Promise<Load
     mock = mockMode()
     if (mock) {
       const { applyDevMock } = await import('./devMock')
-      return { report: applyDevMock(report, mock), exam, mock }
+      return { report: normalizeReport(applyDevMock(report, mock)), exam, mock }
     }
   }
-  return { report, exam, mock }
+  return { report: normalizeReport(report), exam, mock }
 }
 
 export function useCalciumData(manifest: Manifest) {
@@ -96,6 +109,8 @@ export function useCalciumData(manifest: Manifest) {
     const perSlice = blobsPerSlice(report.candidates, nSlices)
     const nSteps = parseSteps(exam?.dose?.mode)
     const sliceZ = (k: number) => (vol ? indexToLps(vol, [0, 0, k])[2] : null)
+    const reviewers = report.reviewed ? readReviewers(report) : []
+    const borderline = candidates.filter((c) => c.ruleClass === 'review')
     return {
       manifest,
       report,
@@ -117,6 +132,12 @@ export function useCalciumData(manifest: Manifest) {
       maxPeak: Math.max(0, ...report.candidates.map((c) => c.peakHU)),
       sliceZ,
       isMock: d.mock,
+      reviewers,
+      votes: report.reviewed ? voteStats(report.candidates, reviewers) : null,
+      cross: report.reviewed ? readCrossCheck(report) : null,
+      outside: report.reviewed ? readOutside(report, manifest) : [],
+      borderline,
+      borderlineWorst: borderline.reduce((s, c) => s + candidateScore(c, method), 0),
     }
   }, [state.data, manifest])
 

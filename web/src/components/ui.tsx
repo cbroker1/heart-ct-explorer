@@ -50,9 +50,9 @@ export function Segmented<T extends string>(props: {
   onChange: (v: T) => void
 }) {
   return (
-    <div className="seg" role="tablist">
+    <div className="seg" role="group">
       {props.options.map((o) => (
-        <button key={o.value} className={o.value === props.value ? 'on' : ''} title={o.title} onClick={() => props.onChange(o.value)}>
+        <button key={o.value} type="button" aria-pressed={o.value === props.value} className={o.value === props.value ? 'on' : ''} title={o.title} onClick={() => props.onChange(o.value)}>
           {o.label}
         </button>
       ))}

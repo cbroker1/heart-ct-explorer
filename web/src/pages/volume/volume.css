@@ -108,6 +108,7 @@
 .vol-pin-x:hover { color: var(--text); }
 .vol-pin-name { font-weight: 700; font-size: 15px; margin: 2px 0 2px; padding-right: 18px; }
 .vol-pin-row { font-size: 13px; margin-bottom: 2px; }
+.vol-pin-also { font-size: 12px; margin-bottom: 2px; line-height: 1.4; }
 .vol-pin-lps { font-size: 11px; margin-bottom: 8px; }
 .vol-hint {
   position: absolute; left: 50%; bottom: 36px; transform: translateX(-50%); z-index: 2; pointer-events: none;
@@ -116,7 +117,12 @@
   transition: opacity 0.8s ease 1.5s;
 }
 .vol-hint.gone { opacity: 0; }
-.vol-hover { line-height: 1.45; }
+.vol-hint-touch { display: none; }
+@media (hover: none) and (pointer: coarse) {
+  .vol-hint-mouse { display: none; }
+  .vol-hint-touch { display: inline; }
+}
+.vol-hover { line-height: 1.45; left: 0; top: 0; }
 
 .vol-error { position: absolute; inset: 0; z-index: 6; display: grid; place-items: center; background: rgba(7, 9, 13, 0.7); padding: 16px; }
 .vol-error .card { max-width: 520px; }
@@ -142,7 +148,9 @@
 .vol-preset .tg { font-size: 10.5px; color: var(--muted); line-height: 1.25; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .vol-blurb { font-size: 12.5px; color: var(--muted); margin: 0; line-height: 1.55; }
 .vol-cap { font-size: 11px; color: var(--faint); margin: 4px 0 8px; line-height: 1.45; }
-.vol-tf { width: 100%; border-radius: 10px; background: rgba(255, 255, 255, 0.025); border: 1px solid var(--line); padding: 4px 0 0; overflow: hidden; touch-action: none; }
+/* horizontal drag slides the transfer function; a vertical swipe still scrolls the panel on phones */
+.vol-tf { width: 100%; border-radius: 10px; background: rgba(255, 255, 255, 0.025); border: 1px solid var(--line); padding: 4px 0 0; overflow: hidden; touch-action: pan-y; }
+.vol-side .vol-tf canvas { touch-action: pan-y; }
 .vol-sliders { display: grid; gap: 8px; margin: 6px 0 8px; }
 .vol-resetbtn { margin-top: 4px; }
 .vol-views-side { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 8px; }
@@ -179,10 +187,15 @@
   .vol-cube-wrap { width: 56px; height: 56px; }
   .vol-cube { --h: 21px; width: 42px; height: 42px; }
   .vol-face { font-size: 7.5px; letter-spacing: 0.04em; border-radius: 5px; }
-  .vol-hint { display: none; }
+  .vol-hint {
+    left: 10px; right: 72px; bottom: 34px; transform: none; white-space: normal; text-align: center; text-wrap: balance;
+    font-size: 11.5px; line-height: 1.35; border-radius: 12px; padding: 5px 10px;
+  }
   .vol-pin { bottom: 10px; left: 10px; right: 70px; transform: none; min-width: 0; max-width: none; padding: 10px 12px; }
+  .vol-stage:has(.vol-pin) .vol-mark.b { visibility: hidden; }
   .vol-mark { font-size: 11px; }
-  .vol-mark.t { top: 44px; }
+  /* below the title row (its "AI labels" chip reaches the centre on a phone), right of the quick buttons */
+  .vol-mark.t { top: 58px; }
   .viewer .vol-side { width: auto; flex: 0 0 auto; padding: 10px 12px 24px; }
   .vol-presets-group { position: sticky; top: -10px; z-index: 3; margin: -10px -12px 12px; padding: 10px 12px 8px; background: #0a0d13; border-bottom: 1px solid var(--line); box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35); }
   .vol-presets-group .eyebrow { display: none; }

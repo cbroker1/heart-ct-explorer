@@ -29,6 +29,7 @@ export interface ModelViewerElement extends HTMLElement {
 export const MODEL_VIEWER_SRC = `${import.meta.env.BASE_URL}vendor/model-viewer-4.4.0.min.js`
 
 let pending: Promise<void> | null = null
+let failures = 0
 
 /** Inject the module script once; resolves when the custom element is defined. */
 export function loadModelViewer(timeoutMs = 30000): Promise<void> {
@@ -43,6 +44,7 @@ export function loadModelViewer(timeoutMs = 30000): Promise<void> {
     const script = existing ?? document.createElement('script')
     const fail = (msg: string) => {
       pending = null
+      failures++
       if (!existing) script.remove()
       reject(new Error(msg))
     }
@@ -57,7 +59,8 @@ export function loadModelViewer(timeoutMs = 30000): Promise<void> {
     })
     if (!existing) {
       script.type = 'module'
-      script.src = MODEL_VIEWER_SRC
+      // a module URL that failed once stays failed for this page, so a retry needs a fresh URL
+      script.src = failures ? `${MODEL_VIEWER_SRC}?retry=${failures}` : MODEL_VIEWER_SRC
       script.dataset.labCore = 'model-viewer'
       document.head.appendChild(script)
     }

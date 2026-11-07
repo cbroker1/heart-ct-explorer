@@ -94,7 +94,7 @@ export default function PrintShop() {
           {err && (
             <div className="lc-loading">
               <div className="box">
-                <div className="lc-err" style={{ marginBottom: 10 }}>The preview couldn't load ({err}). The download below still works.</div>
+                <div className="lc-err" style={{ marginBottom: 10 }}>The preview couldn't load ({err}).</div>
                 <button className="btn small" onClick={() => { setErr(null); setProg(null); setAttempt((a) => a + 1) }}>Try again</button>
               </div>
             </div>
@@ -138,7 +138,7 @@ export default function PrintShop() {
             <Spec v={tris ? tris.toLocaleString('en-US') : '…'} k="Triangles" />
             <Spec
               v={info ? (info.watertight ? 'Watertight' : 'Has holes') : '…'}
-              k={info?.watertight ? 'Closed surface: slicers can fill it' : 'Needs a repair pass'}
+              k={!info ? 'Closed surface?' : info.watertight ? 'Closed surface: slicers can fill it' : 'Needs a repair pass'}
               ok={!!info?.watertight}
               icon={info?.watertight ? <IconCheck width={16} height={16} style={{ verticalAlign: '-3px', marginRight: 4 }} /> : null}
             />
@@ -158,7 +158,7 @@ export default function PrintShop() {
                   <a key={s.name} className="btn small" href={dataUrl(`mesh/${s.file}`)} download={`my-${s.name.replace('_', '-')}.stl`}
                     title={s.watertight ? 'Watertight' : 'Not watertight: run a mesh repair (e.g. in your slicer) before printing'}>
                     <IconDownload width={14} height={14} /> {PRETTY[s.name] ?? s.name}
-                    <span className="faint" style={{ fontWeight: 500 }}>{(s.sizeMM[0] / 10).toFixed(0)} cm{s.watertight ? '' : ' · needs repair'}</span>
+                    <span className="faint" style={{ fontWeight: 500 }}>{(s.sizeMM[0] / 10).toFixed(0)} cm wide{s.watertight ? '' : ' · needs repair'}</span>
                   </a>
                 ))}
               </div>
@@ -172,8 +172,8 @@ export default function PrintShop() {
 
       <div className="lc-tips">
         <Tip icon={<IconRuler />} title="Print at 100% = life size">
-          The STL is in <b>millimetres</b>, so don't rescale on import. At {size ? `${(Math.max(...size) / 10).toFixed(0)} cm` : '14 cm'} tall it fits
-          any bed of 18 × 18 cm or more.
+          The STL is in <b>millimetres</b>, so don't rescale on import. At about {size ? `${(Math.max(...size) / 10).toFixed(0)} cm` : '14 cm'} on
+          its longest side it fits any bed of 18 × 18 cm or more.
         </Tip>
         <Tip icon={<IconRotate />} title="Stand it up">
           The file's "up" is my head (+Y); slicers use +Z, so it imports lying on its back. Rotate <b>90° about X</b> to stand it on
@@ -200,6 +200,7 @@ export default function PrintShop() {
         <p className="faint" style={{ fontSize: 12, marginTop: 10, display: 'flex', gap: 6, alignItems: 'flex-start' }}>
           <IconAlert width={14} height={14} style={{ flex: '0 0 auto', marginTop: 2 }} />
           The bonus rib-cage and lung files are open meshes (the scan cuts them off at the top and bottom), so run a repair (e.g. the slicer's "fix model") first.
+          {others.some((s) => Math.max(...s.sizeMM) > 250) ? ' At life size they are also bigger than most print beds, so scale them down.' : ''}
         </p>
       )}
     </div>

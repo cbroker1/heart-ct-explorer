@@ -151,7 +151,9 @@ export function posLabel(axis: ClipAxis, v: number) {
   return `${a} mm to the ${v > 0 ? 'left' : 'right'}`
 }
 
-function ClipSection({ ct }: { ct: { loading: boolean; loaded: number; total: number; error: string | null; ready: boolean } }) {
+type CTStatus = { loading: boolean; loaded: number; total: number; error: string | null; ready: boolean; retry?: () => void }
+
+function ClipSection({ ct }: { ct: CTStatus }) {
   const clip = useAnat((s) => s.clip)
   const setClip = useAnat((s) => s.setClip)
   const setClipPos = useAnat((s) => s.setClipPos)
@@ -195,7 +197,12 @@ function ClipSection({ ct }: { ct: { loading: boolean; loaded: number; total: nu
             <span className="mono">Loading CT · {pct}%</span>
           </div>
         )}
-        {ct.error && <p className="ana-err">Could not load the CT volume: {ct.error}</p>}
+        {ct.error && (
+          <p className="ana-err">
+            Could not load the CT volume ({ct.error}). The cut still works, with plain coloured faces.{' '}
+            {ct.retry && <button className="btn small" onClick={ct.retry}>Retry</button>}
+          </p>
+        )}
         {clip.enabled && ct.ready && clip.slice !== 'off' && (
           <p className="ana-note">Hover the cut to read the CT density (Hounsfield units, HU). The image is the 1.5 mm “render” volume, with the sharper 0.6 mm heart series blended in around the heart.</p>
         )}
@@ -261,18 +268,18 @@ function LayersSection({ calcium }: { calcium: CalciumReport | null }) {
 export function Sidebar({ manifest, calcium, ct }: {
   manifest: Manifest
   calcium: CalciumReport | null
-  ct: { loading: boolean; loaded: number; total: number; error: string | null; ready: boolean }
+  ct: CTStatus
 }) {
   const nodes = useAnat((s) => s.nodes)
   const nShown = useAnat((s) => s.nodes.filter((n) => s.visible[n.name] && effectiveOpacity(n, s) > 0.01).length)
-  const slabCM = useMemo(() => ((manifest.labels.dims[2] * manifest.labels.spacing[2]) / 10).toFixed(1), [manifest])
+  const slabCM = useMemo(() => (((manifest.labels.dims[2] - 1) * manifest.labels.spacing[2] + 1.5) / 10).toFixed(1), [manifest])   // centre span + one 1.5 mm slice
   return (
     <aside className="side ana-side" aria-label="3D anatomy controls">
       <header className="ana-head">
         <div className="eyebrow">3D anatomy · AI segmentation</div>
         <h2>Inside my chest</h2>
         <p className="muted">
-          {nodes.length} structures traced by AI on my CT and turned into 3D surfaces, in true millimetres.
+          {nodes.filter((n) => n.name !== 'heart').length} structures (plus a whole-heart shell) traced by AI on my CT and turned into 3D surfaces, in true millimetres.
           The scan covers a {slabCM} cm tall slab around the heart.
         </p>
         <div className="ana-head-stat mono" title="Structures currently drawn in the 3D view">

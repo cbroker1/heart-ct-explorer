@@ -229,6 +229,40 @@
 
 /* ---------------------------------------------------------------- impression + calcium */
 .rd-row-imp { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(280px, 1fr); gap: 18px; align-items: start; animation: rd-rise 0.7s 0.12s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.rd-imp-side { display: grid; gap: 18px; min-width: 0; }
+
+/* ---------------------------------------------------------------- thrown out by the skeptics */
+.rd-tossed { padding: 18px 18px 14px; }
+.rd-tossed-top { display: flex; gap: 12px; align-items: flex-start; }
+.rd-tossed .eyebrow { color: var(--violet); }
+.rd-tossed-ic {
+  flex: none; width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center;
+  color: var(--violet); background: rgba(160, 139, 255, 0.13);
+}
+.rd-tossed-lead { margin: 5px 0 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+.rd-tossed-links { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 6px; }
+.rd-tossed-links button {
+  appearance: none; width: 100%; display: grid; gap: 3px; text-align: left; cursor: pointer;
+  padding: 9px 12px; border-radius: 10px; border: 1px dashed var(--line-2); background: rgba(255, 255, 255, 0.02);
+  color: var(--text); font: inherit; transition: border-color 0.15s, background 0.15s;
+}
+.rd-tossed-links button:hover { border-color: rgba(160, 139, 255, 0.5); background: rgba(160, 139, 255, 0.06); }
+.rd-tossed-item {
+  font-size: 13.5px; font-weight: 600; line-height: 1.4; color: var(--rd-text-2);
+  text-decoration: line-through; text-decoration-color: rgba(255, 255, 255, 0.4); text-decoration-thickness: 1px;
+}
+.rd-tossed-sys { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--muted); }
+.rd-tossed-sys svg { color: var(--faint); transition: transform 0.15s; }
+.rd-tossed-links button:hover .rd-tossed-sys svg { transform: translateX(2px); color: var(--violet); }
+/* per-system version */
+.rd-tossed-note {
+  display: flex; gap: 12px; align-items: flex-start; margin-top: 12px; padding: 12px 14px; border-radius: 12px;
+  border: 1px dashed rgba(160, 139, 255, 0.4); background: rgba(160, 139, 255, 0.05);
+}
+.rd-tossed-h { font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--violet); margin-top: 1px; }
+.rd-tossed-list { list-style: none; margin: 5px 0 0; padding: 0; display: grid; gap: 3px; }
+.rd-tossed-res { font-size: 12.5px; color: var(--muted); }
+.rd-tossed-why { margin: 6px 0 0; font-size: 12.5px; color: var(--faint); line-height: 1.5; }
 .rd-impression { padding: 20px; }
 .rd-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
 .rd-imp-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
@@ -302,6 +336,8 @@
 .rd-glance-sum {
   grid-area: sum; margin: 0; font-size: 13px; color: var(--muted); line-height: 1.45;
   display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  /* not stretched to the 1fr row, or lines past the clamp show below the ellipsis in taller cards */
+  align-self: start;
 }
 .rd-glance-foot {
   grid-area: foot; align-self: end; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center;
@@ -466,17 +502,35 @@ span.rd-pin { cursor: default; }
 .rd-skeptics-ic { flex: none; width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; color: var(--violet); background: rgba(160, 139, 255, 0.13); }
 .rd-skeptics-head .rd-label { margin-bottom: 3px; }
 .rd-skeptics-sum { font-size: 14px; color: var(--rd-text-2); }
-.rd-votes { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
-.rd-vote { --v: var(--violet); --v-rgb: 160, 139, 255; padding: 12px; border-radius: 12px; background: rgba(255, 255, 255, 0.025); border: 1px solid var(--line); }
+.rd-votes { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; align-items: start; }
+.rd-votes.has-open { grid-template-columns: minmax(0, 1fr); }
+.rd-vote { --v: var(--violet); --v-rgb: 160, 139, 255; padding: 12px; border-radius: 12px; background: rgba(255, 255, 255, 0.025); border: 1px solid var(--line); min-width: 0; scroll-margin-top: 16px; }
+.rd-vote.open { border-color: rgba(var(--v-rgb), 0.38); background: rgba(var(--v-rgb), 0.045); }
 .rd-vote.refuted { --v: #b6c0cd; --v-rgb: 182, 192, 205; }
 .rd-vote-head { display: flex; align-items: center; gap: 8px; font-size: 13.5px; }
 .rd-vote-ic { flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; color: var(--v); background: rgba(var(--v-rgb), 0.16); }
 .rd-vote-q { font-size: 12px; color: var(--faint); margin-top: 6px; font-style: italic; line-height: 1.4; }
 .rd-vote-verdict { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--v); margin-top: 9px; }
-.rd-vote-note { margin: 4px 0 0; font-size: 13px; color: #c7d1dd; line-height: 1.5; }
+/* The notes are long Markdown-ish essays: a 6-line opening, then "Read the full note". */
+.rd-vote-note { margin: 4px 0 0; font-size: 13px; color: #c7d1dd; line-height: 1.5; overflow-wrap: anywhere; }
+.rd-vote-note p { margin: 0 0 0.6em; }
+.rd-vote-note p:last-child, .rd-vote-note ul:last-child { margin-bottom: 0; }
+.rd-vote-note ul { margin: 0 0 0.6em; padding-left: 18px; }
+.rd-vote-note li + li { margin-top: 2px; }
+.rd-vote-note strong { color: var(--text); font-weight: 650; }
+.rd-vote-note code { font-size: 0.92em; color: var(--cyan-2); }
+.rd-vote-note.clamped { max-height: 9em; overflow: hidden; }
+.rd-vote-note.faded { -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent); mask-image: linear-gradient(180deg, #000 55%, transparent); }
+.rd-vote.open .rd-vote-note { font-size: 13.5px; line-height: 1.6; max-width: 92ch; }
+.rd-vote-more {
+  appearance: none; display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; padding: 3px 0; cursor: pointer;
+  border: 0; background: none; color: var(--v); font: 600 12.5px var(--font);
+}
+.rd-vote-more:hover { text-decoration: underline; }
 
 /* ---------------------------------------------------------------- checked + measurements */
-.rd-sys-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 14px; margin-top: 20px; align-items: start; }
+/* Stacked full width: both tables carry long text and need every pixel of the column. */
+.rd-sys-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; margin-top: 20px; align-items: start; }
 .rd-checked, .rd-measure { padding: 0; overflow: hidden; }
 .rd-collapse-head {
   appearance: none; width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer;
@@ -499,8 +553,26 @@ button.rd-collapse-head:hover { background: rgba(255, 255, 255, 0.025); }
 .rd-checked-table tr.k-ok .rd-result-ic { color: var(--green); }
 .rd-checked-table tr.k-na td { color: var(--faint); }
 .rd-checked-table tr.k-note .rd-result-ic { color: var(--cyan); }
-.rd-mval { font-weight: 600; color: var(--text); white-space: nowrap; }
-.rd-mmethod { color: var(--faint); font-size: 12.5px; }
+/* measurements: lab-report layout, every cell wraps (values can be long monospace runs) */
+.rd-measure-table { table-layout: fixed; }
+.rd-measure-table th:nth-child(1) { width: 34%; }
+.rd-measure-table.has-ref th:nth-child(2) { width: 36%; }
+.rd-measure-table td { overflow-wrap: anywhere; }
+.rd-mname-cell > span, .rd-mval-cell > span, .rd-mref-cell > span { display: block; }
+.rd-mname { font-weight: 600; color: var(--text); line-height: 1.4; }
+.rd-mmethod { color: var(--faint); font-size: 12px; line-height: 1.45; margin-top: 4px; }
+.rd-mlabel { color: var(--muted); font-weight: 600; }
+.rd-mval { font-weight: 600; color: var(--text); font-size: 12.5px; line-height: 1.55; }
+.rd-mval-line { display: block; }
+.rd-mval-line + .rd-mval-line { margin-top: 2px; }
+.rd-mref { color: var(--rd-text-2); font-size: 12.5px; line-height: 1.5; }
+.rd-mref .rd-mlabel { display: none; }
+.rd-more {
+  appearance: none; width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;
+  padding: 10px 14px; border: 0; border-top: 1px solid var(--line); background: rgba(255, 255, 255, 0.02);
+  color: var(--cyan-2); font: 600 13px var(--font); transition: background 0.15s;
+}
+.rd-more:hover { background: rgba(56, 214, 255, 0.07); }
 
 /* ---------------------------------------------------------------- galleries & thumbnails */
 .rd-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
@@ -535,6 +607,11 @@ button.rd-collapse-head:hover { background: rgba(255, 255, 255, 0.025); }
 .rd-limits { margin: 0; padding-left: 18px; display: grid; gap: 7px; font-size: 14px; color: var(--rd-text-2); line-height: 1.5; }
 .rd-series { display: flex; flex-wrap: wrap; gap: 6px; }
 .rd-series-chip { font-size: 12px; padding: 3px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.045); border: 1px solid var(--line); color: var(--muted); cursor: help; }
+.rd-panel-facts .rd-series-chip { cursor: help; }
+.rd-panel-facts b { color: var(--text); font-weight: 650; }
+.rd-error { max-width: 640px; margin: 40px auto 0; border-color: rgba(255, 92, 92, 0.4); }
+.rd-error h3 { color: var(--danger); }
+.rd-error-detail { font-size: 12px; white-space: pre-wrap; color: var(--faint); overflow-wrap: anywhere; }
 .rd-funnel-bar { display: flex; gap: 2px; height: 10px; border-radius: 6px; overflow: hidden; margin: 2px 0 9px; }
 .rd-funnel-bar > div { background: var(--tone); min-width: 6px; }
 .rd-funnel-bar > .k-refuted { background: repeating-linear-gradient(45deg, #5b6676 0 4px, #39424f 4px 8px); }
@@ -623,6 +700,7 @@ button.rd-collapse-head:hover { background: rgba(255, 255, 255, 0.025); }
 }
 @media (max-width: 920px) {
   .rd-row-imp, .rd-glance-row { grid-template-columns: minmax(0, 1fr); }
+  .rd-imp-side { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); align-items: start; }
   .rd-map-views { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
 }
 @media (max-width: 760px) {
@@ -701,8 +779,15 @@ button.rd-collapse-head:hover { background: rgba(255, 255, 255, 0.025); }
   table.rd-table td, table.rd-table td:first-child, table.rd-table td:last-child { border: 0; padding: 1px 0; }
   table.rd-table tbody tr:hover td { background: none; }
   .rd-checked-table td:first-child { font-weight: 600; margin-bottom: 3px; }
-  .rd-measure-table td:first-child { font-weight: 600; }
-  .rd-measure-table td + td::before { content: attr(data-label) ': '; color: var(--faint); font-family: var(--font); font-weight: 500; font-size: 12px; }
+  /* measurement rows: name, value, reference, then how it was measured */
+  table.rd-measure-table tr { display: flex; flex-direction: column; gap: 3px; }
+  table.rd-measure-table td { display: contents; }
+  .rd-mname { order: 1; }
+  .rd-mval { order: 2; font-size: 13px; }
+  .rd-mref { order: 3; }
+  .rd-mref .rd-mlabel { display: inline; }
+  .rd-mref-none { display: none !important; }
+  .rd-mmethod { order: 4; margin-top: 1px; }
 }
 
 /* ---------------------------------------------------------------- print / save as PDF */
@@ -754,10 +839,27 @@ button.rd-collapse-head:hover { background: rgba(255, 255, 255, 0.025); }
   .rd-stat-v { font-size: 18pt; }
 
   .rd-body.wide { display: block; }
-  .rd-row-imp { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) !important; }
+  /* impression full width (a narrow column ran over three pages); calcium + "thrown out" side by side below */
+  .rd-row-imp { grid-template-columns: minmax(0, 1fr) !important; gap: 10px; }
+  .rd-imp-side { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; align-items: start; }
+  .rd-imp-side > :only-child { grid-column: 1 / -1; }
+  .rd-imp-text { font-size: 10.5pt; }
+  .rd-imp { padding: 8px 10px 8px 14px; }
+  .rd-imp-list { gap: 6px; }
   .rd-glance-row { grid-template-columns: minmax(0, 1fr) !important; }
   .rd-glance { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
-  .rd-glance-sum { -webkit-line-clamp: unset; line-clamp: unset; display: block; }
+  /* each system section prints its full summary, so the overview cards keep a 3-line teaser */
+  .rd-glance-sum { -webkit-line-clamp: 3; line-clamp: 3; }
+  .rd-tossed-item, .rd-finding.refuted .rd-finding-title { text-decoration-color: rgba(0, 0, 0, 0.45) !important; }
+  .rd-tossed-links button { border-color: #c9cfd8 !important; }
+  .rd-tossed-note { background: #fff !important; border-color: #b9aef0 !important; }
+  /* the long tables: denser type so the record stays complete without running to dozens of pages */
+  table.rd-table { font-size: 8.5pt; }
+  table.rd-table th { font-size: 7pt; padding: 5px 6px; }
+  table.rd-table td { padding: 5px 6px; }
+  .rd-mname, .rd-mval { font-size: 8.5pt; }
+  .rd-mref { font-size: 8pt; }
+  .rd-mmethod { font-size: 7.5pt; }
   .rd-map { break-inside: avoid; }
   .rd-map-views { grid-template-columns: 1fr 1fr !important; }
   .rd-topo-frame img { filter: none; }

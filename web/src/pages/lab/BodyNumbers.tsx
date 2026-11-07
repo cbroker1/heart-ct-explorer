@@ -2,6 +2,7 @@
 // its value, a reference gauge, a plain-English caption, how it was measured, and where on the scan.
 import { useMemo, type ReactNode } from 'react'
 import { navigate } from '../../components/ui'
+import { useApp } from '../../lib/store'
 import './core/lab-core.css'
 import { useBiomarkers, usePrefersReducedMotion } from './core/hooks'
 import { IconAlert, IconShield } from './core/icons'
@@ -86,6 +87,19 @@ function ScanLink(props: { m: Metric }) {
   return <button className="lc-link" onClick={go} title="Open this spot in the slice explorer">See it on the scan →</button>
 }
 
+/** Which scan series the number was measured on, by its friendly name (the raw key is jargon). */
+function SeriesNote(props: { m: Metric }) {
+  const volumes = useApp((s) => s.manifest?.volumes)
+  const key = props.m.series
+  if (!key) return null
+  const label = volumes?.find((v) => v.key === key)?.label
+  return (
+    <span className="faint" style={{ fontSize: 11 }} title={label ? `Scan series used for this number (${key})` : undefined}>
+      {label ? `Measured on: ${label}` : `Source: ${key}`}
+    </span>
+  )
+}
+
 function Viz(props: { m: Metric; report: BiomarkerReport }) {
   const { m } = props
   const d = (m.detail ?? {}) as Record<string, unknown>
@@ -142,7 +156,7 @@ function MetricCard(props: { m: Metric; report: BiomarkerReport; img?: ReportIma
       <Method m={m} />
       <footer className="lc-card-f">
         <ScanLink m={m} />
-        {m.series && <span className="faint lc-mono" style={{ fontSize: 11 }}>{m.series}</span>}
+        <SeriesNote m={m} />
       </footer>
     </article>
   )
@@ -162,7 +176,7 @@ function CompoundCard(props: {
     <div className="lc-split-main" style={{ display: 'grid', gap: 14 }}>
       {[{ m: main, note: undefined as string | undefined }, ...extra].map(({ m, note }, i) => (
         <div key={m.key}>
-          {(i > 0 || title !== m.label) && <div className="lc-k">{m.label}{note ? ` ${note}` : ''}</div>}
+          {(i > 0 || title !== m.label) && <div className="lc-k">{m.label}{note && <span className="lc-note"> · {note}</span>}</div>}
           <ValueRow m={m} small={i > 0} />
           {m.gauge && <Gauge gauge={m.gauge} value={m.value} display={shown(m)} unit={m.unit} label={m.label} />}
           <p className="lc-caption">{m.caption}</p>
@@ -181,7 +195,7 @@ function CompoundCard(props: {
       <Method m={main} />
       <footer className="lc-card-f">
         <ScanLink m={main} />
-        {main.series && <span className="faint lc-mono" style={{ fontSize: 11 }}>{main.series}</span>}
+        <SeriesNote m={main} />
       </footer>
     </article>
   )
@@ -207,7 +221,7 @@ export default function BodyNumbers() {
     return { home, counts, ranged, flagged }
   }, [data])
 
-  if (error) return <div className="card"><span className="lc-err">Couldn't load biomarkers.json: {error}</span></div>
+  if (error) return <div className="card"><span className="lc-err">Couldn't load the numbers ({error}). Reloading the page may help.</span></div>
   if (!data || !model) return <div className="card muted">Loading the numbers…</div>
 
   const imgFor = (m: Metric) => (m.image && model.home.get(m.image) === m.key ? data.images?.[m.image] : undefined)
@@ -230,7 +244,7 @@ export default function BodyNumbers() {
               <h3>{allGood ? 'Nothing here stands out' : `${model.flagged.length} number${model.flagged.length > 1 ? 's' : ''} worth a look`}</h3>
               <p>
                 {allGood
-                  ? `All ${model.ranged.length} numbers that have a reference range sit inside it. The rest describe size (or this scan's radiation dose).`
+                  ? `All ${model.ranged.length} numbers that have a reference range sit inside it. The other ${data.metrics.length - model.ranged.length} have no range to judge: they describe sizes, a reference value or this scan's radiation dose.`
                   : `${model.flagged.map((m) => m.label).join(', ')}: outside the usual range. Worth mentioning to a doctor, who can judge it with the full picture.`}
               </p>
             </div>
@@ -268,10 +282,13 @@ export default function BodyNumbers() {
                 if (m.key === 'liver_hu') {
                   const sp = byKey.get('spleen_hu')
                   const diff = byKey.get('liver_minus_spleen')
-                  return (
-                    <CompoundCard key={m.key} title="Is my liver storing fat?" main={m} report={data} img={imgFor(m)}
-                      extra={[sp, diff].filter((x): x is Metric => !!x).map((x) => ({ m: x }))} />
-                  )
+                  // the difference is taken before rounding, so it can be 1 HU off the two rounded numbers above it
+                  const offByRounding = !!(sp && diff && Math.round(m.value - sp.value) !== Math.round(diff.value))
+                  const extra = [
+                    ...(sp ? [{ m: sp }] : []),
+                    ...(diff ? [{ m: diff, note: offByRounding ? 'from the unrounded averages' : undefined }] : []),
+                  ]
+                  return <CompoundCard key={m.key} title="Is my liver storing fat?" main={m} report={data} img={imgFor(m)} extra={extra} />
                 }
                 if (m.key === 'main_pa') {
                   const ratio = byKey.get('pa_ao_ratio')

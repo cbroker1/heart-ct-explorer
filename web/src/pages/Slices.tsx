@@ -3,20 +3,19 @@
  * See src/pages/slices/ for the renderer, geometry, controller and chrome.
  */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { loadJSON } from '../lib/data'
+import { loadJSON, type Vec3 } from '../lib/data'
 import type { CalciumReport } from '../lib/reports'
 import { useApp } from '../lib/store'
 import { LoaderOverlay } from '../components/ui'
 import { Hint, StatusBar, Toolbar, ViewChrome } from './slices/Chrome'
-import { SliceController, type ExamCaliperJSON } from './slices/controller'
+import { cpuVolume, SliceController, type ExamCaliperJSON } from './slices/controller'
 import { applyDeepLink, parseDeepLink } from './slices/deeplink'
-import { volumeByKey } from './slices/geom'
+import { dist, volumeByKey } from './slices/geom'
 import { useSlots } from './slices/model'
+import { viewOnBlankSlice } from './slices/probe'
 import { Sidebar } from './slices/Sidebar'
 import { useLoad, useSlc } from './slices/state'
 import './slices/slices.css'
-
-let initialised = false
 
 export default function Slices() {
   const manifest = useApp((s) => s.manifest)!
@@ -24,23 +23,23 @@ export default function Slices() {
   const [ctrl, setCtrl] = useState<SliceController | null>(null)
   const [calcium, setCalcium] = useState<CalciumReport | null>(null)
   const [caliper, setCaliper] = useState<ExamCaliperJSON | null>(null)
+  /** point of the last deep link, until it has been matched against the calcium candidates */
+  const [linkPoint, setLinkPoint] = useState<Vec3 | null>(null)
 
   // Session defaults + deep links (before the controller starts loading anything).
   useLayoutEffect(() => {
     const link = parseDeepLink(window.location.hash, manifest)
-    if (!initialised) {
-      initialised = true
-      // The shared store starts on 'calcium'; this page's own default is the whole-chest soft-tissue series.
-      if (!link?.series && useApp.getState().sliceSeries === 'calcium') useApp.getState().setSliceSeries('axial_st')
-      if (!volumeByKey(manifest, useApp.getState().sliceSeries)) useApp.getState().setSliceSeries(manifest.volumes[0].key)
-    }
+    // the store defaults to the whole-chest soft-tissue series; fall back if this manifest lacks it
+    if (!volumeByKey(manifest, useApp.getState().sliceSeries)) useApp.getState().setSliceSeries(manifest.volumes[0].key)
     const slc = useSlc.getState()
     if (!slc.layoutChosen && !link?.layout && window.matchMedia('(max-width: 820px)').matches) slc.set({ layout: 'single' })
-    if (link) applyDeepLink(link)
-    const onHash = () => {
-      const d = parseDeepLink(window.location.hash, manifest)
-      if (d) applyDeepLink(d)
+    const apply = (d: ReturnType<typeof parseDeepLink>) => {
+      if (!d) return
+      applyDeepLink(d)
+      if (d.lps) setLinkPoint(d.lps)
     }
+    apply(link)
+    const onHash = () => apply(parseDeepLink(window.location.hash, manifest))
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
   }, [manifest])
@@ -66,6 +65,20 @@ export default function Slices() {
   }, [manifest])
 
   useEffect(() => { ctrl?.setReports(calcium, caliper) }, [ctrl, calcium, caliper])
+
+  // A link that lands on a calcium candidate's centre (e.g. "candidate #22" from the AI Read page) selects
+  // it, so its ring is highlighted and numbered just as if it had been clicked.
+  useEffect(() => {
+    if (!calcium || !linkPoint) return
+    let best: number | null = null
+    let bestD = 1.5 // mm
+    for (const c of calcium.candidates) {
+      const d = dist(c.centerLPS, linkPoint)
+      if (d <= bestD) { bestD = d; best = c.id }
+    }
+    if (best !== null) useApp.getState().setSelectedLesion(best)
+    setLinkPoint(null)
+  }, [calcium, linkPoint])
 
   return (
     <div className="viewer slc">
@@ -94,7 +107,7 @@ function ViewsChrome(props: { ctrl: SliceController | null }) {
       {slots.map((sl) => (
         <ViewChrome key={`${layout}-${sl.i}`} sl={sl} ctrl={props.ctrl} multi={slots.length > 1} canEnlarge={layout === '3up' && sl.i > 0} />
       ))}
-      {slots[0] && <Hint rect={slots[0].rect} />}
+      {slots[0] && !viewOnBlankSlice(slots[0], cpuVolume(slots[0].key)) && <Hint rect={slots[0].rect} />}
     </>
   )
 }
@@ -126,7 +139,14 @@ function StageStatus(props: { ctrl: SliceController | null }) {
       <div className="slc-blocker">
         <div className="card">
           <h3 style={{ color: 'var(--danger)' }}>Could not load {v?.label ?? failed}</h3>
-          <p className="mono muted" style={{ fontSize: 12 }}>{entries[failed]?.error}</p>
+          {/^This series is \d+ voxels/.test(entries[failed]?.error ?? '') ? (
+            <p className="muted">{entries[failed]?.error} Pick another series in the list.</p>
+          ) : (
+            <>
+              <p className="muted">Check your internet connection, then try again.</p>
+              <p className="mono faint" style={{ fontSize: 12 }}>{entries[failed]?.error}</p>
+            </>
+          )}
           <button className="btn cyan" onClick={() => props.ctrl?.retry(failed)}>Try again</button>
         </div>
       </div>

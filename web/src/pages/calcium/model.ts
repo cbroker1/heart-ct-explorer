@@ -114,7 +114,8 @@ const V: Record<string, Omit<VerdictMeta, 'key'>> = {
   valvular: { label: 'Valve calcium', short: 'Valve', color: '#a08bff', chip: 'cal-chip-violet', order: 3, counted: false, blurb: 'Calcium on a heart valve. Real, but not part of the coronary score.' },
   other: { label: 'Other', short: 'Other', color: '#9aa7b8', chip: '', order: 4, counted: false, blurb: 'Bright, but not coronary calcium.' },
   bone: { label: 'Bone', short: 'Bone', color: '#9aa7b8', chip: '', order: 5, counted: false, blurb: 'Bone edge that slipped into the search region.' },
-  'noise-artifact': { label: 'Noise / artifact', short: 'Artifact', color: '#7f8ea3', chip: '', order: 6, counted: false, blurb: 'Reviewed and dismissed: image noise or an artifact, not calcium.' },
+  // borderline candidates (no rule could dismiss them) that the AI reviewers then called noise / artifact
+  'noise-artifact': { label: 'Cleared by AI review', short: 'Cleared by review', color: '#dbe3ee', chip: 'cal-chip-cleared', order: 6, counted: false, blurb: 'Borderline: it passed every automatic rule, so the AI reviewers examined it closely and called it image noise or an artifact, not calcium.' },
   noise: { label: 'Ruled out: noise', short: 'Noise', color: '#7f8ea3', chip: '', order: 7, counted: false, blurb: 'Dismissed automatically by a triage rule (see the reasons).' },
 }
 
@@ -260,9 +261,9 @@ export function sliceRange(sl: number[]): string {
   return a === b ? `slice ${a}` : `slices ${a}–${b}`
 }
 
-/** Deep link into the slice explorer (calcium series, axial, calcium window) at an LPS point. */
-export function sliceViewerLink(lps: Vec3): string {
-  return `/slices?series=calcium&lps=${lps.map((v) => v.toFixed(2)).join(',')}&plane=axial&window=calcium`
+/** Deep link into the slice explorer (axial, calcium window by default) at an LPS point. */
+export function sliceViewerLink(lps: Vec3, series = 'calcium', window = 'calcium'): string {
+  return `/slices?series=${encodeURIComponent(series)}&lps=${lps.map((v) => v.toFixed(2)).join(',')}&plane=axial&window=${encodeURIComponent(window)}`
 }
 
 /** Compact tag for a triage-rule reason (the full sentence goes in a tooltip). */

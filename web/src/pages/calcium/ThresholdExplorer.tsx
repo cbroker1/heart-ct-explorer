@@ -33,7 +33,7 @@ function message(vm: CalciumVM, r: Row): { tone: 'warn' | 'info' | 'good'; text:
   }
   return {
     tone: 'good',
-    text: `Silence: no blob reaches ${r.thresholdHU} HU anywhere in the search region. Nothing in this heart is that dense. A real calcified plaque would still shine here, but early, faint ones would be missed, so the standard can't simply be raised.`,
+    text: `Silence: no speck of 1 mm² or more reaches ${r.thresholdHU} HU in the search region (single noisy pixels still peak up to 177 HU). A real calcified plaque would still shine here, but early, faint ones would be missed, so the standard can't simply be raised.`,
   }
 }
 

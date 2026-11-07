@@ -36,6 +36,7 @@ function Lightbox(props: LbState & { onIndex: (i: number) => void; onClose: () =
   const [stage, setStage] = useState<{ w: number; h: number } | null>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
   const stageRef = useRef<HTMLDivElement>(null)
+  const rootRef = useRef<HTMLDivElement>(null)
   const live = useRef({ index, n, onIndex, onClose })
   live.current = { index, n, onIndex, onClose }
 
@@ -72,6 +73,19 @@ function Lightbox(props: LbState & { onIndex: (i: number) => void; onClose: () =
       if (e.key === 'Escape') { e.preventDefault(); live.current.onClose() }
       else if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1) }
       else if (e.key === 'ArrowRight') { e.preventDefault(); go(1) }
+      else if (e.key === 'Tab') {
+        // Keep keyboard focus inside the (modal) viewer.
+        const root = rootRef.current
+        if (!root) return
+        const items = [...root.querySelectorAll<HTMLElement>('button, a[href]')].filter((el) => el.getClientRects().length > 0)
+        if (!items.length) return
+        const first = items[0], last = items[items.length - 1]
+        const active = document.activeElement
+        if (e.shiftKey ? active === first || !root.contains(active) : active === last || !root.contains(active)) {
+          e.preventDefault()
+          ;(e.shiftKey ? last : first).focus()
+        }
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => {
@@ -109,7 +123,7 @@ function Lightbox(props: LbState & { onIndex: (i: number) => void; onClose: () =
   }
 
   return (
-    <div className="rd-lb" role="dialog" aria-modal="true" aria-label={title ? `Image viewer: ${title}` : 'Image viewer'}>
+    <div ref={rootRef} className="rd-lb" role="dialog" aria-modal="true" aria-label={title ? `Image viewer: ${title}` : 'Image viewer'}>
       <div className="rd-lb-top">
         <div className="rd-lb-title">
           {title && <div className="rd-lb-eyebrow">{title}</div>}

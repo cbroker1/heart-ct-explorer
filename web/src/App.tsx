@@ -17,7 +17,7 @@ export interface Route { path: string; label: string; title: string; component: 
 export const ROUTES: Route[] = [
   { path: '/', label: 'Overview', title: 'Overview', component: Overview },
   { path: '/slices', label: 'Slices', title: 'Slice Explorer', component: Slices, fullBleed: true },
-  { path: '/anatomy', label: 'Anatomy 3D', title: '3D Anatomy', component: Anatomy, fullBleed: true },
+  { path: '/anatomy', label: '3D Anatomy', title: '3D Anatomy', component: Anatomy, fullBleed: true },
   { path: '/volume', label: 'Volume', title: 'Volume Rendering', component: Volume, fullBleed: true },
   { path: '/calcium', label: 'Calcium Score', title: 'DIY Calcium Score', component: Calcium },
   { path: '/read', label: 'AI Read', title: 'AI Second Read', component: Read },

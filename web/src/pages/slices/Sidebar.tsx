@@ -122,7 +122,24 @@ function WindowSection() {
 }
 
 // ------------------------------------------------------------------ overlays
-function OverlaySection(props: { manifest: Manifest }) {
+/** One line on what the calcium review concluded (only once calcium.json says it was reviewed). */
+function reviewSummary(calcium: CalciumReport | null): string | null {
+  if (!calcium?.reviewed || !calcium.candidates.length) return null
+  const n = calcium.candidates.length
+  const counts = new Map<string, number>()
+  for (const c of calcium.candidates) {
+    const k = c.finalClass ?? c.ruleClass
+    counts.set(k, (counts.get(k) ?? 0) + 1)
+  }
+  const a = calcium.totals.agatston
+  const score = Number.isInteger(a) ? String(a) : a.toFixed(1)
+  if ([...counts.keys()].every((k) => k === 'noise' || k === 'noise-artifact')) {
+    return `After the AI review, all ${n} count as noise and add nothing to the score (calcium score ${score}).`
+  }
+  return `After the AI review: ${[...counts].map(([k, c]) => `${c} ${candidateClassLabel(k)}`).join(', ')} (calcium score ${score}).`
+}
+
+function OverlaySection(props: { manifest: Manifest; calcium: CalciumReport | null }) {
   const s = {
     labels: useSlc((x) => x.labels),
     labelMode: useSlc((x) => x.labelMode),
@@ -144,6 +161,7 @@ function OverlaySection(props: { manifest: Manifest }) {
     }
     return [...m.entries()]
   }, [props.manifest])
+  const review = reviewSummary(props.calcium)
   const toggleGroup = (g: string) =>
     s.set({ hiddenGroups: s.hiddenGroups.includes(g) ? s.hiddenGroups.filter((x) => x !== g) : [...s.hiddenGroups, g] })
   return (
@@ -175,7 +193,10 @@ function OverlaySection(props: { manifest: Manifest }) {
           ))}
         </div>
       )}
-      <p className="slc-cap">Bright spots the DIY calcium pipeline flagged on the calcium-score series (rings mark their centres). Details and verdicts are on the Calcium page.</p>
+      <p className="slc-cap">
+        Bright spots the DIY calcium pipeline flagged on the calcium-score series (rings mark their centres).
+        {review ? ` ${review}` : ''} Details and verdicts are on the Calcium page.
+      </p>
     </Section>
   )
 }
@@ -439,7 +460,7 @@ export function Sidebar(props: { manifest: Manifest; calcium: CalciumReport | nu
       <SeriesPicker manifest={props.manifest} />
       {layout === 'compare' && <CompareSection manifest={props.manifest} />}
       <WindowSection />
-      <OverlaySection manifest={props.manifest} />
+      <OverlaySection manifest={props.manifest} calcium={props.calcium} />
       <SlabSection />
       <FinderSection manifest={props.manifest} />
       <MeasureSection manifest={props.manifest} caliper={props.caliper} />

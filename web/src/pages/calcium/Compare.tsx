@@ -16,11 +16,16 @@ function verdictText(vm: CalciumVM, off: number): { tone: 'good' | 'info' | 'war
       : { tone: 'good', head: 'Same number, give or take.', body: `Both land at about ${fmtNum(off, 1)}.${ctx}${prov}` }
   }
   if (diy === 0 && off > 0) {
-    const near = vm.pending.length && Math.abs(vm.worstCase - off) <= Math.max(2, off * 0.35)
+    // still-pending candidates if any, otherwise the borderline ones the reviewers dismissed
+    const pool = vm.pending.length ? { n: vm.pending.length, worst: vm.worstCase } : vm.borderline.length ? { n: vm.borderline.length, worst: vm.borderlineWorst } : null
+    const near = !!pool && pool.worst > 0 && Math.abs(pool.worst - off) <= Math.max(2, off * 0.35)
+    const nearTxt = near && pool
+      ? ` Interesting: if ${pool.n === 1 ? 'the borderline candidate' : `all ${pool.n} borderline candidates`} had been real plaque, I'd get ${fmtScore(+pool.worst.toFixed(1))}, close to the official score${vm.pending.length ? '' : ` (the AI reviewers called ${pool.n === 1 ? 'it' : 'them'} noise)`}.`
+      : ''
     return {
       tone: 'warn',
       head: 'The radiologist found calcium my pipeline did not count.',
-      body: `Trust the official number: radiologists trace the actual arteries on a calibrated workstation, while I used rules and AI judgement on a noisy low-dose scan.${ctx}${near ? ` Interesting: if all ${vm.pending.length} borderline candidates were real I'd get ${fmtScore(vm.worstCase)}, close to the official score.` : ''} Worth asking your doctor what it means for you.${prov}`,
+      body: `Trust the official number: radiologists trace the actual arteries on a calibrated workstation, while I used rules and AI judgement on a noisy low-dose scan.${ctx}${nearTxt} Worth asking your doctor what it means for you.${prov}`,
     }
   }
   if (diy > 0 && off === 0) {

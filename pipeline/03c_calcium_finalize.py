@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import collections
 import json
+import re
 import runpy
 from pathlib import Path
 
@@ -32,12 +33,48 @@ PERCENTILES = {
             "Percentiles for other groups were not estimable in that study; MESA percentiles start at age 45.",
 }
 
+# Reviewer notes are published: strip working-file references and machine paths, fix known slips.
+_PATH = re.compile(r"(?:images?:\s*)?/(?:home|Users|tmp)/\S+")
+_FILE = re.compile(r"\(?[\w.\-/]+\.(?:png|npy|npz|py|json|csv|nii\.gz)\)?")
+_FILETOK = r"\S+\.(?:png|npy|npz|py|json|csv|gz)"
+_TRAIL = re.compile(r"\s*(?:Files?|Figures?|Images?)\s*:\s*" + _FILETOK + r"(?:\s*(?:,|and)\s*" + _FILETOK + r")*\s*\.?", re.I)
+FIXES = {
+    "The ascending aorta measures about 34-36 mm, consistent with the radiologist's 36.1 mm caliper.":
+        "At the levels this reviewer looked at, the ascending aorta measured about 34-36 mm, in line with the "
+        "radiologist's 36.1 mm caliper; the AI second read found 37-38 mm at its widest point (upper-normal, below 40 mm).",
+    "The scan has 4 steps of 38.4 mm": "The scan has 4 table steps of about 34 mm (38.4 mm detector width)",
+}
+
+
+def clean_text(t: str) -> str:
+    for a, b in FIXES.items():
+        t = t.replace(a, b)
+    t = _TRAIL.sub(" ", t)
+    t = _PATH.sub("", t)
+    t = _FILE.sub("", t)
+    t = re.sub(r"\(\s*[,;]?\s*\)", "", t)                 # empty parentheses left behind
+    t = re.sub(r"\s+([,.;:])", r"\1", t)
+    t = re.sub(r"[ \t]{2,}", " ", t)
+    return t.strip(" ,;")
+
+
+def clean(obj):
+    if isinstance(obj, str):
+        return clean_text(obj)
+    if isinstance(obj, list):
+        out = [clean(x) for x in obj]
+        return [x for x in out if not (isinstance(x, str) and len(x) < 3)]
+    if isinstance(obj, dict):
+        return {k: clean(v) for k, v in obj.items()}
+    return obj
+
+
 VERDICT_TO_CLASS = {"coronary": "coronary", "aortic": "aortic", "valvular": "valvular",
                     "noise-artifact": "noise", "bone": "bone", "other": "other"}
 
 
 def main():
-    reviewers = json.loads(RAW.read_text())
+    reviewers = clean(json.loads(RAW.read_text()))
     votes: dict[int, list[dict]] = collections.defaultdict(list)
     for r in reviewers:
         for c in r.get("candidates", []):
@@ -75,13 +112,18 @@ def main():
         "reviewers": [{"key": r.get("_key", r.get("reviewer", "?")), "lens": r.get("_lens", ""),
                        "agatstonEstimate": r.get("agatstonEstimate", 0), "confidenceZero": r.get("confidenceZero", 0),
                        "summary": r.get("summary", "")} for r in reviewers],
-        "consensus": (f"{len(reviewers)} independent AI reviewers adjudicated the {len(cal['candidates'])} candidates; "
-                      f"coronary lesions after majority vote: {sum(1 for c in cal['candidates'] if c.get('finalClass') == 'coronary')}. "
-                      f"Additional lesions proposed by reviewers outside the candidate list: {len(missed)} "
-                      f"(called coronary: {len(real_missed)})."),
+        "consensus": (f"{len(reviewers)} independent AI reviewers judged all {len(cal['candidates'])} candidates: "
+                      + (f"{n_cor} coronary lesion(s) after majority vote." if (n_cor := sum(1 for c in cal['candidates'] if c.get('finalClass') == 'coronary'))
+                         else "none is coronary calcium.")
+                      + (" They also noted a few calcified costal cartilages in the chest wall, outside the heart (normal, not scored)."
+                         if missed and not real_missed else
+                         (f" They proposed {len(real_missed)} extra coronary lesion(s) outside the candidate list." if real_missed else ""))),
         "missedLesions": missed,
         "s8Blob": [r.get("s8Blob") for r in reviewers if r.get("s8Blob")],
     }
+    for c in cal["candidates"]:            # a 'chamber' only makes sense for specks inside the heart
+        if c.get("fracInHeart", 0) == 0 and c.get("fracInPericardium", 0) == 0:
+            c["chamber"] = "outside"
     cal["percentileContext"] = PERCENTILES
     cal["reviewed"] = True
     write_json(cal_path, cal)

@@ -2,10 +2,10 @@
  * Volume rendering page (#/volume): GPU ray-marched views of the real CT.
  * Renderer: ./volume/VolumeRenderer.ts (raw three.js). Presets & label styling: ./volume/presets.ts.
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useApp } from '../lib/store'
 import { loadGrid, type GridMeta, type LabelClass, type Manifest, type Vec3 } from '../lib/data'
-import { fmtLps, indexToLps, lpsToIndex } from '../lib/coords'
+import { fmtLps, indexToLps, lpsToIndex, worldToLps } from '../lib/coords'
 import { LoaderOverlay, Segmented, Slider, Toggle, navigate } from '../components/ui'
 import { QUALITY, VolumeRenderer, type Quality, type RenderGrid, type RenderParams } from './volume/VolumeRenderer'
 import {
@@ -14,6 +14,7 @@ import {
 } from './volume/presets'
 import { buildLUT, evalTF, histogram, linearToSrgb, rgbToCss, tissueName, transformPoints } from './volume/tf'
 import { Legend, OrientationCube, RangeSlider, TFStrip, cubeTransform, patientDir, DIR_WORDS } from './volume/components'
+import { cleanVesselRims } from './volume/labels'
 import './volume/volume.css'
 
 type Clip = [[number, number], [number, number], [number, number]]
@@ -23,8 +24,18 @@ const OPEN_CHEST: Clip = [[0, 1], [0.25, 1], [0, 1]]
 /** 3 cm coronal slab through the hila and both lungs. */
 const LUNG_SLAB: Clip = [[0, 1], [0.42, 0.5], [0, 1]]
 const sameClip = (a: Clip, b: Clip) => a.every((r, i) => Math.abs(r[0] - b[i][0]) < 1e-3 && Math.abs(r[1] - b[i][1]) < 1e-3)
+/** Extra weight of bone (HU above +120) in the virtual radiograph; the DRR shader gets the same value via `win`. */
+const DRR_BONE_BOOST = 2.2
+/** Labels that wrap the whole trunk: every X-ray ray crosses them, so they only "win" a ray when nothing else does. */
+const BODY_WALL_NAMES = new Set(['body_trunc', 'autochthon_left', 'autochthon_right'])
 interface Tweak { s1: number; s2: number; opacity: number }
-interface PointInfo { lps: Vec3; name: string; group: string | null; hu: number | null; tissue: string; volume: VolumeKey }
+interface PointInfo {
+  lps: Vec3; name: string; group: string | null; hu: number | null; tissue: string; volume: VolumeKey
+  /** X-ray picks: what casts the shadow, as shares of the (virtual) X-ray absorption along the whole ray */
+  ray?: { share: number; also: { name: string; share: number }[] }
+}
+type VolError = { msg: string; scope: 'gpu' | 'chest' | 'heart' }
+const pct = (f: number) => `${Math.max(1, Math.round(f * 100))} %`
 
 function NoWebGL2(props: { detail?: string }) {
   return (
@@ -93,11 +104,12 @@ function VolumeView({ m, onNoGL }: { m: Manifest; onNoGL: (detail: string) => vo
   const [reducedMotion] = useState(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false)
   const [gateRampOverride, setGateRampOverride] = useState<[number, number] | null>(null) // dev tuning only
   const [load, setLoad] = useState<{ label: string; loaded: number; total: number } | null>({ label: 'Loading 3D volume…', loaded: 0, total: m.render.bytes + m.renderLabels.bytes })
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<VolError | null>(null)
   const [ready, setReady] = useState<{ chest: boolean; heart: boolean }>({ chest: false, heart: false })
   const [hover, setHover] = useState<(PointInfo & { x: number; y: number }) | null>(null)
   const [pin, setPin] = useState<PointInfo | null>(null)
   const [touched, setTouched] = useState(false)
+  const hoverRef = useRef<HTMLDivElement>(null)
 
   const stageRef = useRef<HTMLDivElement>(null)
   const canvasHostRef = useRef<HTMLDivElement>(null)
@@ -110,10 +122,12 @@ function VolumeView({ m, onNoGL }: { m: Manifest; onNoGL: (detail: string) => vo
   const refineRef = useRef<HTMLDivElement>(null)
   const pinRef = useRef<PointInfo | null>(null)
   pinRef.current = pin
-  // The shared crosshair (store.cursor) when another page moved it away from its default.
+  // The shared crosshair (store.cursor) when another page moved it away from its default. A point picked
+  // here also becomes the shared cursor: that one is not echoed back as a "shared" marker once its pin closes.
   const cursor = useApp((s) => s.cursor)
+  const ownPickRef = useRef<Vec3 | null>(null)
   const sharedCursor = useMemo(() => {
-    if (!cursor) return null
+    if (!cursor || cursor === ownPickRef.current) return null
     const c = m.worldCenterLPS
     return Math.hypot(cursor[0] - c[0], cursor[1] - c[1], cursor[2] - c[2]) > 1 ? cursor : null
   }, [cursor, m])
@@ -165,8 +179,8 @@ function VolumeView({ m, onNoGL }: { m: Manifest; onNoGL: (detail: string) => vo
       return
     }
     rRef.current = r
-    r.onError = (msg) => setError(msg)
-    r.onRecovered = () => setError(null)
+    r.onError = (msg) => setError({ msg, scope: 'gpu' })
+    r.onRecovered = () => setError((e) => (e?.scope === 'gpu' ? null : e))
     r.onView = updateOverlays
     r.onProgress = (f, total, interactive) => {
       const el = refineRef.current
@@ -208,15 +222,21 @@ function VolumeView({ m, onNoGL }: { m: Manifest; onNoGL: (detail: string) => vo
         if (cancelled) return
         const r = rRef.current
         if (!r) return
+        // a cleaned COPY (the decoded grid is shared with other pages through loadGrid's cache)
+        const labels = cleanVesselRims(m.renderLabels.dims, lab as Uint8Array, m.renderLabels.classes).data
         dataRef.current.chest = vol as Uint8Array
-        dataRef.current.labels = lab as Uint8Array
+        dataRef.current.labels = labels
         histRef.current.chest = histogram(vol as Uint8Array)
-        r.setLabels(m.renderLabels, lab as Uint8Array)
+        r.setLabels(m.renderLabels, labels)
         r.addVolume('chest', m.render, vol as Uint8Array, m.renderLabels, m.worldCenterLPS)
         setReady((s) => ({ ...s, chest: true }))
         setLoad(null)
       })
-      .catch((e) => { if (!cancelled) setError(`Could not load the volume: ${(e as Error)?.message ?? e}`) })
+      .catch((e) => {
+        if (cancelled) return
+        setLoad(null)
+        setError({ msg: `Could not load the volume: ${(e as Error)?.message ?? e}`, scope: 'chest' })
+      })
     return () => { cancelled = true }
   }, [m])
 
@@ -224,6 +244,7 @@ function VolumeView({ m, onNoGL }: { m: Manifest; onNoGL: (detail: string) => vo
     if (preset.volume !== 'heart' || ready.heart || !m.heartRender || !ready.chest) return
     const hm = m.heartRender
     let cancelled = false
+    setError((e) => (e?.scope === 'heart' ? null : e))   // coming back to the heart look retries a failed download
     setLoad({ label: 'Loading heart close-up…', loaded: 0, total: hm.bytes })
     loadGrid(hm, (l, t) => { if (!cancelled) setLoad({ label: 'Loading heart close-up…', loaded: l, total: t }) })
       .then((vol) => {
@@ -249,7 +270,11 @@ function VolumeView({ m, onNoGL }: { m: Manifest; onNoGL: (detail: string) => vo
         setReady((s) => ({ ...s, heart: true }))
         setLoad(null)
       })
-      .catch((e) => { if (!cancelled) setError(`Could not load the heart volume: ${(e as Error)?.message ?? e}`) })
+      .catch((e) => {
+        if (cancelled) return
+        setLoad(null)
+        setError({ msg: `Could not load the heart scan: ${(e as Error)?.message ?? e}`, scope: 'heart' })
+      })
     // switching away mid-download: drop the overlay (the download continues and stays cached for next time)
     return () => { cancelled = true; setLoad(null) }
   }, [preset.volume, ready.heart, ready.chest, m, classes])
@@ -267,7 +292,7 @@ function VolumeView({ m, onNoGL }: { m: Manifest; onNoGL: (detail: string) => vo
   }, [points, grid])
 
   const win = useMemo((): [number, number, number, number] => {
-    if (preset.mode === 'drr') return [48 - tweak.s1, 290 / tweak.s2, 2.2, 1.12]
+    if (preset.mode === 'drr') return [48 - tweak.s1, 290 / tweak.s2, DRR_BONE_BOOST, 1.12]
     if (preset.mode === 'mip') return [tweak.s1 - tweak.s2 / 2, tweak.s2, 0, 1]
     return [0, 1, 0, 1]
   }, [preset.mode, tweak.s1, tweak.s2])
@@ -323,14 +348,15 @@ function VolumeView({ m, onNoGL }: { m: Manifest; onNoGL: (detail: string) => vo
   useEffect(() => { rRef.current?.setAutoRotate(autoRotate) }, [autoRotate])
 
   // ------------------------------------------------------------------ picking
-  const describe = useCallback((lps: Vec3, vol: VolumeKey): PointInfo => {
+  /** `viewDir` (unit, LPS): for label surfaces, whose edge rarely sits exactly on a density edge. */
+  const describe = useCallback((lps: Vec3, vol: VolumeKey, viewDir?: Vec3): PointInfo => {
     const d = dataRef.current
     let name = 'Unlabelled'
     let group: string | null = null
     const g = gridOf(vol)
     const arr = vol === 'heart' ? d.heart : d.chest
-    const v = arr ? sampleU8(g, arr, lps) : null
-    const hu = v === null ? null : Math.round(g.huMin + (v / 255) * (g.huMax - g.huMin))
+    const huAt = (p: Vec3) => { const v = arr ? sampleU8(g, arr, p) : null; return v === null ? null : g.huMin + (v / 255) * (g.huMax - g.huMin) }
+    let hu = huAt(lps)
     if (d.labels) {
       let lab = sampleU8(m.renderLabels, d.labels, lps)
       // On a surface the nearest label voxel can belong to the neighbour (1.5 mm label grid): if we got
@@ -342,21 +368,97 @@ function VolumeView({ m, onNoGL }: { m: Manifest; onNoGL: (detail: string) => vo
       }
       const c = lab ? classById.get(lab) : undefined
       if (c) { name = c.display; group = c.group } else if (lab === 0) name = 'Outside the labelled anatomy'
+      // A label surface's outermost voxel is often partial volume (a "right ventricle" at -577 HU): report the
+      // median density of the first 8 mm of that structure along the line of sight instead.
+      if (viewDir && c && arr) {
+        const hus: number[] = []
+        for (let s = 0; s <= 8; s += 0.75) {
+          const p: Vec3 = [lps[0] + viewDir[0] * s, lps[1] + viewDir[1] * s, lps[2] + viewDir[2] * s]
+          if (sampleU8(m.renderLabels, d.labels, p) !== c.id) { if (hus.length) break; continue }
+          const h = huAt(p)
+          if (h !== null) hus.push(h)
+        }
+        if (hus.length) hu = hus.sort((x, y) => x - y)[Math.floor(hus.length / 2)]
+      }
     }
-    return { lps, name, group, hu, tissue: hu === null ? '' : tissueName(hu), volume: vol }
+    const huR = hu === null ? null : Math.round(hu)
+    return { lps, name, group, hu: huR, tissue: huR === null ? '' : tissueName(huR), volume: vol }
+  }, [m, classById, gridOf])
+
+  /**
+   * X-ray picking. A radiograph pixel is the sum of everything on its ray, so instead of one voxel we walk the
+   * whole ray (same attenuation model as the DRR shader) and report the labelled structure that absorbs most
+   * of it, ignoring the body wall unless nothing else is there. The point is the middle of that structure's
+   * longest stretch along the ray.
+   */
+  const describeRay = useCallback((a: Vec3, b: Vec3, vol: VolumeKey): PointInfo | null => {
+    const d = dataRef.current
+    const g = gridOf(vol)
+    const arr = vol === 'heart' ? d.heart : d.chest
+    if (!arr || !d.labels) return null
+    const n = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2]) / 0.75))
+    const total = new Map<number, number>()
+    const best = new Map<number, { w: number; p: Vec3 }>()   // per label: its heaviest contiguous run
+    let sum = 0
+    let run: { id: number; w: number; x: number; y: number; z: number } | null = null
+    const closeRun = () => {
+      if (!run || run.w <= 0) return
+      const prev = best.get(run.id)
+      if (!prev || run.w > prev.w) best.set(run.id, { w: run.w, p: [run.x / run.w, run.y / run.w, run.z / run.w] })
+    }
+    for (let i = 0; i < n; i++) {
+      const f = (i + 0.5) / n
+      const p: Vec3 = [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f]
+      const v = sampleU8(g, arr, p)
+      if (v === null) continue
+      const hu = g.huMin + (v / 255) * (g.huMax - g.huMin)
+      const w = Math.max(hu + 1000, 0) + DRR_BONE_BOOST * Math.max(hu - 120, 0)
+      const id = sampleU8(m.renderLabels, d.labels, p) ?? 0
+      sum += w
+      total.set(id, (total.get(id) ?? 0) + w)
+      if (!run || run.id !== id) { closeRun(); run = { id, w: 0, x: 0, y: 0, z: 0 } }
+      run.w += w; run.x += p[0] * w; run.y += p[1] * w; run.z += p[2] * w
+    }
+    closeRun()
+    if (sum <= 0) return null
+    const ranked = [...total.entries()].filter(([id]) => id !== 0).sort((x, y) => y[1] - x[1])
+    if (!ranked.length) return null
+    const wall = (id: number) => BODY_WALL_NAMES.has(classById.get(id)?.name ?? '')
+    const inner = ranked.find(([id, w]) => !wall(id) && w / sum >= 0.08)
+    const [id, w] = inner ?? ranked[0]
+    const c = classById.get(id)
+    const lps = best.get(id)?.p ?? a
+    const v = sampleU8(g, arr, lps)
+    const hu = v === null ? null : Math.round(g.huMin + (v / 255) * (g.huMax - g.huMin))
+    const also = ranked.filter(([k, s]) => k !== id && s / sum >= 0.03).slice(0, 3)
+      .map(([k, s]) => ({ name: classById.get(k)?.display ?? 'Unlabelled', share: s / sum }))
+    return { lps, name: c?.display ?? 'Unlabelled', group: c?.group ?? null, hu, tissue: hu === null ? '' : tissueName(hu), volume: vol, ray: { share: w / sum, also } }
   }, [m, classById, gridOf])
 
   const probeAt = useCallback((clientX: number, clientY: number): PointInfo | null => {
     const r = rRef.current, host = canvasHostRef.current
     if (!r || !host) return null
     const b = host.getBoundingClientRect()
+    if (preset.mode === 'drr') {
+      const ray = r.rayThroughClip(clientX - b.left, clientY - b.top)
+      return ray ? describeRay(ray.a, ray.b, ray.volume) : null
+    }
     const hit = r.probe(clientX - b.left, clientY - b.top)
-    return hit ? describe(hit.lps, hit.volume) : null
-  }, [describe])
+    if (!hit) return null
+    let dir: Vec3 | undefined
+    if (preset.mode === 'label') {
+      const c = worldToLps(r.camera.position.toArray() as Vec3, m.worldCenterLPS)
+      const v: Vec3 = [hit.lps[0] - c[0], hit.lps[1] - c[1], hit.lps[2] - c[2]]
+      const n = Math.hypot(...v) || 1
+      dir = [v[0] / n, v[1] / n, v[2] / n]
+    }
+    return describe(hit.lps, hit.volume, dir)
+  }, [describe, describeRay, preset.mode, m])
 
   const pending = useRef<{ x: number; y: number } | null>(null)
   const probeRaf = useRef(0)
   const down = useRef<{ x: number; y: number; t: number } | null>(null)
+  const pointers = useRef(new Set<number>())   // a pinch or two-finger pan never counts as a tap
   const onPointerMove = (e: React.PointerEvent) => {
     if (e.pointerType !== 'mouse' || e.buttons) { if (hover) setHover(null); return }
     pending.current = { x: e.clientX, y: e.clientY }
@@ -373,29 +475,49 @@ function VolumeView({ m, onNoGL }: { m: Manifest; onNoGL: (detail: string) => vo
     }
   }
   useEffect(() => () => cancelAnimationFrame(probeRaf.current), [])
-  const onPointerDown = (e: React.PointerEvent) => { down.current = { x: e.clientX, y: e.clientY, t: performance.now() }; if (!touched) setTouched(true) }
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (e.isPrimary) pointers.current.clear()   // a primary pointer starts a new gesture (self-heals a missed pointerup)
+    pointers.current.add(e.pointerId)
+    down.current = pointers.current.size > 1 ? null : { x: e.clientX, y: e.clientY, t: performance.now() }
+    if (!touched) setTouched(true)
+  }
+  const onPointerCancel = (e: React.PointerEvent) => { pointers.current.delete(e.pointerId); down.current = null }
   const onPointerUp = (e: React.PointerEvent) => {
+    pointers.current.delete(e.pointerId)
     const d0 = down.current
     down.current = null
     if (!d0 || e.button > 0) return
     if (Math.hypot(e.clientX - d0.x, e.clientY - d0.y) > 5 || performance.now() - d0.t > 450) return
     const info = probeAt(e.clientX, e.clientY)
     setPin(info)
-    if (info) setCursor(info.lps)
+    if (info) { ownPickRef.current = info.lps; setCursor(info.lps) }
     requestAnimationFrame(updateOverlays)
   }
+  // keep the hover tooltip inside the stage (flip it left / up near the right / bottom edge)
+  useLayoutEffect(() => {
+    const el = hoverRef.current, host = canvasHostRef.current
+    if (!el || !host || !hover) return
+    const W = host.clientWidth, H = host.clientHeight, w = el.offsetWidth, h = el.offsetHeight
+    el.style.left = `${hover.x + 14 + w > W - 6 ? Math.max(6, hover.x - 14 - w) : hover.x + 14}px`
+    el.style.top = `${hover.y + 14 + h > H - 6 ? Math.max(6, hover.y - 14 - h) : hover.y + 14}px`
+  }, [hover])
   useEffect(() => { updateOverlays() }, [pin, sharedCursor, updateOverlays])
 
   const openInSlices = (p: PointInfo) => {
-    const win = presetKey === 'lungs' ? 'lung' : presetKey === 'skeleton' || presetKey === 'mip' ? 'bone' : p.volume === 'heart' ? 'mediastinum' : 'soft'
-    const series = p.volume === 'heart' ? 'calcium' : presetKey === 'lungs' ? 'thin_lung' : 'axial_st'
-    navigate(`/slices?series=${series}&lps=${p.lps.map((v) => v.toFixed(1)).join(',')}&plane=axial&window=${win}`)
+    // the picked structure decides first (a rib -> bone window, a lung lobe -> lung window), then the look
+    const lung = p.group === 'lungs' || presetKey === 'lungs' || (presetKey === 'mip' && win[0] + win[1] / 2 < -100)
+    const wnd = p.group === 'bones' ? 'bone' : lung ? 'lung'
+      : presetKey === 'skeleton' || presetKey === 'mip' ? 'bone' : p.volume === 'heart' ? 'mediastinum' : 'soft'
+    const series = p.volume === 'heart' ? 'calcium' : lung ? 'thin_lung' : 'axial_st'
+    navigate(`/slices?series=${series}&lps=${p.lps.map((v) => v.toFixed(1)).join(',')}&plane=axial&window=${wnd}`)
   }
 
   // ------------------------------------------------------------------ actions
   const choosePreset = (k: PresetKey) => {
     setPresetKey(k)
     setHover(null)
+    // an X-ray pick describes a whole line of sight; in a 3D look it becomes an ordinary point (the same spot)
+    if (pin?.ray && presetByKey(k).mode !== 'drr') setPin(describe(pin.lps, pin.volume))
   }
   useEffect(() => {
     const [path, qs] = window.location.hash.replace(/^#/, '').split('?')
@@ -460,6 +582,8 @@ function VolumeView({ m, onNoGL }: { m: Manifest; onNoGL: (detail: string) => vo
   }
   const clipChanged = clip.some(([a, b]) => a > 0.001 || b < 0.999)
   const chestOpen = sameClip(clip, OPEN_CHEST)
+  // a failed heart-scan download only blocks the heart look; every chest look keeps working
+  const shownError = error && (error.scope !== 'heart' || preset.volume === 'heart') ? error : null
 
   // ------------------------------------------------------------------ render
   const fmtS = (spec: Preset['s1']) => (v: number) => {
@@ -473,7 +597,7 @@ function VolumeView({ m, onNoGL }: { m: Manifest; onNoGL: (detail: string) => vo
       <div className="stage vol-stage" ref={stageRef}>
         <div className="vol-canvas-host" ref={canvasHostRef} role="img"
           aria-label={`3D volume rendering of the CT scan, ${preset.name} style. Drag to rotate, scroll to zoom, click a spot to identify it.`}
-          onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp}
+          onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerCancel={onPointerCancel}
           onPointerLeave={() => setHover(null)} />
         <div className="vol-refine" ref={refineRef} data-state="refining" aria-hidden />
 
@@ -554,38 +678,57 @@ function VolumeView({ m, onNoGL }: { m: Manifest; onNoGL: (detail: string) => vo
 
         {/* pinned point marker + card */}
         <div className="vol-pin-mark" ref={pinMarkRef} style={{ display: 'none' }}><span /></div>
-        <div className="vol-pin-mark shared" ref={sharedMarkRef} style={{ display: 'none' }} title="Shared crosshair: the point last picked on another page (e.g. Slices)"><span /></div>
+        <div className="vol-pin-mark shared" ref={sharedMarkRef} style={{ display: 'none' }} title="Shared crosshair: the last point you picked, here earlier or on another page (e.g. Slices)"><span /></div>
         {pin ? (
           <div className="vol-pin panel">
             <button className="vol-pin-x" onClick={() => setPin(null)} aria-label="Close">×</button>
-            <div className="eyebrow">Picked point</div>
+            <div className="eyebrow">{pin.ray ? 'What casts this shadow' : 'Picked point'}</div>
             <div className="vol-pin-name">{pin.name}{pin.group && <span className="muted"> · AI label</span>}</div>
-            <div className="vol-pin-row">
-              {pin.hu !== null && <span><b className="mono">{pin.hu > 0 ? '+' : ''}{pin.hu} HU</b> <span className="muted">≈ {pin.tissue}</span></span>}
-            </div>
-            <div className="mono muted vol-pin-lps" title="Patient coordinates in millimetres (L = left, P = posterior, S = superior)">{fmtLps(pin.lps)} mm</div>
+            {pin.ray ? (
+              <>
+                <div className="vol-pin-row" title="Share of the virtual X-ray absorption summed along this whole line of sight (bone counts extra, as on a real film)">
+                  <b className="mono">{pct(pin.ray.share)}</b> <span className="muted">of the X-ray absorption along this line of sight</span>
+                </div>
+                {pin.ray.also.length > 0 && (
+                  <div className="vol-pin-also muted">Also on it: {pin.ray.also.map((a) => `${a.name} ${pct(a.share)}`).join(' · ')}</div>
+                )}
+              </>
+            ) : (
+              <div className="vol-pin-row">
+                {pin.hu !== null && <span><b className="mono">{pin.hu > 0 ? '+' : ''}{pin.hu} HU</b> <span className="muted">≈ {pin.tissue}</span></span>}
+              </div>
+            )}
+            <div className="mono muted vol-pin-lps" title={`Patient coordinates in millimetres (L = left, P = posterior, S = superior)${pin.ray ? ', in the middle of this structure along the ray' : ''}`}>{fmtLps(pin.lps)} mm</div>
             <button className="btn small cyan" onClick={() => openInSlices(pin)}>Open this point in Slices →</button>
           </div>
         ) : (
           <div className={`vol-hint ${touched ? 'gone' : ''}`}>
-            Drag to rotate · scroll or pinch to zoom · right-drag to pan · click a spot to identify it
+            <span className="vol-hint-mouse">Drag to rotate · scroll or pinch to zoom · right-drag to pan · click a spot to identify it</span>
+            <span className="vol-hint-touch">Drag to rotate · pinch to zoom · tap to identify</span>
           </div>
         )}
 
         {hover && !pin && (
-          <div className="tooltip vol-hover" style={{ left: hover.x + 14, top: hover.y + 14 }}>
+          <div className="tooltip vol-hover" ref={hoverRef}>
             <b>{hover.name}</b>{hover.group && <span className="muted"> · AI label</span>}
-            {hover.hu !== null && <div className="muted"><span className="mono">{hover.hu > 0 ? '+' : ''}{hover.hu} HU</span> · {hover.tissue}</div>}
+            {hover.ray
+              ? <div className="muted"><span className="mono">{pct(hover.ray.share)}</span> of the X-ray absorption here</div>
+              : hover.hu !== null && <div className="muted"><span className="mono">{hover.hu > 0 ? '+' : ''}{hover.hu} HU</span> · {hover.tissue}</div>}
           </div>
         )}
 
         {load && <LoaderOverlay label={load.label} loaded={load.loaded} total={load.total} />}
-        {error && (
+        {shownError && (
           <div className="vol-error">
             <div className="card">
-              <h3 style={{ color: 'var(--danger)' }}>The 3D renderer hit a problem</h3>
-              <p className="mono" style={{ fontSize: 12, whiteSpace: 'pre-wrap' }}>{error}</p>
-              <button className="btn small" onClick={() => window.location.reload()}>Reload</button>
+              <h3 style={{ color: 'var(--danger)' }}>{shownError.scope === 'heart' ? 'The heart close-up could not load' : 'The 3D renderer hit a problem'}</h3>
+              <p className="mono" style={{ fontSize: 12, whiteSpace: 'pre-wrap' }}>{shownError.msg}</p>
+              <div className="row wrap" style={{ gap: 8 }}>
+                {shownError.scope === 'heart' && (
+                  <button className="btn small cyan" onClick={() => choosePreset('cinematic')}>Show the chest scan instead</button>
+                )}
+                <button className="btn small" onClick={() => window.location.reload()}>Reload</button>
+              </div>
             </div>
           </div>
         )}
@@ -610,7 +753,7 @@ function VolumeView({ m, onNoGL }: { m: Manifest; onNoGL: (detail: string) => vo
         </div>
 
         <div className="group">
-          <p className="vol-blurb">{preset.blurb}</p>
+          <p className="vol-blurb">{preset.blurb.replace('{n}', String(classes.length))}</p>
         </div>
 
         <div className="vol-legend-side">

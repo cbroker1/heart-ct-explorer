@@ -59,7 +59,7 @@ export const fmt0 = (v: number) => Math.round(v).toString().replace('-', '−')
 /** Human label for a calcium candidate's final class (calcium.json). */
 export function candidateClassLabel(c: string): string {
   switch (c) {
-    case 'noise': return 'likely noise'
+    case 'noise': return 'noise (ruled out)'
     case 'review': return 'needs review'
     case 'coronary': return 'coronary calcium'
     case 'aortic': return 'aortic calcium'

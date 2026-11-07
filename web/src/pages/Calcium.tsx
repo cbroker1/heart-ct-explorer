@@ -13,7 +13,8 @@ import ThresholdExplorer from './calcium/ThresholdExplorer'
 import Gallery from './calcium/Gallery'
 import CandidateModal from './calcium/CandidateModal'
 import Compare from './calcium/Compare'
-import Method, { Adjudication } from './calcium/Method'
+import Method from './calcium/Method'
+import ReviewPanel from './calcium/Panel'
 
 const Mini3D = lazy(() => import('./calcium/Mini3D'))
 
@@ -21,6 +22,7 @@ const SECTIONS = [
   { id: 'cal-result', label: 'Result' },
   { id: 'cal-what', label: 'What is it?' },
   { id: 'cal-how', label: 'How I got there' },
+  { id: 'cal-panel', label: 'AI review' },
   { id: 'cal-threshold', label: 'Threshold' },
   { id: 'cal-candidates', label: 'Candidates' },
   { id: 'cal-compare', label: 'Compare' },
@@ -111,11 +113,25 @@ function Body({ vm }: { vm: CalciumVM }) {
   const [near3d, setNear3d] = useState(false)
   const [ref3d, near] = useNearViewport<HTMLDivElement>('500px')
   useEffect(() => { if (near) setNear3d(true) }, [near])
+  // Deep link (#/calcium?cand=N, or Back from the slice viewer): park the page at the gallery behind the sheet,
+  // so closing it lands next to the candidate rather than at the top of the page.
+  useEffect(() => {
+    if (openId === null) return
+    const id = requestAnimationFrame(() => document.getElementById('cal-candidates')?.scrollIntoView({ block: 'start' }))
+    return () => cancelAnimationFrame(id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const open = useCallback((id: number) => { setOpenId(id); setSelectedLesion(id); writeCandParam(id) }, [setSelectedLesion])
   const close = useCallback(() => { setOpenId(null); writeCandParam(null) }, [])
   const { report } = vm
   const reviewed = report.reviewed
+  const nRev = vm.reviewers.length
+  const panelTitle = !reviewed || !nRev
+    ? 'The AI review panel'
+    : vm.votes?.unanimousAll && vm.reviewers.every((r) => r.estimate === 0)
+      ? `${nRev} independent reviewers, one verdict: zero`
+      : `What the ${nRev} independent AI reviewers decided`
 
   return (
     <div className="page-pad cal-page">
@@ -143,16 +159,21 @@ function Body({ vm }: { vm: CalciumVM }) {
       <Section id="cal-how" eyebrow="03 · How I got there" title={`From ${vm.nBlobs} bright blobs to ${vm.counted.length} lesion${vm.counted.length === 1 ? '' : 's'}`}
         intro="Every step of the funnel, with the actual counts from this scan.">
         <Pipeline vm={vm} />
-        <div className="cal-subhead"><h3>The AI review panel</h3></div>
-        <Adjudication vm={vm} />
       </Section>
 
-      <Section id="cal-threshold" eyebrow="04 · Play with the threshold" title="Why 130 HU, and why a threshold isn't enough"
+      <Section id="cal-panel" eyebrow="04 · Second opinions" title={panelTitle}
+        intro={reviewed && nRev
+          ? `Each AI reviewer worked separately, with its own method, then voted on every candidate. Here is what each concluded, the one bright speck that needed a second look, and what they found outside the heart.`
+          : undefined}>
+        <ReviewPanel vm={vm} onOpen={open} />
+      </Section>
+
+      <Section id="cal-threshold" eyebrow="05 · Play with the threshold" title="Why 130 HU, and why a threshold isn't enough"
         intro={`I re-ran the blob search at ${report.thresholdSweep?.length ?? 0} different thresholds. Drag across the chart to see how much "calcium" pure noise can fake.`}>
         <ThresholdExplorer vm={vm} />
       </Section>
 
-      <Section id="cal-candidates" eyebrow="05 · Every candidate" title={`All ${report.candidates.length} suspects, one by one`}
+      <Section id="cal-candidates" eyebrow="06 · Every candidate" title={`All ${report.candidates.length} suspects, one by one`}
         intro="Each dot in the 3D heart is one candidate, coloured by verdict. Hover a card to find it; click for the full review sheet and a jump into the slice viewer.">
         <div className="cal-cands-layout">
           <div className="cal-3d-col" ref={ref3d}>
@@ -174,11 +195,11 @@ function Body({ vm }: { vm: CalciumVM }) {
         </div>
       </Section>
 
-      <Section id="cal-compare" eyebrow="06 · Reality check" title="Compare with your official report">
+      <Section id="cal-compare" eyebrow="07 · Reality check" title="Compare with your official report">
         <Compare vm={vm} official={official} setOfficial={setOfficial} />
       </Section>
 
-      <Section id="cal-method" eyebrow="07 · Method & limitations" title="How seriously to take this">
+      <Section id="cal-method" eyebrow="08 · Method & limitations" title="How seriously to take this">
         <Method vm={vm} />
       </Section>
 

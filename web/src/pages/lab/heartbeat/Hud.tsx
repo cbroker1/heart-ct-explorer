@@ -56,7 +56,7 @@ export function Hud(props: { player: Player; model: Cardio; bus: Set<FrameFn>; b
       <div className="hb-card hb-hr">
         <div className="eyebrow">Heart rate</div>
         <div className="hb-hr-v">
-          <span key={beat} className="hb-hr-num">{hr ?? '—'}</span>
+          <span key={beat} className={hr == null ? 'hb-hr-num empty' : 'hb-hr-num'} title={hr == null ? 'Shown after the first full beat' : undefined}>{hr ?? '–'}</span>
           <small>bpm</small>
         </div>
         <div className="hb-sub">

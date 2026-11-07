@@ -1,5 +1,5 @@
 /** Small, honest visuals for "My body, by the numbers": range gauge, chambers, spine levels, lobes, radiation. */
-import { useMemo, type CSSProperties, type ReactElement, type SVGProps } from 'react'
+import { useEffect, useMemo, useState, type CSSProperties, type ReactElement, type SVGProps } from 'react'
 import { useCountUp, useInView } from './hooks'
 import { PicBanana, PicPlane, PicSun, PicXray } from './icons'
 import type { ChamberDetail, Equivalent, Gauge as GaugeT, LevelDetail, LobeDetail, SpecItem } from './types'
@@ -11,6 +11,16 @@ const fmtTick = (v: number) => (Math.abs(v) < 2 && v % 1 !== 0 ? v.toFixed(1) : 
 export function Gauge(props: { gauge: GaugeT; value: number; display: string; unit: string; label: string }) {
   const { gauge, value, display, unit, label } = props
   const [ref, seen] = useInView<HTMLDivElement>('0px')
+  // zone labels only where they fit at the gauge's real width (phones are much narrower)
+  const [width, setWidth] = useState(0)
+  useEffect(() => {
+    const el = ref.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(() => setWidth(el.clientWidth))
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [ref])
+  const fits = (frac: number, text: string) => (width ? frac * width >= text.length * 5.7 + 4 : frac * 100 >= text.length * 1.35)
   const span = gauge.max - gauge.min || 1
   const pos = clamp01((value - gauge.min) / span)
   const zone = gauge.zones.find((z) => value >= z.from && value < z.to) ?? gauge.zones[gauge.zones.length - 1]
@@ -36,7 +46,7 @@ export function Gauge(props: { gauge: GaugeT; value: number; display: string; un
           const frac = (z.to - z.from) / span
           return (
             <span key={z.label + z.from} style={{ flexGrow: frac, flexBasis: 0 }}>
-              {frac * 100 >= z.label.length * 1.35 ? z.label : ''}
+              {fits(frac, z.label) ? z.label : ''}
             </span>
           )
         })}

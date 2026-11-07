@@ -627,6 +627,34 @@ export class VolumeRenderer {
     return { lps: indexToLps(v.meta, ijk), ijk, volume: v.key }
   }
 
+  /**
+   * Where the camera ray through a CSS pixel enters and leaves the active clip box, in LPS mm (null if it
+   * misses). Used to analyse a whole X-ray ray on the CPU, since a radiograph pixel sums everything on it.
+   */
+  rayThroughClip(cssX: number, cssY: number): { a: Vec3; b: Vec3; volume: VolumeKey } | null {
+    const v = this.active
+    if (!v || !this.params || this.disposed) return null
+    this.camera.updateMatrixWorld()
+    const ndc = new THREE.Vector3((cssX / this.cssW) * 2 - 1, -(cssY / this.cssH) * 2 + 1, -1)
+    const toX = (w: THREE.Vector3) => w.sub(v.T).applyMatrix3(v.Rt)   // world -> X space (mm, box corner origin)
+    const o = toX(ndc.clone().unproject(this.camera))
+    const d = toX(ndc.clone().setZ(1).unproject(this.camera)).sub(o).normalize()
+    const lo = this.uniforms.uClipMin.value as THREE.Vector3, hi = this.uniforms.uClipMax.value as THREE.Vector3
+    let t0 = 0, t1 = Infinity
+    for (let a = 0; a < 3; a++) {
+      const oa = o.getComponent(a), da = d.getComponent(a), l = lo.getComponent(a), h = hi.getComponent(a)
+      if (Math.abs(da) < 1e-9) { if (oa < l || oa > h) return null; continue }
+      const ta = (l - oa) / da, tb = (h - oa) / da
+      t0 = Math.max(t0, Math.min(ta, tb)); t1 = Math.min(t1, Math.max(ta, tb))
+    }
+    if (!(t1 > t0)) return null
+    const toLps = (t: number): Vec3 => {
+      const p = o.clone().addScaledVector(d, t)
+      return indexToLps(v.meta, [(p.x / v.size.x) * v.dims.x - 0.5, (p.y / v.size.y) * v.dims.y - 0.5, (p.z / v.size.z) * v.dims.z - 0.5])
+    }
+    return { a: toLps(t0), b: toLps(t1), volume: v.key }
+  }
+
   // ------------------------------------------------------------------ frame loop
 
   /** Canvas backing-store pixel ratio: never more than the quality level will actually render. */

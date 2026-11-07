@@ -4,7 +4,7 @@
  * centre (lpsToWorld), coloured by verdict. Auto-rotates; hover for a tooltip, click to open.
  */
 import { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState, type MutableRefObject, type RefObject } from 'react'
-import { Canvas, useFrame, useThree, type ThreeEvent } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
@@ -63,7 +63,7 @@ function makeHolo(color: string, strength: number) {
 interface Part { name: string; geo: THREE.BufferGeometry; mat: THREE.ShaderMaterial; pos: THREE.Vector3; quat: THREE.Quaternion; scale: THREE.Vector3; label?: string; center: THREE.Vector3 }
 
 function Anatomy({ manifest, onBounds, onLabels }: { manifest: Manifest; onBounds: (c: THREE.Vector3, r: number) => void; onLabels: (l: { text: string; pos: THREE.Vector3 }[]) => void }) {
-  const gltf = useGLTF(dataUrl(manifest.meshes.file), false, true)
+  const gltf = useGLTF(dataUrl(manifest.meshes.heartFile ?? manifest.meshes.file), false, true)
   const parts = useMemo<Part[]>(() => {
     const out: Part[] = []
     gltf.scene.updateMatrixWorld(true)
@@ -133,41 +133,104 @@ function getHalo(): THREE.Texture {
   return haloTex
 }
 
-function CandDot({ c, pos, hot, motion, onHover, onOpen }: {
-  c: CalciumCandidate; pos: Vec3; hot: boolean; motion: boolean
-  onHover: (id: number | null) => void; onOpen: (id: number) => void
-}) {
+/** 2 = counted / still pending / other real calcium (pulses), 1 = borderline the reviewers dismissed, 0 = rule-dismissed noise */
+function tierOf(c: CalciumCandidate): 0 | 1 | 2 {
+  const k = verdict(c.finalClass).key
+  return k === 'noise' ? 0 : k === 'noise-artifact' ? 1 : 2
+}
+const dotRadius = (c: CalciumCandidate) => [1.6, 2.0, 2.4][tierOf(c)] + 0.55 * Math.cbrt(Math.max(c.volume_mm3, 0.1))
+
+function CandDot({ c, pos, hot, motion }: { c: CalciumCandidate; pos: Vec3; hot: boolean; motion: boolean }) {
   const v = verdict(c.finalClass)
-  const important = v.key !== 'noise' && v.key !== 'noise-artifact'
-  const r = (important ? 2.4 : 1.6) + 0.55 * Math.cbrt(Math.max(c.volume_mm3, 0.1))
+  const tier = tierOf(c)
+  const important = tier === 2
+  const r = dotRadius(c)
   const halo = useRef<THREE.Sprite>(null)
   const core = useRef<THREE.Mesh>(null)
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime()
     const pulse = important && motion ? 1 + 0.18 * Math.sin(t * 3 + c.id) : 1
     const k = hot ? 1.55 : 1
-    if (halo.current) halo.current.scale.setScalar(r * (important ? 5.2 : 3.2) * pulse * k)
+    if (halo.current) halo.current.scale.setScalar(r * [3.2, 4.2, 5.2][tier] * pulse * k)
     if (core.current) core.current.scale.setScalar(k)
   })
-  const over = (e: ThreeEvent<PointerEvent>) => { e.stopPropagation(); onHover(c.id); document.body.style.cursor = 'pointer' }
-  const out = () => { onHover(null); document.body.style.cursor = '' }
   return (
     <group position={pos}>
       <sprite ref={halo} raycast={() => null}>
-        <spriteMaterial map={getHalo()} color={v.color} transparent opacity={important ? 0.75 : 0.35} depthWrite={false} blending={THREE.AdditiveBlending} />
+        <spriteMaterial map={getHalo()} color={v.color} transparent opacity={[0.35, 0.5, 0.75][tier]} depthWrite={false} blending={THREE.AdditiveBlending} />
       </sprite>
       <mesh ref={core} raycast={() => null}>
         <sphereGeometry args={[r, 20, 14]} />
-        <meshStandardMaterial color={v.color} emissive={v.color} emissiveIntensity={hot ? 1.1 : important ? 0.6 : 0.25} roughness={0.35} metalness={0.1}
-          transparent opacity={important || hot ? 1 : 0.8} />
-      </mesh>
-      {/* generous invisible hit target */}
-      <mesh onPointerOver={over} onPointerOut={out} onClick={(e) => { e.stopPropagation(); onOpen(c.id) }}>
-        <sphereGeometry args={[important ? Math.max(r * 2, 5.5) : Math.max(r * 1.25, 2.8), 10, 8]} />
-        <meshBasicMaterial transparent opacity={0} depthWrite={false} colorWrite={false} />
+        <meshStandardMaterial color={v.color} emissive={v.color} emissiveIntensity={hot ? 1.1 : [0.25, 0.4, 0.6][tier]} roughness={0.35} metalness={0.1}
+          transparent opacity={tier > 0 || hot ? 1 : 0.8} />
       </mesh>
     </group>
   )
+}
+
+/**
+ * Screen-space picking: the dot whose projected centre is nearest the pointer wins (a raycast against
+ * enlarged hit spheres picks whatever sits in front, which in the dense band is rarely the dot you aim at).
+ * A short press without dragging opens it; dragging still rotates the view.
+ */
+function Picker({ blobs, onHover, onOpen }: {
+  blobs: { c: CalciumCandidate; pos: Vec3 }[]; onHover: (id: number | null) => void; onOpen: (id: number) => void
+}) {
+  const { camera, gl } = useThree()
+  useEffect(() => {
+    const el = gl.domElement
+    const v = new THREE.Vector3()
+    const cam = camera as THREE.PerspectiveCamera
+    let hovered: number | null = null
+    let down: { x: number; y: number; t: number } | null = null
+    const pick = (clientX: number, clientY: number): number | null => {
+      const rect = el.getBoundingClientRect()
+      const px = clientX - rect.left, py = clientY - rect.top
+      const pxPerMmAt = (d: number) => rect.height / (2 * d * Math.tan(THREE.MathUtils.degToRad(cam.fov / 2)))
+      let best: { id: number; score: number } | null = null
+      for (const { c, pos } of blobs) {
+        v.set(pos[0], pos[1], pos[2])
+        const dist = v.distanceTo(cam.position)
+        v.project(cam)
+        if (v.z > 1) continue
+        const d = Math.hypot((v.x * 0.5 + 0.5) * rect.width - px, (-v.y * 0.5 + 0.5) * rect.height - py)
+        const tier = tierOf(c)
+        const reach = Math.max(9, dotRadius(c) * pxPerMmAt(dist) + (tier ? 7 : 4))
+        if (d > reach) continue
+        const score = d - tier * 4 // nudge towards the dots that matter when several are under the pointer
+        if (!best || score < best.score) best = { id: c.id, score }
+      }
+      return best ? best.id : null
+    }
+    const set = (id: number | null) => {
+      if (id === hovered) return
+      hovered = id
+      onHover(id)
+      el.style.cursor = id === null ? '' : 'pointer'
+    }
+    const onMove = (e: PointerEvent) => { if (!(e.pointerType === 'mouse' && e.buttons)) set(pick(e.clientX, e.clientY)) }
+    const onLeave = () => set(null)
+    const onDown = (e: PointerEvent) => { down = { x: e.clientX, y: e.clientY, t: performance.now() } }
+    const onUp = (e: PointerEvent) => {
+      const d = down
+      down = null
+      if (!d || Math.hypot(e.clientX - d.x, e.clientY - d.y) > 6 || performance.now() - d.t > 700) return
+      const id = pick(e.clientX, e.clientY)
+      if (id !== null) onOpen(id)
+    }
+    el.addEventListener('pointermove', onMove)
+    el.addEventListener('pointerleave', onLeave)
+    el.addEventListener('pointerdown', onDown)
+    el.addEventListener('pointerup', onUp)
+    return () => {
+      el.removeEventListener('pointermove', onMove)
+      el.removeEventListener('pointerleave', onLeave)
+      el.removeEventListener('pointerdown', onDown)
+      el.removeEventListener('pointerup', onUp)
+      el.style.cursor = ''
+    }
+  }, [blobs, camera, gl, onHover, onOpen])
+  return null
 }
 
 function Rig({ target, radius, controls }: { target: THREE.Vector3 | null; radius: number; controls: RefObject<OrbitControlsImpl | null> }) {
@@ -278,7 +341,6 @@ export default function Mini3D({ vm, hoverId, onHover, onOpen }: {
         dpr={[1, 2]}
         camera={{ fov: 32, position: [0, 0, 400], near: 1, far: 3000 }}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-        onPointerMissed={() => onHover(null)}
       >
         <ambientLight intensity={0.5} />
         <directionalLight position={[120, 200, 260]} intensity={1.6} />
@@ -287,7 +349,7 @@ export default function Mini3D({ vm, hoverId, onHover, onOpen }: {
           <Anatomy manifest={vm.manifest} onBounds={onBounds} onLabels={onLabels} />
         </Suspense>
         {blobs.map(({ c, pos }) => (
-          <CandDot key={c.id} c={c} pos={pos} hot={hoverId === c.id} motion={!reduced} onHover={onHover} onOpen={onOpen} />
+          <CandDot key={c.id} c={c} pos={pos} hot={hoverId === c.id} motion={!reduced} />
         ))}
         <OrbitControls
           ref={controls}
@@ -303,6 +365,7 @@ export default function Mini3D({ vm, hoverId, onHover, onOpen }: {
         />
         <Rig target={bounds?.c ?? null} radius={bounds?.r ?? 80} controls={controls} />
         <Projector overlay={overlay} />
+        <Picker blobs={blobs} onHover={onHover} onOpen={onOpen} />
       </Canvas>
       <div className="cal-3d-overlay" aria-hidden>
         {labels.map((l, i) => (
@@ -325,7 +388,7 @@ export default function Mini3D({ vm, hoverId, onHover, onOpen }: {
       {!ready && (
         <div className="cal-3d-loading">
           <div className="spinner" />
-          <span>Loading the 3D heart ({(vm.manifest.meshes.bytes / 1048576).toFixed(1)} MB)…</span>
+          <span>Loading the 3D heart ({((vm.manifest.meshes.heartBytes ?? vm.manifest.meshes.bytes) / 1048576).toFixed(1)} MB)…</span>
         </div>
       )}
       <div className="cal-3d-legend">

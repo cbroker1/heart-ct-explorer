@@ -3,7 +3,8 @@ import { createPortal } from 'react-dom'
 import { dataUrl } from '../../lib/data'
 import { useApp } from '../../lib/store'
 import { navigate, Segmented } from '../../components/ui'
-import { VerdictChip, Votes } from './Gallery'
+import { VerdictChip, VoteList } from './Gallery'
+import { summarizeVotes, voteLabel } from './adjudication'
 import {
   candidateBreakdown, chamberLabel, densityWeight, fmtNum, fmtScore, pct, sheetUrl, sliceViewerLink, verdict,
 } from './model'
@@ -108,9 +109,13 @@ export default function CandidateModal({ vm, id, onClose, onNav }: {
     setSliceSeries('calcium')
     setSelectedLesion(c.id)
     setCursor(lps)
-    onClose()
+    // Leave "?cand=" in this history entry: the browser's Back button then reopens this sheet.
     navigate(sliceViewerLink(lps))
   }
+  const vs = summarizeVotes(c)
+  const blurb = v.key === 'noise' && vs?.unanimous && vs.top === 'noise-artifact'
+    ? `${v.blurb} All ${vs.n} AI reviewers agreed.`
+    : v.blurb
   const facts: [string, string, string][] = [
     ['Peak', `${fmtNum(c.peakHU, 0)} HU`, `Brightest pixel (density weight ×${densityWeight(c.peakHU, m.bands)})`],
     ['Mean', `${fmtNum(c.meanHU, 0)} HU`, 'Average over all its pixels'],
@@ -142,6 +147,15 @@ export default function CandidateModal({ vm, id, onClose, onNav }: {
         </header>
         <div className="cal-modal-scroll">
           <Panels id={c.id} peak={c.peakSlice} nz={vm.vol?.dims[2] ?? 1e9} fov={fov} thr={m.threshold} />
+          <div className="cal-modal-actions">
+            <button className="btn cyan" onClick={openSlices}>Open in slice viewer →</button>
+            <a className="btn ghost" href={dataUrl(sheetUrl(c.id))} target="_blank" rel="noreferrer">Original review sheet ↗</a>
+            <span className="muted mono cal-modal-where"
+              title="This page numbers calcium-series slices from the bottom of the scan, starting at 0, like the review sheets and the reviewers' notes. The slice viewer counts from the top, starting at 1.">
+              centre LPS {lps.map((q) => q.toFixed(1)).join(', ')} mm · peak on slice {c.peakSlice}
+              {vm.vol && c.peakSlice >= 0 && c.peakSlice < vm.vol.dims[2] ? <> (viewer slice {vm.vol.dims[2] - c.peakSlice}/{vm.vol.dims[2]})</> : null}
+            </span>
+          </div>
           <div className="cal-modal-grid">
             <div>
               <h3>Measurements</h3>
@@ -156,7 +170,7 @@ export default function CandidateModal({ vm, id, onClose, onNav }: {
             </div>
             <div>
               <h3>Verdict</h3>
-              <p className="cal-modal-v">{v.blurb}</p>
+              <p className="cal-modal-v">{blurb}</p>
               <div className="cal-modal-rule">
                 <div className="eyebrow">Automatic rules</div>
                 {c.ruleReasons.length ? (
@@ -165,16 +179,13 @@ export default function CandidateModal({ vm, id, onClose, onNav }: {
                   <p className="muted">No rule fired, so it was flagged for review ({verdict(c.ruleClass).label.toLowerCase()}).</p>
                 )}
               </div>
-              {(c.reviewNote || c.reviewVotes?.length) && (
+              {(vs || c.reviewNote) && (
                 <div className="cal-modal-rule">
                   <div className="eyebrow">AI reviewers</div>
-                  {c.reviewNote && <p>{c.reviewNote}</p>}
-                  <Votes c={c} />
-                  {c.reviewVotes?.some((x) => x.note) && (
-                    <ul className="cal-vote-notes">
-                      {c.reviewVotes.filter((x) => x.note).map((x, i) => <li key={i}><b>{x.reviewer}:</b> {x.note}</li>)}
-                    </ul>
-                  )}
+                  {vs
+                    ? <p className="cal-modal-tally"><b>{vs.topN} of {vs.n}</b> independent reviewers: <b>{voteLabel(vs.top)}</b>{vs.unanimous ? ' (unanimous)' : ''}.</p>
+                    : <p>{c.reviewNote}</p>}
+                  <VoteList c={c} reviewers={vm.reviewers} />
                 </div>
               )}
               <div className="cal-modal-rule">
@@ -184,13 +195,6 @@ export default function CandidateModal({ vm, id, onClose, onNav }: {
                 </p>
                 <p className="muted" style={{ fontSize: 12 }}>area (mm²) × density weight on each slice, summed, × the overlap correction. {v.counted ? 'Counted.' : 'Not counted, so it adds 0.'}</p>
               </div>
-              <div className="row wrap" style={{ gap: 8, marginTop: 14 }}>
-                <button className="btn cyan" onClick={openSlices}>Open in slice viewer →</button>
-                <a className="btn ghost" href={dataUrl(sheetUrl(c.id))} target="_blank" rel="noreferrer">Original review sheet ↗</a>
-              </div>
-              <p className="muted mono" style={{ fontSize: 11, marginTop: 8 }}>
-                centre LPS {lps.map((q) => q.toFixed(1)).join(', ')} mm · peak on slice {c.peakSlice}
-              </p>
             </div>
           </div>
         </div>

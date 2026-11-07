@@ -82,6 +82,7 @@ export function useCTVolume(manifest: Manifest, wanted: boolean) {
   const [state, setState] = useState<{ vol: CTVolume | null; loaded: number; total: number; error: string | null; loading: boolean }>({
     vol: null, loaded: 0, total: 0, error: null, loading: false,
   })
+  const [attempt, setAttempt] = useState(0)
   useEffect(() => {
     if (!wanted || state.vol || state.loading) return
     let cancelled = false
@@ -141,9 +142,9 @@ export function useCTVolume(manifest: Manifest, wanted: boolean) {
       .catch((e) => { if (!cancelled) setState((s) => ({ ...s, loading: false, error: String(e?.message ?? e) })) })
     return () => { cancelled = true }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wanted, manifest])
+  }, [wanted, manifest, attempt])
   useEffect(() => () => state.vol?.dispose(), [state.vol])
-  return state
+  return { ...state, retry: () => setAttempt((a) => a + 1) }
 }
 
 /** Plain-English tissue class for a HU value (non-contrast CT). */

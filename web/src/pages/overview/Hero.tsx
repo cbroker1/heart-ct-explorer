@@ -17,7 +17,7 @@ export function Hero(props: { manifest: Manifest; exam: ExamJson | null; reduced
   const facts = useManifestFacts(manifest)
   const bpm = exam?.ecg?.hrAvg ?? null
   const parts = useMemo(() => heartPartsFrom(manifest.meshes?.nodes ?? []), [manifest])
-  const glbUrl = dataUrl(manifest.meshes.file)
+  const glbUrl = dataUrl(manifest.meshes.heartFile ?? manifest.meshes.file)
   const webgl = useMemo(() => hasWebGL2(), [])
 
   const [stageRef, stageInView] = useInView<HTMLDivElement>({ rootMargin: '120px' })
@@ -63,7 +63,8 @@ export function Hero(props: { manifest: Manifest; exam: ExamJson | null; reduced
     const st = stageRef.current
     if (!st) return
     const r = st.getBoundingClientRect()
-    labelPos.current = { x: Math.max(110, Math.min(r.width - 110, clientX - r.left)), y: clientY - r.top }
+    // The label is centred on x and at most 240px wide: keep 8px clear of the stage edges (full-bleed on phones).
+    labelPos.current = { x: Math.max(128, Math.min(r.width - 128, clientX - r.left)), y: clientY - r.top }
     const lb = labelRef.current
     if (lb) { lb.style.left = `${labelPos.current.x}px`; lb.style.top = `${labelPos.current.y}px` }
   }
@@ -160,7 +161,9 @@ export function Hero(props: { manifest: Manifest; exam: ExamJson | null; reduced
           onPointerCancel={endDrag}
           onPointerLeave={(e) => { if (e.pointerType === 'mouse') setPick(null) }}
           role="img"
-          aria-label={`Rotating 3D model of my heart built from the CT: ${parts.length} AI-segmented structures${bpm ? `, beating at ${bpm} beats per minute` : ''}. Drag sideways to spin it.`}
+          aria-label={reducedMotion
+            ? `3D model of my heart built from the CT: ${parts.length} AI-segmented structures. Drag sideways to turn it.`
+            : `Rotating 3D model of my heart built from the CT: ${parts.length} AI-segmented structures${bpm ? `, beating at ${bpm} beats per minute` : ''}. Drag sideways to spin it.`}
         >
           <div className="ovw-stage-view">
             <div className="ovw-stage-glow" aria-hidden="true" />
@@ -195,13 +198,13 @@ export function Hero(props: { manifest: Manifest; exam: ExamJson | null; reduced
             {!failure && !ready && (
               <div className="ovw-stage-loading" aria-hidden="true">
                 <div className="ovw-loading-ring" />
-                <div className="ovw-loading-txt">Loading 3D heart · {formatBytes(manifest.meshes.bytes)}</div>
+                <div className="ovw-loading-txt">Loading 3D heart · {formatBytes(manifest.meshes.heartBytes ?? manifest.meshes.bytes)}</div>
               </div>
             )}
 
             <div className="ovw-hud ovw-hud-tl" aria-hidden="true">
               <span className="ovw-hud-k">Live model</span>
-              <span>{parts.length} structures · AI segmentation</span>
+              <span>{parts.length} heart &amp; vessel parts · AI segmentation</span>
             </div>
             <div className={`ovw-hud ovw-hud-drag${dragged ? ' is-hidden' : ''}`} aria-hidden="true">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 7 4 11l4 4" /><path d="M16 7l4 4-4 4" /><path d="M4 11h16" /></svg>

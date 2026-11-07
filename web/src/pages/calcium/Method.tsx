@@ -1,67 +1,5 @@
-import { arteryName, fmtNum, fmtScore, frac01 } from './model'
+import { arteryName, fmtNum, fmtScore } from './model'
 import type { CalciumVM } from './useCalciumData'
-
-export function Adjudication({ vm }: { vm: CalciumVM }) {
-  const { report } = vm
-  const adj = report.adjudication
-  if (!report.reviewed) {
-    return (
-      <div className="cal-adj pending">
-        <div className="cal-adj-icon" aria-hidden><span className="cal-pulse" /></div>
-        <div>
-          <h3>AI review panel: pending</h3>
-          <p className="muted">
-            The automatic rules have run. Next, independent AI reviewers look at the {vm.pending.length} borderline candidate
-            {vm.pending.length === 1 ? '' : 's'} (and the rest of the heart) and vote. Until then, the score at the top counts only
-            what the rules confirmed, which is nothing, and it's marked <b style={{ color: 'var(--amber)' }}>provisional</b>.
-          </p>
-        </div>
-      </div>
-    )
-  }
-  if (!adj) {
-    return (
-      <div className="cal-adj">
-        <div><h3>Reviewed</h3><p className="muted">Borderline candidates were reviewed; the verdicts are shown on each candidate above.</p></div>
-      </div>
-    )
-  }
-  return (
-    <div className="cal-adj-wrap">
-      {adj.consensus && (
-        <div className="cal-adj-consensus">
-          <div className="eyebrow">Consensus</div>
-          <p>{adj.consensus}</p>
-        </div>
-      )}
-      <div className="cal-adj-grid">
-        {(adj.reviewers ?? []).map((r, i) => (
-          <div key={r.key ?? i} className="cal-adj-card">
-            <div className="row" style={{ justifyContent: 'space-between', gap: 8 }}>
-              <span className="chip info mono">{r.key}</span>
-              <span className="muted" style={{ fontSize: 12 }} title="This reviewer's own Agatston estimate">estimate <b className="mono" style={{ color: 'var(--text)' }}>{fmtScore(r.agatstonEstimate)}</b></span>
-            </div>
-            <h4>{r.lens}</h4>
-            <p>{r.summary}</p>
-            {frac01(r.confidenceZero) !== null && (
-              <div className="cal-conf" title="How confident this reviewer is that the true score is zero">
-                <span>confidence the score is 0</span>
-                <div className="cal-conf-bar"><div style={{ width: `${Math.round(frac01(r.confidenceZero)! * 100)}%` }} /></div>
-                <b className="mono">{Math.round(frac01(r.confidenceZero)! * 100)}%</b>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-      {adj.openItems && adj.openItems.length > 0 && (
-        <div className="cal-adj-open">
-          <div className="eyebrow">Open items</div>
-          <ul>{adj.openItems.map((o, i) => <li key={i}>{o}</li>)}</ul>
-        </div>
-      )}
-    </div>
-  )
-}
 
 export default function Method({ vm }: { vm: CalciumVM }) {
   const { report, method: m } = vm
@@ -127,7 +65,7 @@ export default function Method({ vm }: { vm: CalciumVM }) {
       </div>
       <p className="disclaimer" style={{ marginTop: 18 }}>
         Not a medical device. The official radiologist report is what counts. This page is a curious patient re-doing the arithmetic
-        on his own pixels, for fun and for learning. Sorry, radiologists: you're still very much needed.
+        on my own pixels, for fun and for learning. Sorry, radiologists: you're still very much needed.
       </p>
     </div>
   )

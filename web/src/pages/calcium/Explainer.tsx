@@ -1,4 +1,5 @@
 import { useWidth } from './hooks'
+import { summarizeVotes, voteLabel } from './adjudication'
 import { candidateBreakdown, fmtNum, fmtScore, verdict } from './model'
 import type { CalciumVM } from './useCalciumData'
 
@@ -122,25 +123,30 @@ function WeightStairs({ vm }: { vm: CalciumVM }) {
 function WorkedExample({ vm }: { vm: CalciumVM }) {
   const m = vm.method
   // the biggest thing that is (or could be) counted: coronary first, then pending, then anything
-  const pool = vm.counted.length ? vm.counted : vm.pending.length ? vm.pending : vm.candidates
+  const pool = vm.counted.length ? vm.counted : vm.pending.length ? vm.pending : vm.borderline.length ? vm.borderline : vm.candidates
   const ex = pool
     .map((c) => ({ c, b: candidateBreakdown(c, m) }))
     .sort((a, b) => b.b.score - a.b.score)[0]
   if (!ex) return null
   const v = verdict(ex.c.finalClass)
+  const votes = summarizeVotes(ex.c)
+  const what = vm.counted.length ? 'lesion that was counted' : vm.pending.length || vm.borderline.length ? 'borderline spot in this scan' : 'bright spot in this scan'
   return (
     <div className="cal-worked">
       <div className="cal-worked-text">
         <div className="eyebrow">Worked example with a real candidate</div>
         <p className="muted" style={{ marginTop: 6 }}>
-          Candidate <b className="mono">#{ex.c.id}</b> is the biggest {vm.counted.length ? 'lesion that was counted' : vm.pending.length ? 'borderline spot in this scan' : 'bright spot in this scan'}.
+          Candidate <b className="mono">#{ex.c.id}</b> is the biggest {what}.
           Here is exactly what it {v.counted ? 'adds' : 'would add if it were coronary plaque'}: each spot's area times its weight, summed, then
           halved for the overlapping slices.
         </p>
         <p className="cal-foot">
           {v.counted
             ? <>This lesion is counted, so it contributes these points to the total.</>
-            : <>Verdict for #{ex.c.id}: <b style={{ color: v.color }}>{v.label.toLowerCase()}</b>, so it adds <b>0</b> to the real score.</>}
+            : votes
+              ? <>Verdict for #{ex.c.id}: <b style={{ color: v.color }}>{voteLabel(votes.top)}</b>, according to{' '}
+                  {votes.topN === votes.n ? `all ${votes.n}` : `${votes.topN} of ${votes.n}`} AI reviewers, so it adds <b>0</b> to the real score.</>
+              : <>Verdict for #{ex.c.id}: <b style={{ color: v.color }}>{v.label.toLowerCase()}</b>, so it adds <b>0</b> to the real score.</>}
         </p>
       </div>
       <div className="cal-table-wrap">
